@@ -29,7 +29,9 @@ contract MessageTransmitter is Ownable {
     );
 
     modifier onlyValidMessage(bytes memory _message, bytes memory _signature) {
-        bytes32 key = keccak256(abi.encodePacked(_message, _signature));
+        bytes32 key = keccak256(
+            abi.encodePacked(keccak256(_message), _signature)
+        );
         require(
             messages[key] == MESSAGE_SENT,
             "MessageTransmitter: message already processed or not sent"
@@ -40,13 +42,14 @@ contract MessageTransmitter is Ownable {
 
     /**
      * @notice This function will be called by the attestation service
-     * @param message Raw bytes of message
+     * @param messageHash Raw bytes of message
+     * @param signature Raw bytes of signature
      */
-    function setMessage(bytes memory message, bytes memory _signature)
+    function setMessage(bytes32 messageHash, bytes memory signature)
         external
         onlyOwner
     {
-        bytes32 key = keccak256(abi.encodePacked(message, _signature));
+        bytes32 key = keccak256(abi.encodePacked(messageHash, signature));
         messages[key] = MESSAGE_SENT;
     }
 
