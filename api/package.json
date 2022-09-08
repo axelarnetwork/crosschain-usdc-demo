@@ -1,0 +1,22 @@
+{
+  "name": "attestation-service-api",
+  "version": "0.0.1",
+  "description": "A mocked API for the Circle's Attestation Service",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node index.ts",
+    "start:prod": "node build/index.js",
+    "build": "tsc"
+  },
+  "author": "euro@axelar.network",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/hapi": "^20.2.2",
+    "ethers": "^5.7.0"
+  },
+  "devDependencies": {
+    "@types/hapi__hapi": "^20.0.12",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
+  }
+}
