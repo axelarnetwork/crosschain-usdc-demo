@@ -57,14 +57,6 @@ contract CircleBridge is Ownable {
         address _burnToken
     ) external returns (bool success) {
         usdc.burn(msg.sender, _amount);
-        emit DepositForBurn(
-            msg.sender,
-            _burnToken,
-            _amount,
-            _mintRecipient,
-            _destinationDomain,
-            circleBridgeSiblings[_destinationDomain]
-        );
         bytes memory messageBody = abi.encode(_amount, _mintRecipient);
         bytes memory message = abi.encode(
             sourceDomain,
@@ -73,6 +65,14 @@ contract CircleBridge is Ownable {
             messageBody
         );
         nonce++;
+        emit DepositForBurn(
+            msg.sender,
+            _burnToken,
+            _amount,
+            _mintRecipient,
+            _destinationDomain,
+            circleBridgeSiblings[_destinationDomain]
+        );
         emit MessageSent(message);
         return true;
     }
