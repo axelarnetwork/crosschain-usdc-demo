@@ -1,0 +1,14 @@
+{
+  "name": "hardhat-project",
+  "dependencies": {
+    "@axelar-network/axelar-cgp-solidity": "^4.3.0",
+    "@openzeppelin/contracts": "^4.7.3"
+  },
+  "devDependencies": {
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "hardhat": "^2.11.1",
+    "hardhat-deploy": "^0.11.14",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.2"
+  }
+}
