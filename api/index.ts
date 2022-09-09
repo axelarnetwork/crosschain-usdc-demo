@@ -41,15 +41,15 @@ const bootServer = async () => {
       const messageHash = request.params.messageHash;
       // Step 2: Sign messageHash to get the attestation (signature)
       const signature = await signMessage(signer, messageHash);
-      // Step 3: Call "setMessage" at the MessageTransmitter contract to send the attestation to the blockchain
-      const messageTransmitter = new ethers.Contract(
-        MESSAGE_TRANSMITTER_ADDRESS,
-        ["function setMessage(bytes32 messageHash, bytes signature)"],
-        signer
-      );
-      await messageTransmitter
-        .setMessage(messageHash, signature)
-        .then((tx) => tx.wait());
+      // // Step 3: Call "setMessage" at the MessageTransmitter contract to send the attestation to the blockchain
+      // const messageTransmitter = new ethers.Contract(
+      //   MESSAGE_TRANSMITTER_ADDRESS,
+      //   ["function setMessage(bytes32 messageHash, bytes signature)"],
+      //   signer
+      // );
+      // await messageTransmitter
+      //   .setMessage(messageHash, signature)
+      //   .then((tx) => tx.wait());
       // Step 4: Return the attestation (signature)
       return signature;
     },
