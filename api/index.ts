@@ -51,7 +51,10 @@ const bootServer = async () => {
         .setMessage(messageHash, signature)
         .then((tx) => tx.wait());
       // Step 4: Return the attestation (signature)
-      return signature;
+      return {
+        success: true,
+        signature,
+      };
     },
   });
 
