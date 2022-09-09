@@ -5,6 +5,8 @@ pragma solidity ^0.8.9;
 import {IAxelarGateway} from "./IAxelarGateway.sol";
 import {MessageTransmitter} from "./MessageTransmitter.sol";
 
+// This is not needed after chatting with sergey.
+// Will remove it later, when the decision doesn't change for awhile.
 abstract contract IAxelarExecutableUSDC {
     error NotApprovedByGateway();
     error NotApprovedByMessageTransmitter();
