@@ -49,7 +49,7 @@ const bootServer = async () => {
       );
       await messageTransmitter
         .setMessage(messageHash, signature)
-        .then((tx) => tx.wait());
+        .then((tx: any) => tx.wait());
       // Step 4: Return the attestation (signature)
       return {
         success: true,
