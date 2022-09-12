@@ -16,16 +16,10 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     error InsufficientInput();
     error TradeFailed();
 
-    event SwapSuccess(
-        bytes32 indexed traceId,
-        string indexed symbol,
-        uint256 amount,
-        bytes tradeData
-    );
+    event SwapSuccess(bytes32 indexed traceId, uint256 amount, bytes tradeData);
 
     event SwapFailed(
         bytes32 indexed traceId,
-        string indexed symbol,
         uint256 amount,
         address refundAddress
     );
@@ -64,7 +58,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
 
     modifier onlyValidChain(string memory _destinationChain) {
         require(
-            siblings[_destinationChain] != "",
+            siblings[_destinationChain] != address(0),
             "CircleSwapExecutable: invalid destination chain"
         );
         _;
@@ -73,10 +67,9 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     //Use this to register additional siblings. Siblings are used to send headers to as well as to know who to trust for headers.
     function addSibling(
         string memory chain_,
-        uint256 chainId,
-        string memory address_
+        uint32 chainId,
+        address address_
     ) external onlyOwner {
-        require(bytes(siblings[chain_]).length == 0, "SIBLING_EXISTS");
         siblings[chain_] = address_;
         destinationDomains[chain_] = chainId;
     }
@@ -206,6 +199,19 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     //         swapAmount
     //     );
     // }
+    function _trade(bytes memory tradeData1)
+        private
+        returns (uint256 amount, uint256 burnAmount)
+    {
+        uint256 preTradeBalance = tokenBalance(address(usdc));
+
+        (bool success, uint256 _amount) = _tradeSrc(tradeData1);
+        require(success, "TRADE_FAILED");
+
+        burnAmount = tokenBalance(address(usdc)) - preTradeBalance;
+
+        return (_amount, burnAmount);
+    }
 
     function nativeTradeSendTrade(
         string memory destinationChain,
@@ -215,12 +221,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         address fallbackRecipient,
         uint16 inputPos
     ) external payable onlyValidChain(destinationChain) {
-        uint256 preTradeBalance = tokenBalance(address(usdc));
-
-        (bool success, uint256 amount) = _tradeSrc(tradeData1);
-        require(success, "TRADE_FAILED");
-
-        uint256 burnAmount = tokenBalance(address(usdc)) - preTradeBalance;
+        (uint256 amount, uint256 burnAmount) = _trade(tradeData1);
         bool burnSuccess = circleBridge.depositForBurn(
             burnAmount,
             this.destinationDomains(destinationChain),
@@ -243,7 +244,6 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
 
     function nativeSendTrade(
         string memory destinationChain,
-        string memory symbol,
         uint256 amount,
         bytes memory tradeData,
         bytes32 traceId,
@@ -272,12 +272,11 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
 
     function _refund(
         bytes32 traceId,
-        string memory symbol,
         uint256 amount,
         address recipient
     ) internal returns (bool) {
-        _giveToken(symbol, amount, recipient);
-        emit SwapFailed(traceId, symbol, amount, recipient);
+        _giveToken(amount, recipient);
+        emit SwapFailed(traceId, amount, recipient);
         return false;
     }
 
@@ -290,7 +289,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     ) internal returns (bool) {
         address tokenAddressByPayload = abi.decode(tradeData, (address));
         if (tokenAddressByPayload != address(usdc))
-            return _refund(traceId, symbol, amount, fallbackRecipient);
+            return _refund(traceId, amount, fallbackRecipient);
 
         //This hack puts the amount in the correct position.
         assembly {
@@ -298,9 +297,9 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         }
 
         if (!_tradeDest(tradeData, amount))
-            return _refund(traceId, symbol, amount, fallbackRecipient);
+            return _refund(traceId, amount, fallbackRecipient);
 
-        emit SwapSuccess(traceId, symbol, amount, tradeData);
+        emit SwapSuccess(traceId, amount, tradeData);
         return true;
     }
 
@@ -319,7 +318,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
             bytes32 traceId,
             address fallbackRecipient,
             uint16 inputPos
-        ) = abi.decode(payload, (bytes, bytes32, address, uint16));
+        ) = abi.decode(payload, (bytes, uint256, bytes32, address, uint16));
         _receiveTrade(amount, data, traceId, fallbackRecipient, inputPos);
     }
 }
