@@ -1,9 +1,10 @@
 const { ethers } = require("ethers");
-const { privateKey } = require("secret.json");
+const { privateKey } = require("./secret.json");
 
 // Mocked the MessageTransmitter contract address
-const MESSAGE_TRANSMITTER_ADDRESS = "0x...";
-const CIRCLE_BRIDGE_ADDRESS = "0x...";
+const MESSAGE_TRANSMITTER_ADDRESS =
+  "0x45600eC9d7dA05050699d4B98d35EcfA886c9e67";
+const CIRCLE_BRIDGE_ADDRESS = "0x56766Ac03a2Ed19a302D11F22D6da20FF0bF6695";
 const signer = new ethers.Wallet(privateKey);
 const srcProvider = new ethers.providers.JsonRpcProvider(
   "wss://ropsten.infura.io/ws/v3/510b6d5b3c56497b8070626a54f565a9"
