@@ -1,7 +1,10 @@
 import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
+import "@nomiclabs/hardhat-ethers";
 import { HardhatUserConfig } from "hardhat/config";
 import { privateKey } from "./secret.json";
+import { Chain } from "./constants/chains";
+import "./tasks";
 
 const apiKey = {
   ETHERSCAN_API_KEY: "VCKWHFAA6M5AR8SFVXC43DEMEA8JN2H3WZ",
@@ -13,6 +16,7 @@ const apiKey = {
 
 const config: HardhatUserConfig = {
   solidity: "0.8.9",
+  defaultNetwork: Chain.AVALANCHE,
   networks: {
     ethereum: {
       chainId: 3,
