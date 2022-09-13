@@ -4,13 +4,13 @@ const { privateKey } = require("./secret.json");
 // Mocked the MessageTransmitter contract address
 const MESSAGE_TRANSMITTER_ADDRESS =
   "0x45600eC9d7dA05050699d4B98d35EcfA886c9e67";
-const CIRCLE_BRIDGE_ADDRESS = "0x56766Ac03a2Ed19a302D11F22D6da20FF0bF6695";
+const CIRCLE_BRIDGE_ADDRESS = "0x10c85E0D6e8aD1F71F0b9926f962e2f266d39a69";
 const signer = new ethers.Wallet(privateKey);
-const srcProvider = new ethers.providers.JsonRpcProvider(
-  "wss://ropsten.infura.io/ws/v3/510b6d5b3c56497b8070626a54f565a9"
+const srcProvider = new ethers.providers.WebSocketProvider(
+  "wss://api.avax-test.network/ext/bc/C/ws"
 );
 const destProvider = new ethers.providers.JsonRpcProvider(
-  "https://api.avax-test.network/ext/bc/C/rpc"
+  "https://rpc.api.moonbase.moonbeam.network"
 );
 
 // Step 1: Observe for the MessageSent event
@@ -22,11 +22,14 @@ const srcContract = new ethers.Contract(
 
 srcContract.on("MessageSent", async (message) => {
   // Step 2: Call the Attestation API to get the signature
+  console.log("Received message from Circle Bridge", message);
   const response = await fetch(
-    `http://localhost:4000/v1/attestation/${ethers.utils.solidityKeccak256(
-      message
+    `http://localhost:4000/v1/attestations/${ethers.utils.solidityKeccak256(
+      ["bytes"],
+      [message]
     )}`
   ).then((resp) => resp.json());
+  console.log("Attestation response", response);
   if (response.success) {
     const destContract = new ethers.Contract(
       MESSAGE_TRANSMITTER_ADDRESS,

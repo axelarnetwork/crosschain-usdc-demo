@@ -6,7 +6,8 @@ import { privateKey } from "./secret.json";
 const port = 4000;
 
 // Mocked the MessageTransmitter contract address
-const MESSAGE_TRANSMITTER_ADDRESS = "0x...";
+const MESSAGE_TRANSMITTER_ADDRESS =
+  "0x45600eC9d7dA05050699d4B98d35EcfA886c9e67";
 
 function signMessage(signer: Signer, messageHash: string) {
   return signer.signMessage(messageHash);
@@ -36,7 +37,10 @@ const bootServer = async () => {
     method: "GET",
     path: "/v1/attestations/{messageHash}",
     handler: async (request: any, h: any) => {
-      const signer = new ethers.Wallet(privateKey);
+      const destProvider = new ethers.providers.JsonRpcProvider(
+        "https://rpc.api.moonbase.moonbeam.network"
+      );
+      const signer = new ethers.Wallet(privateKey, destProvider);
       // Step 1: Get the message hash from the request
       const messageHash = request.params.messageHash;
       // Step 2: Sign messageHash to get the attestation (signature)
@@ -47,13 +51,13 @@ const bootServer = async () => {
         ["function setMessage(bytes32 messageHash, bytes signature)"],
         signer
       );
-      await messageTransmitter
-        .setMessage(messageHash, signature)
-        .then((tx: any) => tx.wait());
+      const tx = await messageTransmitter.setMessage(messageHash, signature);
       // Step 4: Return the attestation (signature)
+      console.log("setMessage", tx.hash);
       return {
         success: true,
         signature,
+        hash: tx.transactionHash,
       };
     },
   });
