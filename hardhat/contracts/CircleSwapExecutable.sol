@@ -208,9 +208,9 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         (bool success, uint256 _amount) = _tradeSrc(tradeData1);
         require(success, "TRADE_FAILED");
 
-        burnAmount = tokenBalance(address(usdc)) - preTradeBalance;
+        uint256 _burnAmount = tokenBalance(address(usdc)) - preTradeBalance;
 
-        return (_amount, burnAmount);
+        return (_amount, _burnAmount);
     }
 
     function nativeTradeSendTrade(

@@ -51,9 +51,11 @@ const bootServer = async () => {
         ["function setMessage(bytes32 messageHash, bytes signature)"],
         signer
       );
-      const tx = await messageTransmitter.setMessage(messageHash, signature);
+      const tx = await messageTransmitter
+        .setMessage(messageHash, signature)
+        .then((tx: any) => tx.wait());
       // Step 4: Return the attestation (signature)
-      console.log("setMessage", tx.hash);
+      console.log("setMessage", tx.transactionHash);
       return {
         success: true,
         signature,
