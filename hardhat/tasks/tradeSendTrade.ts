@@ -32,7 +32,7 @@ task(
     const tradeDataSrc = createSrcTradeData(
       [WRAPPED_NATIVE_ASSET[chainName], srcUsdcAddress],
       chainName,
-      deployer.address,
+      CIRCLE_SWAP_EXECUTABLE[chainName],
       subunitAmount
     );
     const tradeDataDest = createDestTradeData(
