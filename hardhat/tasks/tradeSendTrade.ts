@@ -26,6 +26,7 @@ task(
     const srcUsdcAddress = USDC[chainName];
     const destUsdcAddress = USDC[destinationChain];
     const subunitAmount = ethers.utils.parseEther(amount);
+    const gasCost = ethers.utils.parseEther("0.01");
 
     // Step 1: Create the tradeData for the trade
     const tradeDataSrc = createSrcTradeData(
@@ -52,6 +53,7 @@ task(
       circleSwapExecutableAbi,
       deployer
     );
+
     const tx = await contract
       .nativeTradeSendTrade(
         destinationChain,
@@ -61,7 +63,7 @@ task(
         fallbackRecipient,
         inputPos,
         {
-          value: subunitAmount,
+          value: subunitAmount.add(gasCost),
         }
       )
       .then((tx: any) => tx.wait());
