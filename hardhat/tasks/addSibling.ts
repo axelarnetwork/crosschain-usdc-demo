@@ -9,7 +9,7 @@ task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
     const { siblingChain } = taskArgs;
     const ethers = hre.ethers;
     const [deployer] = await ethers.getSigners();
-    const chainId = await hre.getChainId();
+    const chainId = hre.config.networks[siblingChain].chainId;
     const chainName = hre.network.name as Chain;
     const siblingChainName = siblingChain as Chain;
 
