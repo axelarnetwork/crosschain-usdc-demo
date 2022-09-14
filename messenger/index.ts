@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
-import { privateKey } from "./secret.json";
+import ora from "ora";
 import { fetch } from "cross-fetch";
+import { privateKey } from "./secret.json";
 import { Chain } from "./constants/chains";
 import { RPC, WSS } from "./constants/rpc";
 import { CIRCLE_BRIDGE, MESSAGE_TRANSMITTER } from "./constants/address";
@@ -10,6 +11,21 @@ const supportedChains = [Chain.AVALANCHE, Chain.FANTOM];
 if (supportedChains.length > 2) {
   console.log("Only two chains are supported");
   process.exit(0);
+}
+
+function leadingZero(num: number) {
+  return num < 10 ? `0${num}` : num;
+}
+
+function getDateTime() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = leadingZero(now.getMonth() + 1);
+  const day = leadingZero(now.getDate());
+  const hour = leadingZero(now.getHours());
+  const minute = leadingZero(now.getMinutes());
+  const second = leadingZero(now.getSeconds());
+  return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
 for (const chain of supportedChains) {
@@ -30,14 +46,25 @@ for (const chain of supportedChains) {
 
   srcContract.on("MessageSent", async (message) => {
     // Step 2: Call the Attestation API to get the signature
-    console.log("Received message from Circle Bridge", message);
+    console.log(""); // Add a new line
+    ora({
+      prefixText: `[${getDateTime()}]`,
+    })
+      .start()
+      .succeed(`Received message from Circle Bridge on ${chain}: ` + message);
+    const oraApiCall = ora("Waiting Attestation API").start();
     const response = await fetch(
       `http://localhost:4000/v1/attestations/${destChain}/${ethers.utils.solidityKeccak256(
         ["bytes"],
         [message]
       )}`
-    ).then((resp) => resp.json());
-    console.log("Attestation response", response);
+    )
+      .then((resp) => resp.json())
+      .catch((err: any) => {
+        oraApiCall.fail("Error fetching attestation: " + err.message);
+      });
+    oraApiCall.prefixText = `[${getDateTime()}]`;
+    oraApiCall.succeed("Received Attestation API response: " + response.hash);
     if (response.success) {
       const destContract = new ethers.Contract(
         messageTransmitterAddress,
@@ -48,14 +75,17 @@ for (const chain of supportedChains) {
       const signature = response.signature;
 
       // Step 3: Call the receiveMessage function with the signature
+      const oraTx = ora(
+        `Calling 'receiveMessage' function on ${destChain}`
+      ).start();
       const tx = await destContract
         .receiveMessage(message, signature)
-        .then((tx: any) => tx.wait());
-
-      console.log(
-        "Message received on the destination chain:",
-        tx.transactionHash
-      );
+        .then((tx: any) => tx.wait())
+        .catch((e: any) => {
+          oraTx.fail("Error calling 'receiveMessage' function: " + e.message);
+        });
+      oraTx.prefixText = `[${getDateTime()}]`;
+      oraTx.succeed("Transaction successful: " + tx.transactionHash);
     }
   });
 }

@@ -1,7 +1,7 @@
 {
   "name": "messenger",
   "version": "1.0.0",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
     "start": "ts-node index.ts"
   },
@@ -10,7 +10,8 @@
   "description": "",
   "dependencies": {
     "cross-fetch": "^3.1.5",
-    "ethers": "^5.7.0"
+    "ethers": "^5.7.0",
+    "ora": "5.4.1"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
