@@ -36,7 +36,7 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       chainId: 80001,
-      url: " https://rpc-mumbai.maticvigil.com/", // polygon mumbai testnet rpc
+      url: "https://rpc-mumbai.maticvigil.com/", // polygon mumbai testnet rpc
       accounts: [privateKey],
     },
     fantom: {

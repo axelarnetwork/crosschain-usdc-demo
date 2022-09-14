@@ -7,7 +7,7 @@ const port = 4000;
 
 // Mocked the MessageTransmitter contract address
 const MESSAGE_TRANSMITTER_ADDRESS =
-  "0x45600eC9d7dA05050699d4B98d35EcfA886c9e67";
+  "0x3cC062d269169FF4f4Ae6876db7da1DAfB454952";
 
 function signMessage(signer: Signer, messageHash: string) {
   return signer.signMessage(messageHash);
@@ -38,7 +38,7 @@ const bootServer = async () => {
     path: "/v1/attestations/{messageHash}",
     handler: async (request: any, h: any) => {
       const destProvider = new ethers.providers.JsonRpcProvider(
-        "https://rpc.api.moonbase.moonbeam.network"
+        "https://rpc.testnet.fantom.network"
       );
       const signer = new ethers.Wallet(privateKey, destProvider);
       // Step 1: Get the message hash from the request

@@ -16,7 +16,12 @@ task(
     const chainName = hre.network.name as Chain;
     const routerAddress = ROUTER[chainName];
     const [deployer] = await ethers.getSigners();
-    if (chainName !== Chain.MOONBEAM && chainName !== Chain.AVALANCHE) return;
+    if (
+      chainName !== Chain.MOONBEAM &&
+      chainName !== Chain.AVALANCHE &&
+      chainName !== Chain.FANTOM
+    )
+      return;
     const tokenAddress = USDC[chainName];
 
     const isPangolin =

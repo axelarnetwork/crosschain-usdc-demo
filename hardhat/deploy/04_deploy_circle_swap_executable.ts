@@ -1,7 +1,11 @@
 import { DeployFunction, DeployResult } from "hardhat-deploy/dist/types";
 import { deployments } from "hardhat";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { GAS_RECEIVER, GATEWAY } from "../constants/address";
+import {
+  GAS_RECEIVER,
+  GATEWAY,
+  WRAPPED_NATIVE_ASSET,
+} from "../constants/address";
 import { Chain } from "../constants/chains";
 
 const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
@@ -15,6 +19,7 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     GAS_RECEIVER[chainName],
     usdc.address,
     circleBridge.address,
+    WRAPPED_NATIVE_ASSET[chainName],
   ];
   const result: DeployResult = await deploy("CircleSwapExecutable", {
     from: deployer,

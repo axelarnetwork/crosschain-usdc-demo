@@ -14,19 +14,31 @@ task(
   "call tradeSendTrade function on the CircleSwapExecutable contract"
 )
   .addPositionalParam("amount")
+  .addPositionalParam("destinationChain")
   .setAction(async (taskArgs, hre) => {
-    const { amount } = taskArgs;
+    const { amount, destinationChain } = taskArgs;
     const chainName = hre.network.name as Chain;
-    if (chainName !== Chain.MOONBEAM && chainName !== Chain.AVALANCHE) return;
-    const destinationChain =
-      chainName === Chain.MOONBEAM ? Chain.AVALANCHE : Chain.MOONBEAM;
+    const destinationChainName = destinationChain as Chain;
+    if (
+      chainName !== Chain.MOONBEAM &&
+      chainName !== Chain.AVALANCHE &&
+      chainName !== Chain.FANTOM
+    )
+      return;
+    if (
+      destinationChainName !== Chain.MOONBEAM &&
+      destinationChainName !== Chain.AVALANCHE &&
+      destinationChainName !== Chain.FANTOM
+    )
+      return;
+
     const ethers = hre.ethers;
     const [deployer] = await ethers.getSigners();
 
     const srcUsdcAddress = USDC[chainName];
-    const destUsdcAddress = USDC[destinationChain];
+    const destUsdcAddress = USDC[destinationChainName];
     const subunitAmount = ethers.utils.parseEther(amount);
-    const gasCost = ethers.utils.parseEther("0.01");
+    const gasCost = ethers.utils.parseEther("0.1");
 
     // Step 1: Create the tradeData for the trade
     const tradeDataSrc = createSrcTradeData(
@@ -36,10 +48,10 @@ task(
       subunitAmount
     );
     const tradeDataDest = createDestTradeData(
-      [destUsdcAddress, WRAPPED_NATIVE_ASSET[destinationChain]],
-      destinationChain,
+      [destUsdcAddress, WRAPPED_NATIVE_ASSET[destinationChainName]],
+      destinationChainName,
       deployer.address,
-      subunitAmount,
+      "1",
       destUsdcAddress
     );
     const traceId = ethers.utils.id(uuidv4());
@@ -56,7 +68,7 @@ task(
 
     const tx = await contract
       .nativeTradeSendTrade(
-        destinationChain,
+        destinationChainName,
         tradeDataSrc,
         tradeDataDest,
         traceId,

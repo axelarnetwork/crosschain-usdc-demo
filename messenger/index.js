@@ -3,14 +3,14 @@ const { privateKey } = require("./secret.json");
 
 // Mocked the MessageTransmitter contract address
 const MESSAGE_TRANSMITTER_ADDRESS =
-  "0x45600eC9d7dA05050699d4B98d35EcfA886c9e67";
+  "0x3cC062d269169FF4f4Ae6876db7da1DAfB454952";
 const CIRCLE_BRIDGE_ADDRESS = "0x10c85E0D6e8aD1F71F0b9926f962e2f266d39a69";
 const signer = new ethers.Wallet(privateKey);
 const srcProvider = new ethers.providers.WebSocketProvider(
   "wss://api.avax-test.network/ext/bc/C/ws"
 );
 const destProvider = new ethers.providers.JsonRpcProvider(
-  "https://rpc.api.moonbase.moonbeam.network"
+  "https://rpc.testnet.fantom.network"
 );
 
 // Step 1: Observe for the MessageSent event

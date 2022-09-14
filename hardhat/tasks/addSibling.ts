@@ -13,10 +13,16 @@ task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
     const chainName = hre.network.name as Chain;
     const siblingChainName = siblingChain as Chain;
 
-    if (chainName !== Chain.MOONBEAM && chainName !== Chain.AVALANCHE) return;
+    if (
+      chainName !== Chain.MOONBEAM &&
+      chainName !== Chain.AVALANCHE &&
+      chainName !== Chain.FANTOM
+    )
+      return;
     if (
       siblingChainName !== Chain.MOONBEAM &&
-      siblingChainName !== Chain.AVALANCHE
+      siblingChainName !== Chain.AVALANCHE &&
+      siblingChainName !== Chain.FANTOM
     )
       return;
     if (!CIRCLE_SWAP_EXECUTABLE[siblingChainName]) return;

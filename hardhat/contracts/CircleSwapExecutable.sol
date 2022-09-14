@@ -34,6 +34,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
 
     IAxelarGasService immutable gasReceiver;
     USDC public usdc;
+    address public wrappedNativeToken;
     CircleBridge public circleBridge;
 
     // destination chain name => destination contract address
@@ -46,11 +47,13 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         address _gateway,
         address _gasReceiver,
         address _usdc,
-        address _circleBridge
+        address _circleBridge,
+        address _wrappedNativeAddress
     ) IAxelarForecallable(_gateway) Ownable() {
         gasReceiver = IAxelarGasService(_gasReceiver);
         usdc = USDC(_usdc);
         circleBridge = CircleBridge(_circleBridge);
+        wrappedNativeToken = _wrappedNativeAddress;
     }
 
     // Prevent accidentally call, which leds to nobody is able to call `addSibling`.
@@ -157,48 +160,6 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         return IERC20(tokenAddress).balanceOf(address(this));
     }
 
-    // function sendTrade(
-    //     string memory destinationChain,
-    //     string memory symbol,
-    //     uint256 amount,
-    //     bytes memory tradeData,
-    //     bytes32 traceId,
-    //     address fallbackRecipient,
-    //     uint16 inputPos
-    // ) external payable {
-    //     address token = gateway.tokenAddresses(symbol);
-    //     IERC20(token).transferFrom(msg.sender, address(this), amount);
-    //     _nativeSendTrade(
-    //         destinationChain,
-    //         amount,
-    //         amount,
-    //         tradeData,
-    //         traceId,
-    //         fallbackRecipient,
-    //         inputPos
-    //     );
-    // }
-
-    // function tradeSend(
-    //     string memory destinationChain,
-    //     string memory destinationAddress,
-    //     string memory symbol,
-    //     bytes memory tradeData
-    // ) external payable {
-    //     address tokenAddress = gateway.tokenAddresses(symbol);
-    //     uint256 preTradeBalance = tokenBalance(tokenAddress);
-
-    //     require(_tradeSrc(tradeData), "TRADE_FAILED");
-
-    //     uint256 swapAmount = tokenBalance(tokenAddress) - preTradeBalance;
-    //     IERC20(tokenAddress).approve(address(gateway), swapAmount);
-    //     gateway.sendToken(
-    //         destinationChain,
-    //         destinationAddress,
-    //         symbol,
-    //         swapAmount
-    //     );
-    // }
     function _trade(bytes memory tradeData1)
         private
         returns (uint256 amount, uint256 burnAmount)
