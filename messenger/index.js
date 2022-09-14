@@ -1,6 +1,6 @@
 const { ethers } = require("ethers");
 const { privateKey } = require("./secret.json");
-
+const { fetch } = require("cross-fetch");
 // Mocked the MessageTransmitter contract address
 const MESSAGE_TRANSMITTER_ADDRESS =
   "0x3cC062d269169FF4f4Ae6876db7da1DAfB454952";
