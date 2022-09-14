@@ -4,10 +4,15 @@ import {
   USDC,
   WRAPPED_NATIVE_ASSET,
 } from "../constants/address";
-import { Chain } from "../constants/chains";
+import { NativeToken, Chain } from "../constants/chains";
 import circleSwapExecutableAbi from "./abi/circleSwapExecutable.json";
 import { createDestTradeData, createSrcTradeData } from "./utils/contract";
 import { v4 as uuidv4 } from "uuid";
+import {
+  AxelarQueryAPI,
+  Environment,
+  EvmChain,
+} from "@axelar-network/axelarjs-sdk";
 
 task(
   "tradeSendTrade",
@@ -32,13 +37,23 @@ task(
     )
       return;
 
+    const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
+    const gasFee = await api.estimateGasFee(
+      chainName as unknown as EvmChain,
+      destinationChainName as unknown as EvmChain,
+      NativeToken[chainName]
+    );
     const ethers = hre.ethers;
+    console.log(
+      `Total fee for ${chainName} to ${destinationChainName}:`,
+      ethers.utils.formatEther(gasFee),
+      NativeToken[chainName]
+    );
     const [deployer] = await ethers.getSigners();
 
     const srcUsdcAddress = USDC[chainName];
     const destUsdcAddress = USDC[destinationChainName];
     const subunitAmount = ethers.utils.parseEther(amount);
-    const gasCost = ethers.utils.parseEther("0.1");
 
     // Step 1: Create the tradeData for the trade
     const tradeDataSrc = createSrcTradeData(
@@ -75,7 +90,7 @@ task(
         fallbackRecipient,
         inputPos,
         {
-          value: subunitAmount.add(gasCost),
+          value: subunitAmount.add(gasFee),
         }
       )
       .then((tx: any) => tx.wait());
