@@ -4,6 +4,7 @@ import { fetch } from "cross-fetch";
 import { privateKey } from "./secret.json";
 import { Chain } from "./constants/chains";
 import { RPC, WSS } from "./constants/rpc";
+import chalk from "chalk";
 import { CIRCLE_BRIDGE, MESSAGE_TRANSMITTER } from "./constants/address";
 
 // Mocked the MessageTransmitter contract address
@@ -28,6 +29,13 @@ function getDateTime() {
   return `${year}-${month}-${day} ${hour}:${minute}:${second}`;
 }
 
+const colorMessage = chalk.cyanBright("message");
+const colorAttestation = chalk.cyanBright("attestation");
+const colorCircleBridge = chalk.yellowBright("CircleBridge");
+const colorAttestationApi = chalk.yellowBright("Attestation API");
+const colorReceiveMessage = chalk.whiteBright("receiveMessage");
+const colorMessageTransmitter = chalk.yellowBright("MessageTransmitter");
+
 for (const chain of supportedChains) {
   const destChain = supportedChains.find((c) => c !== chain);
   if (!destChain) continue;
@@ -51,8 +59,11 @@ for (const chain of supportedChains) {
       prefixText: `[${getDateTime()}]`,
     })
       .start()
-      .succeed(`Received message from Circle Bridge on ${chain}: ` + message);
-    const oraApiCall = ora("Waiting Attestation API").start();
+      .succeed(
+        `Received ${colorMessage} from the ${colorCircleBridge} contract on ${chain}: ` +
+          chalk.green(message)
+      );
+    const oraApiCall = ora("Waiting for Attestation API response").start();
     const response = await fetch(
       `http://localhost:4000/v1/attestations/${destChain}/${ethers.utils.solidityKeccak256(
         ["bytes"],
@@ -61,10 +72,15 @@ for (const chain of supportedChains) {
     )
       .then((resp) => resp.json())
       .catch((err: any) => {
-        oraApiCall.fail("Error fetching attestation: " + err.message);
+        oraApiCall.fail(
+          "Error fetching attestation: " + chalk.redBright(err.message)
+        );
       });
     oraApiCall.prefixText = `[${getDateTime()}]`;
-    oraApiCall.succeed("Received Attestation API response: " + response.hash);
+    oraApiCall.succeed(
+      `Received ${colorAttestation} from the ${colorAttestationApi}: ` +
+        chalk.green(response.signature)
+    );
     if (response.success) {
       const destContract = new ethers.Contract(
         messageTransmitterAddress,
@@ -76,16 +92,22 @@ for (const chain of supportedChains) {
 
       // Step 3: Call the receiveMessage function with the signature
       const oraTx = ora(
-        `Calling 'receiveMessage' function on ${destChain}`
+        `Calling ${colorReceiveMessage} function on ${destChain}`
       ).start();
       const tx = await destContract
         .receiveMessage(message, signature)
         .then((tx: any) => tx.wait())
         .catch((e: any) => {
-          oraTx.fail("Error calling 'receiveMessage' function: " + e.message);
+          oraTx.fail(
+            "Error calling 'receiveMessage' function: " +
+              chalk.redBright(e.message)
+          );
         });
       oraTx.prefixText = `[${getDateTime()}]`;
-      oraTx.succeed("Transaction successful: " + tx.transactionHash);
+      oraTx.succeed(
+        `Sent "${colorReceiveMessage}(${colorMessage},${colorAttestation})" tx on ${destChain}: ` +
+          chalk.greenBright(tx.transactionHash)
+      );
     }
   });
 }
