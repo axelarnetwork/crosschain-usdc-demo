@@ -24,14 +24,8 @@ task(
     const { amount, destinationChain } = taskArgs;
     const chainName = hre.network.name as Chain;
     const destinationChainName = destinationChain as Chain;
+    if (chainName !== Chain.AVALANCHE && chainName !== Chain.FANTOM) return;
     if (
-      chainName !== Chain.MOONBEAM &&
-      chainName !== Chain.AVALANCHE &&
-      chainName !== Chain.FANTOM
-    )
-      return;
-    if (
-      destinationChainName !== Chain.MOONBEAM &&
       destinationChainName !== Chain.AVALANCHE &&
       destinationChainName !== Chain.FANTOM
     )
@@ -94,5 +88,9 @@ task(
         }
       )
       .then((tx: any) => tx.wait());
-    console.log("Transaction Hash:", tx.transactionHash);
+
+    console.log(
+      "Tracking at Axelarscan:",
+      "https://testnet.axelarscan.io/gmp/" + tx.transactionHash
+    );
   });
