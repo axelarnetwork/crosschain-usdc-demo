@@ -35,6 +35,7 @@ const colorCircleBridge = chalk.yellowBright("CircleBridge");
 const colorAttestationApi = chalk.yellowBright("Attestation API");
 const colorReceiveMessage = chalk.whiteBright("receiveMessage");
 const colorMessageTransmitter = chalk.yellowBright("MessageTransmitter");
+const colorUSDC = chalk.whiteBright("USDC");
 
 for (const chain of supportedChains) {
   const destChain = supportedChains.find((c) => c !== chain);
@@ -104,9 +105,22 @@ for (const chain of supportedChains) {
           );
         });
       oraTx.prefixText = `[${getDateTime()}]`;
+
+      const [, , , messageBody] = ethers.utils.defaultAbiCoder.decode(
+        ["uint32", "uint64", "address", "bytes"],
+        message
+      );
+      const [amount, _recipient] = ethers.utils.defaultAbiCoder.decode(
+        ["uint256", "bytes32"],
+        messageBody
+      );
+      const colorRecipient = chalk.greenBright("0x" + _recipient.slice(-40));
+      const colorAmount = chalk.cyanBright(ethers.utils.formatUnits(amount, 6));
+
       oraTx.succeed(
-        `Sent "${colorReceiveMessage}(${colorMessage},${colorAttestation})" tx on ${destChain}: ` +
-          chalk.greenBright(tx.transactionHash)
+        `Sent "${colorReceiveMessage}(${colorMessage},${colorAttestation})" tx to the ${colorMessageTransmitter} contract on ${destChain}: ` +
+          chalk.greenBright(tx.transactionHash) +
+          ` which means ${colorAmount} ${colorUSDC} has been minted to the recipient ${colorRecipient}`
       );
     }
   });
