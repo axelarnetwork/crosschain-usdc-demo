@@ -10,6 +10,16 @@
         "internalType": "address",
         "name": "_gasReceiver",
         "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_usdc",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "_circleBridge",
+        "type": "address"
       }
     ],
     "stateMutability": "nonpayable",
@@ -74,12 +84,6 @@
         "type": "bytes32"
       },
       {
-        "indexed": true,
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
@@ -109,12 +113,6 @@
         "internalType": "bytes32",
         "name": "payloadHash",
         "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
       },
       {
         "indexed": false,
@@ -148,12 +146,6 @@
         "type": "bytes32"
       },
       {
-        "indexed": true,
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
@@ -177,14 +169,75 @@
         "type": "string"
       },
       {
-        "internalType": "string",
+        "internalType": "uint32",
+        "name": "chainId",
+        "type": "uint32"
+      },
+      {
+        "internalType": "address",
         "name": "address_",
-        "type": "string"
+        "type": "address"
       }
     ],
     "name": "addSibling",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "",
+        "type": "bytes"
+      }
+    ],
+    "name": "amountPostFee",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "circleBridge",
+    "outputs": [
+      {
+        "internalType": "contract CircleBridge",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "destinationDomains",
+    "outputs": [
+      {
+        "internalType": "uint32",
+        "name": "",
+        "type": "uint32"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -333,35 +386,10 @@
     "type": "function"
   },
   {
-    "inputs": [],
-    "name": "owner",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
-    "name": "renounceOwnership",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
     "inputs": [
       {
         "internalType": "string",
         "name": "destinationChain",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
         "type": "string"
       },
       {
@@ -390,54 +418,7 @@
         "type": "uint16"
       }
     ],
-    "name": "sendTrade",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "name": "siblings",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "destinationChain",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "destinationAddress",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "tradeData",
-        "type": "bytes"
-      }
-    ],
-    "name": "tradeSend",
+    "name": "nativeSendTrade",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
@@ -447,11 +428,6 @@
       {
         "internalType": "string",
         "name": "destinationChain",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "symbol",
         "type": "string"
       },
       {
@@ -480,9 +456,48 @@
         "type": "uint16"
       }
     ],
-    "name": "tradeSendTrade",
+    "name": "nativeTradeSendTrade",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "owner",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "name": "siblings",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
@@ -496,6 +511,19 @@
     "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "usdc",
+    "outputs": [
+      {
+        "internalType": "contract USDC",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ]
