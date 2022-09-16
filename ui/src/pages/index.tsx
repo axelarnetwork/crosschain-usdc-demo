@@ -66,7 +66,6 @@ const Home: NextPage = () => {
               <div>
                 <swap.TokenInput
                   label="Send"
-                  className="mt-2"
                   modalKey={TokenInputModalKey.ModalTokenInput}
                   selectedToken={srcToken}
                 />
@@ -100,7 +99,6 @@ const Home: NextPage = () => {
               <div>
                 <swap.TokenInput
                   label="Receive"
-                  className="mt-2"
                   modalKey={TokenInputModalKey.ModalTokenOutput}
                   selectedToken={destToken}
                 />

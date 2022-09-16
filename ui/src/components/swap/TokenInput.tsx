@@ -20,7 +20,7 @@ export const TokenInput: FunctionComponent<TokenInputProps> = ({
     <label
       // htmlFor={modalKey}
       className={cn(
-        "flex items-center px-3 py-2 text-xs border-2 border-[#282B3D] rounded-xl text-[#93BEFF] cursor-not-allowed"
+        `flex items-center w-32 px-3 py-2 text-xs border-2 border-[#282B3D] rounded-xl text-[#93BEFF] cursor-not-allowed ${className}`
         // {
         //   "border-[#6700DD]": selectedToken,
         // }
