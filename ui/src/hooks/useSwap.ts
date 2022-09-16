@@ -13,11 +13,7 @@ import useCrosschainToken from "./useCrosschainToken";
 import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
 import { useContract, useSigner } from "wagmi";
 import { v4 as uuidv4 } from "uuid";
-import {
-  createDestTradeData,
-  createPayloadHash,
-  createSrcTradeData,
-} from "utils/contract";
+import { createDestTradeData, createSrcTradeData } from "utils/contract";
 import gatewayAbi from "abi/axelarGateway.json";
 import { SquidChain } from "types/chain";
 import { Token } from "types/token";
@@ -71,12 +67,12 @@ const useSwap = () => {
       destCrosschainToken.address
     );
 
-    const payloadHash = createPayloadHash(
-      destTradeData,
-      traceId,
-      recipientAddress,
-      AMOUNT_INPUT_POS
-    );
+    // const payloadHash = createPayloadHash(
+    //   destTradeData,
+    //   traceId,
+    //   recipientAddress,
+    //   AMOUNT_INPUT_POS
+    // );
 
     const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
     const gasFee = await api.estimateGasFee(
@@ -97,7 +93,7 @@ const useSwap = () => {
       }
     );
 
-    return { tx, traceId, payloadHash };
+    return { tx, traceId };
   }, [
     amount,
     destChain,
@@ -122,12 +118,12 @@ const useSwap = () => {
       0,
       destCrosschainToken.address
     );
-    const payloadHash = createPayloadHash(
-      tradeData,
-      traceId,
-      recipientAddress,
-      AMOUNT_INPUT_POS
-    );
+    // const payloadHash = createPayloadHash(
+    //   tradeData,
+    //   traceId,
+    //   recipientAddress,
+    //   AMOUNT_INPUT_POS
+    // );
 
     const tx = await contract.sendTrade(
       destChain.name,
@@ -141,7 +137,7 @@ const useSwap = () => {
         value: ethers.utils.parseEther("0.01"),
       }
     );
-    return { tx, payloadHash, traceId };
+    return { tx, traceId };
   }, [
     amount,
     srcToken?.decimals,

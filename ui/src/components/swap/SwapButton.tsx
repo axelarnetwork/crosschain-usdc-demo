@@ -49,14 +49,10 @@ export const SwapButton: FunctionComponent<SwapButtonProps> = ({
 
     const result = await swapFn().catch((e) => setLoading(false));
     if (result) {
-      const { tx, traceId, payloadHash } = result;
+      const { tx, traceId } = result;
       if (tx) {
-        dispatch(setSrcTx({ txHash: tx.hash, payloadHash, traceId }));
-        if (payloadHash) {
-          push(`/tx/swap/${srcChain.name}/${tx.hash}`);
-        } else {
-          push(`/tx/send/${srcChain.name}/${tx.hash}`);
-        }
+        dispatch(setSrcTx({ txHash: tx.hash, traceId }));
+        push(`/tx/swap/${srcChain.name}/${tx.hash}`);
       }
     }
 

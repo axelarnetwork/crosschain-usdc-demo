@@ -114,14 +114,15 @@ function getAbi(chain: string) {
 
 export function createPayloadHash(
   tradeData: string,
+  amount: ethers.BigNumberish,
   traceId: string,
   recipientAddress: string,
   inputPos: number
 ) {
   return ethers.utils.keccak256(
     ethers.utils.defaultAbiCoder.encode(
-      ["bytes", "bytes32", "address", "uint16"],
-      [tradeData, traceId, recipientAddress, inputPos]
+      ["bytes", "uint256", "bytes32", "address", "uint16"],
+      [tradeData, amount, traceId, recipientAddress, inputPos]
     )
   );
 }
@@ -156,19 +157,13 @@ export const getSwapPendingEvent = (
 ) => {
   const eventLogs = txReceipt.logs;
   const swapPendingEventId = ethers.utils.id(
-    "SwapPending(bytes32,bytes32,string,uint256,string,bytes)"
+    "SwapPending(bytes32,bytes32,uint256,string,bytes)"
   );
   for (const log of eventLogs) {
     if (log.topics[0] === swapPendingEventId) {
       const swapPendingEvent = contract.interface.parseLog(log);
-      const [
-        traceId,
-        payloadHash,
-        symbol,
-        amount,
-        destinationChainName,
-        payload,
-      ] = swapPendingEvent.args;
+      const [traceId, payloadHash, amount, destinationChainName, payload] =
+        swapPendingEvent.args;
 
       const destChain = chains.find(
         (chain) =>
@@ -177,7 +172,6 @@ export const getSwapPendingEvent = (
 
       return {
         traceId,
-        symbol,
         amount: amount.toString(),
         destChain,
         payload,

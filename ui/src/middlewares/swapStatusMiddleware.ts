@@ -12,6 +12,7 @@ import {
   setDestSwapTx,
   setSrcTx,
   setDestApprovalTx,
+  setPayloadHash,
 } from "slices/swapStatusSlice";
 import { ethers } from "ethers";
 import { getProvider } from "utils/provider";
@@ -64,19 +65,16 @@ swapStatusStartListening({
     const swapPendingEvent = getSwapPendingEvent(contract, srcTxReceipt);
 
     if (swapPendingEvent) {
-      const { traceId, symbol, destChain, payloadHash } = swapPendingEvent;
+      const { traceId, destChain, payloadHash } = swapPendingEvent;
 
       const srcTokens = selectTokensByChainId(state, srcChain.id);
-      const srcToken = srcTokens?.find(
-        (token) => token.symbol === symbol
-      ) as Token;
+      const srcToken = srcTokens?.find((token) => !token.crosschain) as Token;
 
       dispatch(setSrcToken(srcToken));
       dispatch(setSrcChain(srcChain));
       dispatch(setDestChain(destChain as SquidChain));
 
       const swapStatusData = await fetchSwapStatus(txHash);
-      console.log(swapStatusData);
       if (!swapStatusData) return;
 
       const approveData = swapStatusData.approved;
@@ -114,9 +112,7 @@ swapStatusStartListening({
       } else if (swapStatusData.status === "approved") dispatch(setStep(2));
 
       const destTokens = selectTokensByChainId(state, destChain?.id);
-      const destToken = destTokens?.find(
-        (token) => token.symbol !== symbol
-      ) as Token;
+      const destToken = destTokens?.find((token) => !token.crosschain) as Token;
       dispatch(setDestToken(destToken));
       dispatch(
         setSrcTx({
@@ -135,12 +131,10 @@ swapStatusStartListening({
     const srcToken = currentState.swapInputs.srcToken;
     const destToken = currentState.swapInputs.destToken;
     const destChain = currentState.swapInputs.destChain;
-    const payloadHash = currentState.swapStatus.payloadHash;
     const step = currentState.swapStatus.step;
 
     if (!srcToken) return false;
     if (!destToken) return false;
-    if (!payloadHash) return false;
 
     return (
       action.type === setSrcTx.type &&
@@ -153,15 +147,25 @@ swapStatusStartListening({
     const srcChain = state.swapInputs.srcChain;
     const destChain = state.swapInputs.destChain;
     const srcTxHash = state.swapStatus.srcTx;
-    const payloadHash = state.swapStatus.payloadHash;
-    if (!srcChain || !destChain || !payloadHash || !srcTxHash) return;
+    if (!srcChain || !destChain || !srcTxHash) return;
     const srcProvider = getProvider(srcChain);
     const destProvider = getProvider(destChain);
 
     listenerApi.dispatch(setChain(srcChain.name));
 
-    await srcProvider.waitForTransaction(srcTxHash, 1);
+    const srcTxReceipt = await srcProvider.waitForTransaction(srcTxHash, 1);
     listenerApi.dispatch(setStep(1));
+
+    // Fetch payload hash from source tx receipt
+    const contract = new ethers.Contract(
+      srcChain.swapExecutorAddress,
+      squidSwapExecutableAbi,
+      srcProvider
+    );
+    const pendingEvent = getSwapPendingEvent(contract, srcTxReceipt);
+    if (!pendingEvent) return;
+    const payloadHash = pendingEvent.payloadHash;
+    listenerApi.dispatch(setPayloadHash(payloadHash));
 
     // wait for relay tx
     const gatewayContract = new ethers.Contract(
@@ -169,7 +173,7 @@ swapStatusStartListening({
       gatewayAbi,
       destProvider
     );
-    const eventFilter = gatewayContract.filters.ContractCallApprovedWithMint(
+    const eventFilter = gatewayContract.filters.ContractCallApproved(
       null,
       null,
       null,
