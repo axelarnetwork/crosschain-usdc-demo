@@ -40,7 +40,7 @@ contract CircleBridge is Ownable {
      * @notice Emitted when a new message is dispatched
      * @param message Raw bytes of message
      */
-    event MessageSent(bytes message);
+    event MessageSent(bytes indexed message);
 
     /**
     * @param _amount amount of tokens to burn
