@@ -111,6 +111,13 @@ async function fetchTokenInfo(
 
   const nativeBalanceRequest = await provider.getBalance(ownerAddress);
   balances[ethers.constants.AddressZero] = nativeBalanceRequest.toString();
+  approvals[ethers.constants.AddressZero] = [];
+  for (const spenderAddress of spenderAddresses) {
+    approvals[ethers.constants.AddressZero].push({
+      spender: spenderAddress,
+      allowance: ethers.constants.MaxUint256.toString(),
+    });
+  }
 
   const tokenInfos = tokenAddresses.map((address) => ({
     address,
