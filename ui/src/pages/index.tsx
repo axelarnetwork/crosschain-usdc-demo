@@ -1,13 +1,5 @@
 import { InputContainer } from "components/swap";
-import {
-  SwapButton,
-  AmountInput,
-  TokenInput,
-  AddressInput,
-  ApproveButton,
-  ChainInput,
-  SwapContainer,
-} from "components/swap";
+import * as swap from "components/swap";
 import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import type { NextPage } from "next";
 import {
@@ -16,6 +8,8 @@ import {
   selectDestToken,
   selectSrcChain,
   selectSrcToken,
+  setDestToken,
+  setSrcToken,
 } from "slices/swapInputSlice";
 import { useEffect } from "react";
 import useAmountValidator from "hooks/useAmountValidator";
@@ -25,6 +19,7 @@ import { SwapEstimator } from "components/swap";
 import { TokenInputModalKey, ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
+import useTokens from "hooks/useTokens";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -33,6 +28,8 @@ const Home: NextPage = () => {
   const srcToken = useAppSelector(selectSrcToken);
   const destChain = useAppSelector(selectDestChain);
   const destToken = useAppSelector(selectDestToken);
+  const srcTokens = useTokens(srcChain);
+  const destTokens = useTokens(destChain);
   const isRequiredApproval = useApproveChecker();
   const amountValidation = useAmountValidator(amount, srcToken);
 
@@ -41,10 +38,15 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     dispatch(resetSwapStatus());
-  }, [dispatch]);
+
+    if (!srcToken && !destToken) {
+      dispatch(setSrcToken(srcTokens.find((token) => !token.crosschain)));
+      dispatch(setDestToken(destTokens.find((token) => !token.crosschain)));
+    }
+  }, [destToken, destTokens, dispatch, srcToken, srcTokens]);
 
   return (
-    <SwapContainer>
+    <swap.SwapContainer>
       <h1 className="text-3xl font-thin text-center text-white">
         Cross Chain Swap
       </h1>
@@ -54,7 +56,7 @@ const Home: NextPage = () => {
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-5">
               <div>
-                <ChainInput
+                <swap.ChainInput
                   selectedChain={srcChain}
                   label="From"
                   modalKey={ChainInputModalKey.ModalChainFrom}
@@ -62,7 +64,7 @@ const Home: NextPage = () => {
                 />
               </div>
               <div>
-                <TokenInput
+                <swap.TokenInput
                   label="Send"
                   className="mt-2"
                   modalKey={TokenInputModalKey.ModalTokenInput}
@@ -73,7 +75,7 @@ const Home: NextPage = () => {
           </div>
           <div className="mt-5">
             <div>
-              <AmountInput
+              <swap.AmountInput
                 className="mt-4"
                 selectedToken={srcToken}
                 validState={amountValidation}
@@ -89,14 +91,14 @@ const Home: NextPage = () => {
           <div className="flex justify-center">
             <div className="grid grid-cols-2 gap-5">
               <div>
-                <ChainInput
+                <swap.ChainInput
                   selectedChain={destChain}
                   label="To"
                   modalKey={ChainInputModalKey.ModalChainTo}
                 />
               </div>
               <div>
-                <TokenInput
+                <swap.TokenInput
                   label="Receive"
                   className="mt-2"
                   modalKey={TokenInputModalKey.ModalTokenOutput}
@@ -107,7 +109,7 @@ const Home: NextPage = () => {
           </div>
 
           <div className="mt-5">
-            <AddressInput />
+            <swap.AddressInput />
           </div>
         </InputContainer>
       </div>
@@ -119,12 +121,15 @@ const Home: NextPage = () => {
       </div>
       <div className="flex flex-col mt-8">
         {isRequiredApproval ? (
-          <ApproveButton />
+          <swap.ApproveButton />
         ) : (
-          <SwapButton amount={amount} amountValidation={amountValidation} />
+          <swap.SwapButton
+            amount={amount}
+            amountValidation={amountValidation}
+          />
         )}
       </div>
-    </SwapContainer>
+    </swap.SwapContainer>
   );
 };
 

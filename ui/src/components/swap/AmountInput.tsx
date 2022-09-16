@@ -67,7 +67,7 @@ export const AmountInput: FunctionComponent<AmountInputProps> = ({
             onWheel={(e: React.WheelEvent<HTMLInputElement>) =>
               e.currentTarget.blur()
             }
-            debounceTimeout={300}
+            debounceTimeout={200}
             onChange={(e) => dispatch(setAmount(e.target.value))}
           />
           {selectedToken && <MaxButton selectedToken={selectedToken} />}

@@ -44,7 +44,10 @@ export const swapInputSlice = createSlice({
     setAmount: (state: SwapInputState, action: PayloadAction<string>) => {
       state.amount = action.payload;
     },
-    setDestToken: (state: SwapInputState, action: PayloadAction<Token>) => {
+    setDestToken: (
+      state: SwapInputState,
+      action: PayloadAction<Token | undefined>
+    ) => {
       state.destToken = action.payload;
     },
     setDestRouterContract: (

@@ -35,7 +35,7 @@ swapEstimatorStartListening({
     const { srcChain, srcToken, destChain, destToken, amount } =
       state.swapInputs;
     if (!srcChain) return;
-    if (!amount) return;
+    if (!amount || amount === "0") return;
     if (!srcToken) return;
     if (!destToken) return;
     const crosschainTokenAtDestChain = selectCrosschainTokenAtDestChain(state);
