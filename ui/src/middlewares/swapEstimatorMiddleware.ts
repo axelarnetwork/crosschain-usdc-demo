@@ -64,11 +64,11 @@ swapEstimatorStartListening({
       if (isRequiredSwapAtSrc) {
         //  estimate swap at src chain first
         const crosschainTokenAmountSrcChain = await estimateSwapOutputAmount({
-          tokenA: srcToken,
-          tokenB: crosschainTokenAtSrcChain,
+          token: crosschainTokenAtSrcChain,
           chain: srcChain,
           routerAddress: srcChain.routerAddress,
           amount: _amount,
+          nativeToErc20: true,
         });
         _amount = crosschainTokenAmountSrcChain || _amount;
       }
@@ -85,11 +85,11 @@ swapEstimatorStartListening({
 
       if (isRequiredSwapAtDest) {
         const destSwapAmount = await estimateSwapOutputAmount({
-          tokenA: crosschainTokenAtDestChain,
-          tokenB: destToken,
+          token: crosschainTokenAtDestChain,
           chain: destChain,
           routerAddress: destChain.routerAddress,
           amount: _amount,
+          nativeToErc20: false,
         });
         listenerApi.dispatch(setSwapDestAmount(destSwapAmount));
       }

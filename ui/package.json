@@ -10,7 +10,7 @@
     "typechain": "rm -rf generated && typechain --target ethers-v5 --out-dir generated/contracts src/abi/*.json"
   },
   "dependencies": {
-    "@axelar-network/axelarjs-sdk": "0.6.0-alpha.11",
+    "@axelar-network/axelarjs-sdk": "^0.11.1",
     "@heroicons/react": "^1.0.6",
     "@reduxjs/toolkit": "^1.8.1",
     "@types/react-redux": "^7.1.23",

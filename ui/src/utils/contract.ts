@@ -1,22 +1,22 @@
 import { Contract, ethers } from "ethers";
-import { SquidChain } from "types/chain";
-import routerAbi from "abi/router.json";
+import pangolinRouterAbi from "abi/pangolinRouter.json";
+import uniswapRouterAbi from "abi/router.json";
 import { getProvider } from "./provider";
 import { SwapEstimatorPayload } from "slices/swapEstimatorSlice";
 import { chains } from "config/constants";
+import { ChainName } from "types/chain";
 
-export function createSwapPayload(
+export function createSwapPayloadForNative(
+  chain: string,
+  swapFunctionName: string,
   swapPath: string[],
-  recipientAddress: string,
-  amount: ethers.BigNumberish
+  recipientAddress: string
 ) {
-  const swapRouterAbi = getSwapRouterAbi();
-  const swapFunctionName = getSwapFunctionName();
+  const swapRouterAbi = getAbi(chain);
 
   const iface = new ethers.utils.Interface(swapRouterAbi);
   const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 20;
   const swapPayload = iface.encodeFunctionData(swapFunctionName, [
-    ethers.BigNumber.from(amount),
     0,
     swapPath,
     recipientAddress,
@@ -26,17 +26,90 @@ export function createSwapPayload(
   return swapPayload;
 }
 
-export function createTradeData(
+export function createSwapPayloadForErc20(
+  chain: string,
+  swapFunctionName: string,
+  amount: ethers.BigNumberish,
   swapPath: string[],
-  chain: SquidChain,
+  recipientAddress: string
+) {
+  const swapRouterAbi = getAbi(chain);
+
+  const iface = new ethers.utils.Interface(swapRouterAbi);
+  const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 20;
+  const swapPayload = iface.encodeFunctionData(swapFunctionName, [
+    amount,
+    0,
+    swapPath,
+    recipientAddress,
+    deadline,
+  ]);
+
+  return swapPayload;
+}
+
+export function createSrcTradeData(
+  swapPath: string[],
+  chain: string,
   recipientAddress: string,
   amount: ethers.BigNumberish
 ) {
-  const swapPayload = createSwapPayload(swapPath, recipientAddress, amount);
+  const swapFunctionName = getSrcSwapFunctionName(chain);
+  const swapPayload = createSwapPayloadForNative(
+    chain,
+    swapFunctionName,
+    swapPath,
+    recipientAddress
+  );
+  const _chain = chains.find((c) => c.name === chain);
   return ethers.utils.defaultAbiCoder.encode(
     ["address", "uint256", "address", "bytes"],
-    [swapPath[0], amount, chain.routerAddress, swapPayload]
+    [ethers.constants.AddressZero, amount, _chain?.routerAddress, swapPayload]
   );
+}
+
+export function createDestTradeData(
+  swapPath: string[],
+  chain: string,
+  recipientAddress: string,
+  amount: ethers.BigNumberish,
+  usdcAddress: string
+) {
+  const swapPayload = createSwapPayloadForErc20(
+    chain,
+    getDestSwapFunctionName(chain),
+    amount,
+    swapPath,
+    recipientAddress
+  );
+  const _chain = chains.find((c) => c.name === chain);
+  return ethers.utils.defaultAbiCoder.encode(
+    ["address", "uint256", "address", "bytes"],
+    [usdcAddress, amount, _chain?.routerAddress, swapPayload]
+  );
+}
+
+function getSrcSwapFunctionName(chain: string) {
+  if (chain === ChainName.AVALANCHE) {
+    return "swapExactAVAXForTokens";
+  }
+
+  return "swapExactETHForTokens";
+}
+
+function getDestSwapFunctionName(chain: string) {
+  if (chain === ChainName.AVALANCHE) {
+    return "swapExactTokensForAVAX";
+  }
+
+  return "swapExactTokensForETH";
+}
+
+function getAbi(chain: string) {
+  if (chain === ChainName.AVALANCHE) {
+    return pangolinRouterAbi;
+  }
+  return uniswapRouterAbi;
 }
 
 export function createPayloadHash(
@@ -54,31 +127,27 @@ export function createPayloadHash(
 }
 
 export async function estimateSwapOutputAmount(payload: SwapEstimatorPayload) {
-  const { routerAddress, tokenA, tokenB, amount, chain } = payload;
+  const { routerAddress, token, amount, chain, nativeToErc20 } = payload;
   const provider = getProvider(chain);
-  const contract = new ethers.Contract(routerAddress, routerAbi, provider);
+  const contract = new ethers.Contract(
+    routerAddress,
+    uniswapRouterAbi,
+    provider
+  );
   try {
-    const amountOuts = await contract.getAmountsOut(amount, [
-      tokenA.address,
-      chain.wrappedNativeToken,
-      tokenB.address,
-    ]);
+    const path = nativeToErc20
+      ? [chain.wrappedNativeToken, token.address]
+      : [token.address, chain.wrappedNativeToken];
+    const amountOuts = await contract.getAmountsOut(amount, path);
     return amountOuts[amountOuts.length - 1].toString();
   } catch (e: any) {
-    let errMsg = `No ${tokenB.symbol} liquidity at ${chain.name}`;
+    console.log(e);
+    let errMsg = `No ${token.symbol} liquidity at ${chain.name}`;
     if (e.message.indexOf("out-of-bounds") > -1) {
       errMsg = "Swap amount is too low";
     }
     throw new Error(errMsg);
   }
-}
-
-function getSwapRouterAbi() {
-  return routerAbi;
-}
-
-function getSwapFunctionName() {
-  return "swapExactTokensForTokens";
 }
 
 export const getSwapPendingEvent = (

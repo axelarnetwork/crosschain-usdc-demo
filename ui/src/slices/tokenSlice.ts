@@ -25,7 +25,7 @@ export const selectSrcTokenAtDestChain = (state: RootState) =>
     );
 
 export const selectCrosschainTokenAtSrcChain = (state: RootState) => {
-  const { srcToken, destToken, destChain } = state.swapInputs;
+  const { srcToken, destToken, destChain, srcChain } = state.swapInputs;
   if (!srcToken) return null;
   if (!destToken) return null;
   if (!destChain) return null;
@@ -36,7 +36,7 @@ export const selectCrosschainTokenAtSrcChain = (state: RootState) => {
   return tokenApi.endpoints.getTokens
     .select()(state)
     .data?.find((token) => {
-      return token.crosschain;
+      return token.crosschain && token.chainId === srcChain?.id;
     });
 };
 export const selectCrosschainTokenAtDestChain = (state: RootState) => {
@@ -48,7 +48,7 @@ export const selectCrosschainTokenAtDestChain = (state: RootState) => {
   return tokenApi.endpoints.getTokens
     .select()(state)
     .data?.find((token) => {
-      return token.crosschain;
+      return token.crosschain && token.chainId === destChain?.id;
     });
 };
 

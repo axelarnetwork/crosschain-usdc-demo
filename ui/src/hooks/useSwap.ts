@@ -13,10 +13,19 @@ import useCrosschainToken from "./useCrosschainToken";
 import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
 import { useContract, useSigner } from "wagmi";
 import { v4 as uuidv4 } from "uuid";
-import { createPayloadHash, createTradeData } from "utils/contract";
+import {
+  createDestTradeData,
+  createPayloadHash,
+  createSrcTradeData,
+} from "utils/contract";
 import gatewayAbi from "abi/axelarGateway.json";
 import { SquidChain } from "types/chain";
 import { Token } from "types/token";
+import {
+  AxelarQueryAPI,
+  Environment,
+  EvmChain,
+} from "@axelar-network/axelarjs-sdk";
 
 const AMOUNT_INPUT_POS = 196; // length of tradeData (32) + token in (32) + amount in (32) + router (32) + length of data (32) + 36
 
@@ -46,29 +55,20 @@ const useSwap = () => {
 
   const swapSrcAndDest = useCallback(async () => {
     const traceId = ethers.utils.id(uuidv4());
-    const sendAmount = ethers.utils
-      .parseUnits(amount, srcToken?.decimals)
-      .toString();
+    const sendAmount = ethers.utils.parseUnits(amount, srcToken?.decimals);
 
-    const srcTradeData = createTradeData(
-      [
-        srcToken.address,
-        srcChain.wrappedNativeToken,
-        srcCrosschainToken.address,
-      ],
-      srcChain,
+    const srcTradeData = createSrcTradeData(
+      [srcChain.wrappedNativeToken, srcCrosschainToken.address],
+      srcChain.name,
       srcChain.swapExecutorAddress,
       sendAmount
     );
-    const destTradeData = createTradeData(
-      [
-        destCrosschainToken.address,
-        destChain.wrappedNativeToken,
-        destToken.address,
-      ],
-      destChain,
+    const destTradeData = createDestTradeData(
+      [destCrosschainToken.address, destChain.wrappedNativeToken],
+      destChain.name,
       recipientAddress,
-      0
+      0,
+      destCrosschainToken.address
     );
     const payloadHash = createPayloadHash(
       destTradeData,
@@ -77,16 +77,22 @@ const useSwap = () => {
       AMOUNT_INPUT_POS
     );
 
-    const tx = await contract.tradeSendTrade(
+    const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
+    const gasFee = await api.estimateGasFee(
+      srcChain.name as unknown as EvmChain,
+      destChain.name as unknown as EvmChain,
+      srcChain.nativeCurrency?.symbol
+    );
+
+    const tx = await contract.nativeTradeSendTrade(
       destChain.name,
-      srcCrosschainToken.symbol,
       srcTradeData,
       destTradeData,
       traceId,
       recipientAddress,
       AMOUNT_INPUT_POS,
       {
-        value: ethers.utils.parseEther("0.01"),
+        value: sendAmount.add(gasFee),
       }
     );
 
@@ -95,7 +101,6 @@ const useSwap = () => {
     amount,
     destChain,
     destCrosschainToken,
-    destToken,
     contract,
     recipientAddress,
     srcChain,
@@ -109,15 +114,12 @@ const useSwap = () => {
       .parseUnits(amount, srcToken?.decimals)
       .toString();
 
-    const tradeData = createTradeData(
-      [
-        srcTokenAtDestChain.address,
-        destChain.wrappedNativeToken,
-        destToken.address,
-      ],
-      destChain,
+    const tradeData = createDestTradeData(
+      [destCrosschainToken.address, destChain.wrappedNativeToken],
+      destChain.name,
       recipientAddress,
-      0 // will be overrided
+      0,
+      destCrosschainToken.address
     );
     const payloadHash = createPayloadHash(
       tradeData,
@@ -141,12 +143,13 @@ const useSwap = () => {
     return { tx, payloadHash, traceId };
   }, [
     amount,
-    destChain,
-    destToken,
-    contract,
+    srcToken?.decimals,
+    srcToken?.symbol,
+    destCrosschainToken,
+    destChain.wrappedNativeToken,
+    destChain.name,
     recipientAddress,
-    srcToken,
-    srcTokenAtDestChain,
+    contract,
   ]);
 
   const swapOnlySrc = useCallback(async () => {
@@ -154,13 +157,9 @@ const useSwap = () => {
       .parseUnits(amount, srcToken?.decimals)
       .toString();
 
-    const srcTradeData = createTradeData(
-      [
-        srcToken.address,
-        srcChain.wrappedNativeToken,
-        srcCrosschainToken.address,
-      ],
-      srcChain,
+    const srcTradeData = createSrcTradeData(
+      [srcChain.wrappedNativeToken, srcCrosschainToken.address],
+      srcChain.name,
       srcChain.swapExecutorAddress,
       sendAmount
     );
@@ -196,14 +195,7 @@ const useSwap = () => {
     );
 
     return { tx, traceId: "", payloadHash: "" };
-  }, [
-    amount,
-    destChain.name,
-    gatewayContract,
-    recipientAddress,
-    srcToken?.decimals,
-    srcToken?.symbol,
-  ]);
+  }, [amount, gatewayContract, srcToken?.decimals, srcToken?.symbol]);
 
   return { swapSrcAndDest, swapOnlyDest, swapOnlySrc, sendToken };
 };

@@ -99,26 +99,6 @@ export function createPayloadHash(
   );
 }
 
-// export async function estimateSwapOutputAmount(payload: SwapEstimatorPayload) {
-//   const { routerAddress, tokenA, tokenB, amount, chain } = payload;
-//   const provider = getProvider(chain);
-//   const contract = new ethers.Contract(routerAddress, routerAbi, provider);
-//   try {
-//     const amountOuts = await contract.getAmountsOut(amount, [
-//       tokenA.address,
-//       chain.wrappedNativeToken,
-//       tokenB.address,
-//     ]);
-//     return amountOuts[amountOuts.length - 1].toString();
-//   } catch (e: any) {
-//     let errMsg = `No ${tokenB.symbol} liquidity at ${chain.name}`;
-//     if (e.message.indexOf("out-of-bounds") > -1) {
-//       errMsg = "Swap amount is too low";
-//     }
-//     throw new Error(errMsg);
-//   }
-// }
-
 function getSrcSwapFunctionName(chain: string) {
   if (chain === Chain.AVALANCHE) {
     return "swapExactAVAXForTokens";
