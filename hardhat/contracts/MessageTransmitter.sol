@@ -50,6 +50,10 @@ contract MessageTransmitter is Ownable {
         onlyOwner
     {
         bytes32 key = keccak256(abi.encodePacked(messageHash, signature));
+        require(
+            messages[key] == 0,
+            "MessageTransmitter: message already processed"
+        );
         messages[key] = MESSAGE_SENT;
     }
 
