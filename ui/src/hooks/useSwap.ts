@@ -70,6 +70,7 @@ const useSwap = () => {
       0,
       destCrosschainToken.address
     );
+
     const payloadHash = createPayloadHash(
       destTradeData,
       traceId,
