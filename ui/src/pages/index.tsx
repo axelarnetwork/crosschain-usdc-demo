@@ -14,12 +14,13 @@ import {
 import { useEffect } from "react";
 import useAmountValidator from "hooks/useAmountValidator";
 import useApproveChecker from "hooks/useApproveChecker";
-import { resetSwapStatus } from "slices/swapStatusSlice";
 import { SwapEstimator } from "components/swap";
 import { TokenInputModalKey, ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
 import useTokens from "hooks/useTokens";
+import ora from "ora";
+import chalk from "chalk";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -33,7 +34,7 @@ const Home: NextPage = () => {
   const isRequiredApproval = useApproveChecker();
   const amountValidation = useAmountValidator(amount, srcToken);
 
-  // Automatically update `srcChai`n and `destChain` whenever connected wallet's network has changed.
+  // Automatically update `srcChain` and `destChain` whenever connected wallet's network has changed.
   useNetworkSwitcher();
 
   useEffect(() => {

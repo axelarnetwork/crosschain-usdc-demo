@@ -71,7 +71,6 @@ const SwapTransactionDetail = () => {
       if (chain) {
         dispatch(setSrcChain(chain));
       }
-      console.log("dispatch from xx", txHash);
       dispatch(
         setSrcTx({
           txHash,
