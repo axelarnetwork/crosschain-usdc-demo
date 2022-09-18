@@ -213,3 +213,17 @@ export const getSwapSuccessEvent = (
   }
   return null;
 };
+
+export const getMessageSentEvent = (
+  contract: Contract,
+  txReceipt: ethers.providers.TransactionReceipt
+) => {
+  const eventLogs = txReceipt.logs;
+  const messageSentEventId = ethers.utils.id("MessageSent(bytes)");
+  for (const log of eventLogs) {
+    if (log.topics[0] === messageSentEventId) {
+      return contract.interface.parseLog(log);
+    }
+  }
+  return null;
+};

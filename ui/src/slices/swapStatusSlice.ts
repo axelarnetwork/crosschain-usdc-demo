@@ -38,7 +38,9 @@ export const swapStatusSlice = createSlice({
         payloadHash?: string;
       }>
     ) => {
-      state.srcTx = action.payload.txHash;
+      if (action.payload.txHash) {
+        state.srcTx = action.payload.txHash;
+      }
       state.traceId = action.payload.traceId;
       state.payloadHash = action.payload.payloadHash;
     },

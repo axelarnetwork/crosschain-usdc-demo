@@ -37,7 +37,7 @@ const Home: NextPage = () => {
   useNetworkSwitcher();
 
   useEffect(() => {
-    dispatch(resetSwapStatus());
+    // dispatch(resetSwapStatus());
 
     if (!srcToken && !destToken) {
       dispatch(setSrcToken(srcTokens.find((token) => !token.crosschain)));

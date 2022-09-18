@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import { AttestationsResponse } from "types/api";
 import { ethers, Signer } from "ethers";
 import { ChainName } from "types/chain";
-import { chains, MESSAGE_TRANSMITTER, RPC } from "config/constants";
+import { MESSAGE_TRANSMITTER, RPC } from "config/constants";
 
 function signMessage(signer: Signer, messageHash: string) {
   return signer.signMessage(messageHash);
@@ -19,7 +19,6 @@ export default async function handler(
       .status(400)
       .json({ success: false, error: `${chain} is not supported.` });
   }
-  const _chain = chains.find((c) => c.name === chain);
 
   const destProvider = new ethers.providers.JsonRpcProvider(RPC[chain]);
   const messageTransmitterAddress = MESSAGE_TRANSMITTER[chain];
@@ -40,9 +39,9 @@ export default async function handler(
     .then((tx: any) => tx.wait());
   // Step 4: Return the attestation (signature)
   console.log(`setMessage on ${chain}`, tx.transactionHash);
-  return {
+  return res.status(200).json({
     success: true,
     signature,
     hash: tx.transactionHash,
-  };
+  });
 }

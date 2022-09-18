@@ -16,12 +16,18 @@ import {
 import { SwapProgress } from "components/transaction";
 import useConfetti from "hooks/useConfetti";
 import { useDispatch } from "react-redux";
-import { selectDestChain, setAmount, setSrcChain } from "slices/swapInputSlice";
+import {
+  selectAmount,
+  selectDestChain,
+  setAmount,
+  setSrcChain,
+} from "slices/swapInputSlice";
 
 const SwapTransactionDetail = () => {
   const { query, push, isReady } = useRouter();
   const dispatch = useDispatch();
   const step = useAppSelector(selectSwapStatusStep);
+  const amount = useAppSelector(selectAmount);
   const destChain = useAppSelector(selectDestChain);
   const destApprovalTx = useAppSelector(selectSwapStatusDestApprovalTx);
   const destSwapTx = useAppSelector(selectSwapStatusDestSwapTx);
@@ -57,7 +63,7 @@ const SwapTransactionDetail = () => {
   }, [chainName, destChain, isReady, push, txHash]);
 
   useEffect(() => {
-    if (txHash && !srcTxHash) {
+    if (txHash && !srcTxHash && !amount) {
       // Recovers chain and source transaction hash.
       const chain = chains.find(
         (chain) => chain.name === chainName?.toLowerCase()
@@ -65,15 +71,15 @@ const SwapTransactionDetail = () => {
       if (chain) {
         dispatch(setSrcChain(chain));
       }
+      console.log("dispatch from xx", txHash);
       dispatch(
         setSrcTx({
           txHash,
-          payloadHash: "",
           traceId: "",
         })
       );
     }
-  }, [chainName, dispatch, srcTxHash, txHash]);
+  }, [amount, chainName, dispatch, srcTxHash, txHash]);
 
   const getTxHash = useCallback(
     (index: number) => {

@@ -12,6 +12,7 @@ import { destChainMiddleware } from "middlewares/destChainMiddleware";
 import swapEstimatorReducer from "slices/swapEstimatorSlice";
 import { swapEstimatorMiddleware } from "middlewares/swapEstimatorMiddleware";
 import { srcChainMiddleware } from "middlewares/srcChainMiddleware";
+import { usdcMessengerMiddleware } from "middlewares/usdcMessengerMiddleware";
 import { transferFeeApi } from "slices/transferFeeSlice";
 
 export const store = configureStore({
@@ -35,6 +36,7 @@ export const store = configureStore({
       swapEstimatorMiddleware.middleware,
       tokenApi.middleware,
       transferFeeApi.middleware,
+      usdcMessengerMiddleware.middleware,
     ]),
   devTools: true,
 });
