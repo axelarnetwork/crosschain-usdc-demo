@@ -19,8 +19,8 @@ interface SwapInputState {
 }
 
 const initialState: SwapInputState = {
-  srcChain: chains[0],
-  destChain: chains[1],
+  srcChain: chains[1],
+  destChain: chains[0],
   swappable: true,
   amount: "",
 };
