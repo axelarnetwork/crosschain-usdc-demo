@@ -22,15 +22,11 @@ destChainStartListening({
   },
   effect: async (_action, listenerApi) => {
     const state = listenerApi.getState();
-    const currentToken = state.swapInputs.destToken;
     const destChain = state.swapInputs.destChain;
     const tokens = tokenApi.endpoints.getTokens.select()(state)?.data;
     const newToken = tokens?.find(
-      (token) =>
-        token.chainId === destChain.id && token.symbol === currentToken?.symbol
+      (token) => token.chainId === destChain.id && !token.crosschain
     );
-    if (newToken && newToken?.address !== currentToken?.address) {
-      listenerApi.dispatch(setDestToken(newToken));
-    }
+    listenerApi.dispatch(setDestToken(newToken));
   },
 });

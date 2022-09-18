@@ -19,8 +19,7 @@ export type TokenApprovalState = Record<
 
 const initialState: TokenApprovalState = {
   [ChainId.AVALANCHE]: {},
-  [ChainId.ETHEREUM]: {},
-  [ChainId.MOONBEAM]: {},
+  [ChainId.FANTOM]: {},
 };
 
 export const tokenApprovalSlice = createSlice({
@@ -55,9 +54,8 @@ export const tokenApprovalSlice = createSlice({
       ] = payload.tokenApproval.approvals[0].allowance;
     },
     clear: (state: TokenApprovalState) => {
-      state[ChainId.MOONBEAM] = {};
-      state[ChainId.ETHEREUM] = {};
       state[ChainId.AVALANCHE] = {};
+      state[ChainId.FANTOM] = {};
     },
   },
 });

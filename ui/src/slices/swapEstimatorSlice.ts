@@ -6,9 +6,9 @@ import { RootState } from "store";
 export type SwapEstimatorPayload = {
   routerAddress: string;
   chain: SquidChain;
-  tokenA: Token;
-  tokenB: Token;
+  token: Token;
   amount: string;
+  nativeToErc20: boolean;
 };
 
 export interface SwapEstimatorState {

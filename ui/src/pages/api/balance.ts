@@ -73,7 +73,10 @@ async function fetchTokenInfo(
   spenderAddresses: string[],
   provider: ethers.providers.BaseProvider
 ): Promise<TokenInfo[]> {
-  const calls = tokenAddresses.flatMap((tokenAddress) => [
+  const erc20TokenAddresses = tokenAddresses.filter(
+    (address) => address !== ethers.constants.AddressZero
+  );
+  const calls = erc20TokenAddresses.flatMap((tokenAddress) => [
     {
       name: "balanceOf",
       params: [ownerAddress],
@@ -104,6 +107,16 @@ async function fetchTokenInfo(
         allowance: result,
       });
     }
+  }
+
+  const nativeBalanceRequest = await provider.getBalance(ownerAddress);
+  balances[ethers.constants.AddressZero] = nativeBalanceRequest.toString();
+  approvals[ethers.constants.AddressZero] = [];
+  for (const spenderAddress of spenderAddresses) {
+    approvals[ethers.constants.AddressZero].push({
+      spender: spenderAddress,
+      allowance: ethers.constants.MaxUint256.toString(),
+    });
   }
 
   const tokenInfos = tokenAddresses.map((address) => ({

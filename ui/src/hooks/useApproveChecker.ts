@@ -25,6 +25,7 @@ const useApproveChecker = () => {
       srcToken &&
       srcChain &&
       spenderAddress &&
+      srcToken.address !== ethers.constants.AddressZero &&
       tokenApproval[srcToken.address] &&
       tokenApproval[srcToken.address][spenderAddress]
     ) {

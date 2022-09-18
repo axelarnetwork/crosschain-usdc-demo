@@ -34,13 +34,15 @@ export const swapStatusSlice = createSlice({
       state: SwapStatusState,
       action: PayloadAction<{
         txHash: string;
-        payloadHash: string;
         traceId: string;
+        payloadHash?: string;
       }>
     ) => {
-      state.srcTx = action.payload.txHash;
-      state.payloadHash = action.payload.payloadHash;
+      if (action.payload.txHash) {
+        state.srcTx = action.payload.txHash;
+      }
       state.traceId = action.payload.traceId;
+      state.payloadHash = action.payload.payloadHash;
     },
     setDestApprovalTx: (
       state: SwapStatusState,
@@ -53,6 +55,9 @@ export const swapStatusSlice = createSlice({
     },
     setCommandId: (state: SwapStatusState, action: PayloadAction<string>) => {
       state.commandId = action.payload;
+    },
+    setPayloadHash: (state: SwapStatusState, action: PayloadAction<string>) => {
+      state.payloadHash = action.payload;
     },
     setSwapFailed: (state: SwapStatusState, action: PayloadAction<boolean>) => {
       state.failed = action.payload;
@@ -79,6 +84,7 @@ export const {
   resetSwapStatus,
   setSwapFailed,
   setRefundAddress,
+  setPayloadHash,
 } = swapStatusSlice.actions;
 
 export const selectSwapStatusStep = (state: RootState) => state.swapStatus.step;

@@ -18,7 +18,6 @@ import {
 import { ethers } from "ethers";
 import { AppDispatch, RootState } from "store";
 import { estimateSwapOutputAmount } from "utils/contract";
-import { fetchTransferFee } from "slices/transferFeeSlice";
 import { requiredSwapDest, requiredSwapSrc } from "utils/swap";
 
 export const swapEstimatorMiddleware = createListenerMiddleware();
@@ -35,7 +34,7 @@ swapEstimatorStartListening({
     const { srcChain, srcToken, destChain, destToken, amount } =
       state.swapInputs;
     if (!srcChain) return;
-    if (!amount) return;
+    if (!amount || amount === "0") return;
     if (!srcToken) return;
     if (!destToken) return;
     const crosschainTokenAtDestChain = selectCrosschainTokenAtDestChain(state);
@@ -50,10 +49,7 @@ swapEstimatorStartListening({
       destChain
     );
 
-    const feeResponse = await listenerApi.dispatch(
-      fetchTransferFee(state, crosschainTokenAtSrcChain)
-    );
-    const fee = feeResponse.data;
+    const fee = "0";
     if (!fee) return;
 
     listenerApi.dispatch(setLoading(true));
@@ -64,11 +60,11 @@ swapEstimatorStartListening({
       if (isRequiredSwapAtSrc) {
         //  estimate swap at src chain first
         const crosschainTokenAmountSrcChain = await estimateSwapOutputAmount({
-          tokenA: srcToken,
-          tokenB: crosschainTokenAtSrcChain,
+          token: crosschainTokenAtSrcChain,
           chain: srcChain,
           routerAddress: srcChain.routerAddress,
           amount: _amount,
+          nativeToErc20: true,
         });
         _amount = crosschainTokenAmountSrcChain || _amount;
       }
@@ -85,11 +81,11 @@ swapEstimatorStartListening({
 
       if (isRequiredSwapAtDest) {
         const destSwapAmount = await estimateSwapOutputAmount({
-          tokenA: crosschainTokenAtDestChain,
-          tokenB: destToken,
+          token: crosschainTokenAtDestChain,
           chain: destChain,
           routerAddress: destChain.routerAddress,
           amount: _amount,
+          nativeToErc20: false,
         });
         listenerApi.dispatch(setSwapDestAmount(destSwapAmount));
       }

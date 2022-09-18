@@ -30,11 +30,8 @@ srcChainStartListening({
 
     const tokens = tokenApi.endpoints.getTokens.select()(state)?.data;
     const newToken = tokens?.find(
-      (token) =>
-        token.chainId === srcChain.id && token.symbol === currentToken?.symbol
+      (token) => token.chainId === srcChain.id && !token.crosschain
     );
-    if (newToken && newToken.address !== currentToken.address) {
-      listenerApi.dispatch(setSrcToken(newToken));
-    }
+    listenerApi.dispatch(setSrcToken(newToken));
   },
 });

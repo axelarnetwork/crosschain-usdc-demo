@@ -17,7 +17,7 @@ export interface SquidChain extends Chain {
   gatewayAddress: string;
   routerAddress: string;
   wrappedNativeToken: string;
-  nativeCurrency?: {
+  nativeCurrency: {
     name: string;
     symbol: string;
     decimals: 18;

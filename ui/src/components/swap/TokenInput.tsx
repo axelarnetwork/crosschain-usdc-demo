@@ -18,16 +18,16 @@ export const TokenInput: FunctionComponent<TokenInputProps> = ({
 }) => {
   return (
     <label
-      htmlFor={modalKey}
+      // htmlFor={modalKey}
       className={cn(
-        "flex items-center px-3 py-2 text-xs border-2 border-[#282B3D] rounded-xl text-[#93BEFF] cursor-pointer",
-        {
-          "border-[#6700DD]": selectedToken,
-        }
+        `flex items-center w-32 px-3 py-2 text-xs border-2 border-[#282B3D] rounded-xl text-[#93BEFF] cursor-not-allowed ${className}`
+        // {
+        //   "border-[#6700DD]": selectedToken,
+        // }
       )}
       style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
-      <div className="flex items-center justify-between w-full cursor-pointer">
+      <div className="flex items-center justify-between w-full">
         <div className="flex items-center">
           {selectedToken && (
             <Image

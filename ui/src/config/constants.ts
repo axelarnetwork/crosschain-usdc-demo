@@ -1,5 +1,32 @@
 import { ChainId, ChainName, SquidChain } from "../types/chain";
 
+export const RPC = {
+  [ChainName.AVALANCHE]: "https://api.avax-test.network/ext/bc/C/rpc",
+  [ChainName.FANTOM]:
+    "https://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
+};
+
+export const WSS = {
+  [ChainName.AVALANCHE]: "wss://api.avax-test.network/ext/bc/C/ws",
+  [ChainName.FANTOM]:
+    "wss://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
+};
+
+export const CIRCLE_SWAP_EXECUTABLE = {
+  [ChainName.AVALANCHE]: "0x8679E0Ee1679541CD79fA0584aD07AB5babB2F1E",
+  [ChainName.FANTOM]: "0x3Ee316Ea3DB93771625D6b0D20753aE3fE1c498f",
+};
+
+export const MESSAGE_TRANSMITTER = {
+  [ChainName.AVALANCHE]: "0x734F0304B84Fef46161845db517eA144FDF7F277",
+  [ChainName.FANTOM]: "0x3cC062d269169FF4f4Ae6876db7da1DAfB454952",
+};
+
+export const CIRCLE_BRIDGE = {
+  [ChainName.AVALANCHE]: "0x10c85E0D6e8aD1F71F0b9926f962e2f266d39a69",
+  [ChainName.FANTOM]: "0x5f15259E326B4156b33D6a00C6AD238A018b592a",
+};
+
 export const chains: SquidChain[] = [
   // {
   //   id: ChainId.ETHEREUM,
