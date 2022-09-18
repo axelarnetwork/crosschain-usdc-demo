@@ -7,6 +7,7 @@ import { ethers } from "ethers";
 import { CIRCLE_BRIDGE, MESSAGE_TRANSMITTER, WSS } from "config/constants";
 import { setStep } from "slices/swapStatusSlice";
 import { getMessageSentEvent } from "utils/contract";
+import { getTxLink } from "utils/explorer";
 
 export const usdcMessengerMiddleware = createListenerMiddleware();
 
@@ -25,7 +26,6 @@ usdcMessengerStartListening({
     const srcChain = state.swapInputs.srcChain;
     const destChain = state.swapInputs.destChain;
     const srcTxHash = state.swapStatus.srcTx;
-    console.log("yoyo", srcTxHash);
     if (!srcChain || !destChain || !srcTxHash) return;
 
     const circleBridgeAddress = CIRCLE_BRIDGE[srcChain.name];
@@ -41,7 +41,6 @@ usdcMessengerStartListening({
       srcProvider
     );
 
-    console.log("Fetching message sent tx receipt...");
     const messageSentReceipt = await srcProvider.getTransactionReceipt(
       srcTxHash
     );
@@ -49,11 +48,11 @@ usdcMessengerStartListening({
     const log = getMessageSentEvent(srcContract, messageSentReceipt);
 
     if (log) {
-      console.log("Received MessageSent event log", log);
       const message = log.args.message;
       // Step 2: Call the Attestation API to get the signature
-      console.log("Receive MessageSent", message);
+      console.log("Receive MessageSent event: ", message);
       const messageHash = ethers.utils.solidityKeccak256(["bytes"], [message]);
+      console.log("Getting signature from attestation API...");
       const response = await fetch(
         `/api/attestations?chain=${destChain.name}&messageHash=${messageHash}`
       )
@@ -68,6 +67,7 @@ usdcMessengerStartListening({
         ]);
 
         const signature = response.signature;
+        console.log("Received signature:", signature);
 
         // Step 3: Call the receiveMessage function with the signature
         const txRequest = await destContract.populateTransaction.receiveMessage(
@@ -76,6 +76,7 @@ usdcMessengerStartListening({
         );
 
         // Step 4: Request to send tx
+        console.log("Sending tx to mint USDC on ", destChain.name, "...");
         const txResponse = await fetch("/api/sendTx", {
           method: "POST",
           headers: {
@@ -89,7 +90,7 @@ usdcMessengerStartListening({
           .then((resp) => resp.json())
           .catch(() => undefined);
         if (txResponse && txResponse.success) {
-          console.log("Minted USDC", txResponse.hash);
+          console.log("Minted USDC", getTxLink(destChain.id, txResponse.hash));
         }
       }
     }
