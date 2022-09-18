@@ -19,6 +19,7 @@ import { ethers } from "ethers";
 import { AppDispatch, RootState } from "store";
 import { estimateSwapOutputAmount } from "utils/contract";
 import { requiredSwapDest, requiredSwapSrc } from "utils/swap";
+import { resetSwapStatus } from "slices/swapStatusSlice";
 
 export const swapEstimatorMiddleware = createListenerMiddleware();
 
@@ -88,6 +89,11 @@ swapEstimatorStartListening({
           nativeToErc20: false,
         });
         listenerApi.dispatch(setSwapDestAmount(destSwapAmount));
+
+        const srcTxHash = state.swapStatus.srcTx;
+        if (srcTxHash) {
+          listenerApi.dispatch(resetSwapStatus());
+        }
       }
     } catch (e: any) {
       listenerApi.dispatch(setError(e.message));
