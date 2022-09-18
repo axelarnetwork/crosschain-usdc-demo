@@ -18,7 +18,6 @@ import {
 import { ethers } from "ethers";
 import { AppDispatch, RootState } from "store";
 import { estimateSwapOutputAmount } from "utils/contract";
-import { fetchTransferFee } from "slices/transferFeeSlice";
 import { requiredSwapDest, requiredSwapSrc } from "utils/swap";
 
 export const swapEstimatorMiddleware = createListenerMiddleware();
@@ -50,10 +49,7 @@ swapEstimatorStartListening({
       destChain
     );
 
-    const feeResponse = await listenerApi.dispatch(
-      fetchTransferFee(state, crosschainTokenAtSrcChain)
-    );
-    const fee = feeResponse.data;
+    const fee = "0";
     if (!fee) return;
 
     listenerApi.dispatch(setLoading(true));
