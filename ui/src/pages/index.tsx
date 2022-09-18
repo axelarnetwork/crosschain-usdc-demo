@@ -19,8 +19,6 @@ import { TokenInputModalKey, ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
 import useTokens from "hooks/useTokens";
-import ora from "ora";
-import chalk from "chalk";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
