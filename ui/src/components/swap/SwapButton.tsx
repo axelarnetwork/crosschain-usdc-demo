@@ -8,7 +8,7 @@ import { setSrcTx } from "slices/swapStatusSlice";
 import { useRouter } from "next/router";
 import useSwapChecker, { SWAP_TYPE } from "hooks/useSwapChecker";
 import useSwap from "hooks/useSwap";
-import { useConnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { SquidChain } from "types/chain";
 
 interface SwapButtonProps extends ComponentStyle {
@@ -21,7 +21,7 @@ export const SwapButton: FunctionComponent<SwapButtonProps> = ({
   amount,
   amountValidation,
 }) => {
-  const { isConnected } = useConnect();
+  const { isConnected } = useAccount();
   const srcChain = useAppSelector(selectSrcChain) as SquidChain;
   const swapType = useSwapChecker();
   const { push } = useRouter();

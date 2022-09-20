@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import useAmountValidator from "hooks/useAmountValidator";
 import useApproveChecker from "hooks/useApproveChecker";
 import { SwapEstimator } from "components/swap";
-import { TokenInputModalKey, ChainInputModalKey } from "components/modals";
+import { ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
 import useTokens from "hooks/useTokens";

@@ -9,7 +9,7 @@ import { selectBalancesByChainId } from "slices/balanceSlice";
 
 import { selectAmount, setAmount } from "slices/swapInputSlice";
 import { MaxButton } from "components/common";
-import { useConnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { ethers } from "ethers";
 
 interface AmountInputProps extends ComponentStyle {
@@ -24,7 +24,7 @@ export const AmountInput: FunctionComponent<AmountInputProps> = ({
 }) => {
   const amount = useAppSelector(selectAmount);
   const dispatch = useAppDispatch();
-  const { isConnected } = useConnect();
+  const { isConnected } = useAccount();
   const srcChain = useAppSelector(selectSrcChain);
   const srcToken = useAppSelector(selectSrcToken);
 

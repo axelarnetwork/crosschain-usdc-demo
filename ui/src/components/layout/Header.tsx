@@ -1,15 +1,14 @@
 import React from "react";
 import Image from "next/image";
-import { useAccount, useConnect, useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 import { NativeBalance, ConnectButton } from "components/common";
 import Link from "next/link";
 import { SquidChain } from "types/chain";
 
 export const Header = () => {
-  const { data: account } = useAccount();
-  const { isConnected } = useConnect();
+  const account = useAccount();
   const network = useNetwork();
-  const activeChain = network.activeChain as SquidChain;
+  const activeChain = network.chain as SquidChain;
   const icon = activeChain?.icon;
   return (
     <div className="fixed z-50 w-full border-b border-[#192431] backdrop-blur-sm bg-black/10">
@@ -36,8 +35,8 @@ export const Header = () => {
           </a>
         </Link>
         <div className="flex items-center ml-auto gap-x-4">
-          {isConnected && account?.address && <NativeBalance />}
-          {isConnected && (
+          {account.isConnected && account?.address && <NativeBalance />}
+          {account.isConnected && (
             <Image
               className="p-1 bg-gray-200 rounded-full"
               src={icon || "/ic-unknown.svg"}

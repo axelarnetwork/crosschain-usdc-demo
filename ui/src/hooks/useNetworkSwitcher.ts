@@ -13,13 +13,13 @@ export const useNetworkSwitcher = () => {
   const srcChain = useAppSelector(selectSrcChain);
   const destChain = useAppSelector(selectDestChain);
   const dispatch = useAppDispatch();
-  const { activeChain } = useNetwork();
+  const { chain } = useNetwork();
 
   useEffect(() => {
-    if (!activeChain) return;
+    if (!chain) return;
 
     const prevChain = { ...srcChain } as SquidChain;
-    const currentChain = activeChain as SquidChain;
+    const currentChain = chain as SquidChain;
 
     // update src chain if network supported
     if (currentChain.icon) {
@@ -30,5 +30,5 @@ export const useNetworkSwitcher = () => {
     if (currentChain.id === destChain.id) {
       dispatch(setDestChain(prevChain));
     }
-  }, [activeChain, destChain.id, dispatch, srcChain]);
+  }, [chain, destChain.id, dispatch, srcChain]);
 };

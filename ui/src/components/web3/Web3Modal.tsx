@@ -1,9 +1,10 @@
 import React, { useEffect, useRef } from "react";
 import Image from "next/image";
-import { useConnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 
 export const Web3Modal = () => {
-  const { connect, connectors, isConnected } = useConnect();
+  const { isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
   const modalRef = useRef<any>();
 
   function closeModal() {
@@ -12,17 +13,17 @@ export const Web3Modal = () => {
 
   function handleOnMetamaskSwitch() {
     const metamaskConnector = connectors[0];
-    connect(metamaskConnector);
+    connect({ connector: metamaskConnector });
   }
 
   function handleOnWalletConnectSwitch() {
     const walletConnectConnector = connectors[1];
-    connect(walletConnectConnector);
+    connect({ connector: walletConnectConnector });
   }
 
   function handleOnCoinbaseWalletSwitch() {
     const coinbaseConnector = connectors[2];
-    connect(coinbaseConnector);
+    connect({ connector: coinbaseConnector });
   }
 
   useEffect(() => {

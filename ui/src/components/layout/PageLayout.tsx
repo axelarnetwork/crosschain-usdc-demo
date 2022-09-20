@@ -14,7 +14,7 @@ import {
   setSrcToken,
 } from "slices/swapInputSlice";
 import { SquidChain } from "types/chain";
-import { useNetwork } from "wagmi";
+import { useSwitchNetwork } from "wagmi";
 import { ChainInputModalKey, ChainInputModal } from "components/modals";
 import { TokenInputModal, TokenInputModalKey } from "components/modals";
 import { Waves, Header } from "components/layout";
@@ -26,15 +26,19 @@ export const PageLayout: FunctionComponent = ({ children }) => {
   const destToken = useAppSelector(selectDestToken);
   const srcTokens = useTokens(srcChain);
   const destTokens = useTokens(destChain);
-  const { switchNetworkAsync, data } = useNetwork();
+  const { switchNetworkAsync, data, isError, isSuccess } = useSwitchNetwork();
   const dispatch = useAppDispatch();
 
   const updateSrcChain = useCallback(
     async (chain: SquidChain) => {
       if (!switchNetworkAsync) return;
-      await switchNetworkAsync(chain.id);
+      console.log("switch network to ", chain.name);
+      await switchNetworkAsync(chain.id).catch((err) => {
+        console.log(err);
+      });
+      console.log("done", isError, isSuccess);
     },
-    [switchNetworkAsync]
+    [isError, isSuccess, switchNetworkAsync]
   );
 
   const updateDestChain = useCallback(
