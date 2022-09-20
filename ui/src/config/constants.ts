@@ -1,5 +1,4 @@
 import { ChainId, ChainName, SquidChain } from "../types/chain";
-
 export const RPC = {
   [ChainName.AVALANCHE]: "https://api.avax-test.network/ext/bc/C/rpc",
   [ChainName.FANTOM]:
@@ -81,14 +80,16 @@ export const chains: SquidChain[] = [
     network: "Fantom Testnet",
     icon: "https://assets.coingecko.com/coins/images/4001/small/Fantom.png?1558015016",
     rpcUrls: {
-      default:
-        "https://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
+      default: "https://rpc.testnet.fantom.network/",
     },
     multicallAddress: "0xf44a24e4447f01e410ea736a8295489b840bad3c",
     gatewayAddress: "0x97837985Ec0494E7b9C71f5D3f9250188477ae14",
     swapExecutorAddress: "0x3Ee316Ea3DB93771625D6b0D20753aE3fE1c498f",
     routerAddress: "0x9fE0E1636735153B0b1f5f5b98B5e93C203c94cc",
     wrappedNativeToken: "0x3a34e91226052c509cb0dc38dcdefe6a028f869e",
+    blockExplorers: {
+      default: { name: "Ftmscan", url: "https://testnet.ftmscan.com" },
+    },
     nativeCurrency: {
       name: "Fantom",
       symbol: "FTM",
@@ -109,6 +110,9 @@ export const chains: SquidChain[] = [
     swapExecutorAddress: "0x8679E0Ee1679541CD79fA0584aD07AB5babB2F1E",
     routerAddress: "0x2D99ABD9008Dc933ff5c0CD271B88309593aB921",
     wrappedNativeToken: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
+    blockExplorers: {
+      default: { name: "Snow Trace", url: "https://testnet.snowtrace.io/" },
+    },
     nativeCurrency: {
       name: "Avalanche",
       symbol: "AVAX",

@@ -13,6 +13,8 @@ const { chains, provider } = configureChains(_chains, [
   }),
 ]);
 
+console.log(chains);
+
 export const wagmiClient = createClient({
   autoConnect: true,
   provider,
