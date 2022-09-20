@@ -20,7 +20,7 @@ export const wagmiClient = createClient({
     new InjectedConnector({
       chains,
       options: {
-        shimDisconnect: true,
+        shimChainChangedDisconnect: true,
       },
     }),
     new WalletConnectConnector({

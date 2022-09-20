@@ -112,7 +112,7 @@ export const SwapRoute: FunctionComponent<ComponentStyle> = ({ className }) => {
 
   return (
     <div
-      className={`flex flex-wrap justify-center mt-4 items-center px-2 text-sm ${className}`}
+      className={`flex flex-wrap justify-center mt-4 items-center px-2 text-xs ${className}`}
     >
       {calculateRoutes()?.map((route, i) => {
         return (

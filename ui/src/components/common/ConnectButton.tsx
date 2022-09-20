@@ -8,7 +8,7 @@ import {
 } from "slices/swapInputSlice";
 
 import { ComponentStyle } from "types/component";
-import { useConnect, useAccount, useNetwork } from "wagmi";
+import { useAccount, useNetwork } from "wagmi";
 
 function trimAddress(address?: string) {
   if (!address) return "";
@@ -21,15 +21,14 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
   const dispatch = useAppDispatch();
   const senderAddress = useAppSelector(selectSenderAddress);
 
-  const connect = useConnect();
   const account = useAccount();
-  const network = useNetwork();
+  const { chain } = useNetwork();
 
   const [chainAllowed, setChainAllowed] = useState(true);
 
   // handle supported chains
   useEffect(() => {
-    const chainId = network.activeChain?.id;
+    const chainId = chain?.id;
     const chainIsSupported = chains.find((chain) => chain.id === chainId);
     if (chainIsSupported) {
       setChainAllowed(true);
@@ -37,21 +36,24 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
       setChainAllowed(false);
     }
 
-    if (account?.data?.address !== senderAddress) {
-      dispatch(setSenderAddress(account?.data?.address));
-      dispatch(setRecipientAddress(account?.data?.address));
+    if (account?.address !== senderAddress) {
+      dispatch(setSenderAddress(account?.address));
+      dispatch(setRecipientAddress(account?.address));
     }
-  }, [network, account, connect, senderAddress, dispatch]);
+  }, [account, senderAddress, dispatch, chain?.id]);
 
-  if (connect.error) {
-    return (
-      <label htmlFor="web3-modal" className="rounded-full btn btn-primary">
-        Failed to connect. Try again?
-      </label>
-    );
-  }
-
-  if (!connect.isConnected)
+  // if (account.error) {
+  //   return (
+  //     <label htmlFor="web3-modal" className="rounded-full btn btn-primary">
+  //       Failed to connect. Try again?
+  //     </label>
+  //   );
+  // }
+  // console.log("==========");
+  // console.log("isConnected", account.isConnected);
+  // console.log("isDisconnected", account.isDisconnected);
+  // console.log(account);
+  if (!account?.isConnected)
     return (
       <label
         htmlFor="web3-modal"
@@ -78,7 +80,7 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
 
   return (
     <div className="font-light text-gray-200 transition-colors duration-200 cursor-pointer hover:text-blue-300">
-      {trimAddress(account?.data?.address)}
+      {trimAddress(account?.address)}
     </div>
   );
 };

@@ -20,12 +20,8 @@ export const ChainInput: FunctionComponent<ChainInputProps> = ({
     <label
       htmlFor={modalKey}
       className={cn(
-        "flex items-center px-3 py-2 text-xs border-2 border-[#282B3D] rounded-xl text-[#93BEFF] cursor-pointer",
-        {
-          "border-[#6700DD]": selectedChain,
-        }
+        "flex items-center px-3 py-3 min-w-fit w-40 text-xs rounded-md text-[#93BEFF] cursor-pointer bg-slate-800"
       )}
-      style={{ boxShadow: "0px 4px 4px rgba(0, 0, 0, 0.25)" }}
     >
       <div className="flex items-center justify-between w-full cursor-pointer">
         <div className="flex items-center">
@@ -38,11 +34,11 @@ export const ChainInput: FunctionComponent<ChainInputProps> = ({
               className="!rounded-full bg-gray-100"
             />
           )}
-        </div>
-        <div className="flex items-center ml-2">
-          <span className="uppercase">
+          <span className="uppercase ml-4">
             {selectedChain?.name || "Select Chain"}
           </span>
+        </div>
+        <div className="flex items-center justify-end">
           <Image
             src={"/assets/svg/arrow-down.svg"}
             height={20}
