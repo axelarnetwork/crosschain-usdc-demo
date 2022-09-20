@@ -3,7 +3,6 @@ import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import useTokens from "hooks/useTokens";
 import Head from "next/head";
 import React, { FunctionComponent, useCallback, useEffect } from "react";
-import Image from "next/image";
 import {
   selectDestChain,
   selectDestToken,
