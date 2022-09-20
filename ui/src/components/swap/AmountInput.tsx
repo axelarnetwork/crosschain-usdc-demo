@@ -9,7 +9,7 @@ import { selectBalancesByChainId } from "slices/balanceSlice";
 
 import { selectAmount, setAmount } from "slices/swapInputSlice";
 import { MaxButton } from "components/common";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 
 interface AmountInputProps extends ComponentStyle {
