@@ -44,39 +44,24 @@ const Home: NextPage = () => {
 
   return (
     <swap.SwapContainer>
-      <h1 className="text-3xl font-thin text-center text-white">
+      <h1 className="text-2xl font-thin text-center text-white">
         Swap Native Tokens ✨
       </h1>
       <div className="mt-5">
         <div className="mb-2 font-light text-white">From</div>
         <InputContainer>
-          <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <swap.ChainInput
-                  selectedChain={srcChain}
-                  label="From"
-                  modalKey={ChainInputModalKey.ModalChainFrom}
-                  isSrcChain={true}
-                />
-              </div>
-              <div>
-                <swap.TokenInput
-                  label="Send"
-                  modalKey={TokenInputModalKey.ModalTokenInput}
-                  selectedToken={srcToken}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mt-5">
-            <div>
-              <swap.AmountInput
-                className="mt-4"
-                selectedToken={srcToken}
-                validState={amountValidation}
-              />
-            </div>
+          <div className="flex items-center">
+            <swap.ChainInput
+              selectedChain={srcChain}
+              label="From"
+              modalKey={ChainInputModalKey.ModalChainFrom}
+              isSrcChain={true}
+            />
+            <swap.AmountInput
+              className="ml-4"
+              selectedToken={srcToken}
+              validState={amountValidation}
+            />
           </div>
         </InputContainer>
       </div>
@@ -85,24 +70,12 @@ const Home: NextPage = () => {
         <div className="mb-2 font-light text-white">To</div>
         <InputContainer>
           <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <swap.ChainInput
-                  selectedChain={destChain}
-                  label="To"
-                  modalKey={ChainInputModalKey.ModalChainTo}
-                />
-              </div>
-              <div>
-                <swap.TokenInput
-                  label="Receive"
-                  modalKey={TokenInputModalKey.ModalTokenOutput}
-                  selectedToken={destToken}
-                />
-              </div>
-            </div>
+            <swap.ChainInput
+              selectedChain={destChain}
+              label="To"
+              modalKey={ChainInputModalKey.ModalChainTo}
+            />
           </div>
-
           <div className="mt-5">
             <swap.AddressInput />
           </div>
