@@ -11,7 +11,7 @@ export const Header = () => {
   const activeChain = network.chain as SquidChain;
   const icon = activeChain?.icon;
   return (
-    <div className="fixed z-50 w-full border-b border-[#192431] backdrop-blur-sm bg-black/10">
+    <div className="fixed z-50 w-full border-b border-[#192431] backdrop-blur-sm bg-black/10 py-2">
       <div className="h-20 max-w-screen-xl mx-auto navbar">
         <Link href={"/"} passHref>
           <a className="relative flex">
