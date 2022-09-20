@@ -48,7 +48,7 @@ const Home: NextPage = () => {
         Swap Native Tokens ✨
       </h1>
       <div className="mt-5">
-        <div className="mb-2 font-light text-white">From</div>
+        <div className="mb-2 font-light text-white">Sender</div>
         <InputContainer>
           <div className="flex items-center">
             <swap.ChainInput
@@ -58,7 +58,7 @@ const Home: NextPage = () => {
               isSrcChain={true}
             />
             <swap.AmountInput
-              className="ml-4"
+              className="ml-4 flex-1"
               selectedToken={srcToken}
               validState={amountValidation}
             />
@@ -67,21 +67,19 @@ const Home: NextPage = () => {
       </div>
 
       <div className="mt-5">
-        <div className="mb-2 font-light text-white">To</div>
+        <div className="mb-2 text-white">Recipient</div>
         <InputContainer>
-          <div className="flex justify-center">
+          <div className="flex items-center">
             <swap.ChainInput
               selectedChain={destChain}
               label="To"
               modalKey={ChainInputModalKey.ModalChainTo}
             />
-          </div>
-          <div className="mt-5">
-            <swap.AddressInput />
+            <swap.AddressInput className="ml-4 flex-1" />
           </div>
         </InputContainer>
       </div>
-      <div className="mt-10">
+      <div className="mt-8">
         <InputContainer>
           <SwapEstimator amount={amount} />
         </InputContainer>
