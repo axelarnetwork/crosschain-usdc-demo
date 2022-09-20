@@ -3,6 +3,7 @@ import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import useTokens from "hooks/useTokens";
 import Head from "next/head";
 import React, { FunctionComponent, useCallback, useEffect } from "react";
+import Image from "next/image";
 import {
   selectDestChain,
   selectDestToken,
@@ -77,6 +78,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
       </Head>
       <div className="flex flex-col w-screen h-screen overflow-x-hidden bg-gray-200">
         <Header />
+
         <div className="bg-gradient-to-b from-[#0C213A] to-[#03070D] flex-1 items-center justify-center flex flex-col px-4">
           {children}
         </div>

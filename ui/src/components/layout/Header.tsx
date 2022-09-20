@@ -14,14 +14,8 @@ export const Header = () => {
     <div className="fixed z-50 w-full border-b border-[#192431] backdrop-blur-sm bg-black/10">
       <div className="h-20 max-w-screen-xl mx-auto navbar">
         <Link href={"/"} passHref>
-          <a className="flex">
-            <div className="flex gap-x-2">
-              {/* <Image
-                src="/assets/png/usdc.png"
-                width={32}
-                height={32}
-                alt="logo"
-              /> */}
+          <a className="relative flex">
+            <div className="flex">
               <Image
                 src="/assets/png/axl.png"
                 width={32}
@@ -29,9 +23,16 @@ export const Header = () => {
                 alt="logo"
               />
             </div>
-            <span className="hidden ml-4 text-2xl font-light text-white sm:flex">
+            <span className="hidden ml-4 text-2xl font-bold text-white sm:flex">
               Crosschain Swap Demo
             </span>
+            <div className="absolute right-0 top-6 translate-x-3">
+              <img
+                src="/powered.logo.svg"
+                width={150}
+                alt={"powered by axelar"}
+              />
+            </div>
           </a>
         </Link>
         <div className="flex items-center ml-auto gap-x-4">
