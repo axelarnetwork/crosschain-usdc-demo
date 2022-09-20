@@ -9,7 +9,7 @@ export const NativeBalance: FunctionComponent<ComponentStyle> = ({
 }) => {
   const account = useAccount();
   const balance = useBalance({
-    addressOrName: account.data?.address,
+    addressOrName: account.address,
   });
 
   if (balance?.isLoading) {

@@ -2,7 +2,6 @@ import { ComponentStyle } from "types/component";
 import React, { ChangeEvent } from "react";
 import { Validation } from "hooks/useAmountValidator";
 import { DebounceInput } from "react-debounce-input";
-import { useAccount } from "wagmi";
 import { ethers } from "ethers";
 import { useDispatch } from "react-redux";
 import {
@@ -19,7 +18,6 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   className,
   validState,
 }) => {
-  const { data: account } = useAccount();
   const dispatch = useDispatch();
   const receipientAddress = useAppSelector(selectSenderAddress);
 
@@ -31,25 +29,25 @@ export const AddressInput: React.FC<AddressInputProps> = ({
   };
 
   return (
-    <div>
-      <label className={`text-[#93BEFF] font-light text-sm ${className}`}>
+    <div className={className}>
+      {/* <label className={`text-[#93BEFF] font-light text-sm ${className}`}>
         Destination Address
-      </label>
-      <div className="border border-[#282B3D] w-full rounded-md mt-2">
+      </label> */}
+      <div className="flex border items-center justify-end border-[#282B3D] w-full rounded-md">
         <DebounceInput
           className="w-full h-full px-4 py-3 text-sm font-medium text-right text-white bg-transparent outline-none placeholder:text-gray-500 placeholder:font-normal"
           placeholder={receipientAddress}
-          debounceTimeout={300}
+          debounceTimeout={200}
           onChange={(e: ChangeEvent<HTMLInputElement>) => {
             updateDestinationAddress(e.target.value);
           }}
         />
       </div>
-      <div className="mt-3 text-xs font-light text-right">
+      {/* <div className="mt-3 text-xs font-light text-right">
         {validState?.error && (
           <span className="text-red-100">{validState?.error}</span>
         )}
-      </div>
+      </div> */}
     </div>
   );
 };

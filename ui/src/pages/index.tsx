@@ -15,7 +15,7 @@ import { useEffect } from "react";
 import useAmountValidator from "hooks/useAmountValidator";
 import useApproveChecker from "hooks/useApproveChecker";
 import { SwapEstimator } from "components/swap";
-import { TokenInputModalKey, ChainInputModalKey } from "components/modals";
+import { ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
 import useTokens from "hooks/useTokens";
@@ -36,8 +36,6 @@ const Home: NextPage = () => {
   useNetworkSwitcher();
 
   useEffect(() => {
-    // dispatch(resetSwapStatus());
-
     if (!srcToken && !destToken) {
       dispatch(setSrcToken(srcTokens.find((token) => !token.crosschain)));
       dispatch(setDestToken(destTokens.find((token) => !token.crosschain)));
@@ -46,71 +44,42 @@ const Home: NextPage = () => {
 
   return (
     <swap.SwapContainer>
-      <h1 className="text-3xl font-thin text-center text-white">
-        Cross Chain Swap
+      <h1 className="text-2xl font-thin text-center text-white">
+        Swap Native Tokens ✨
       </h1>
       <div className="mt-5">
-        <div className="mb-2 font-light text-white">From</div>
+        <div className="mb-2 font-light text-white">Sender</div>
         <InputContainer>
-          <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <swap.ChainInput
-                  selectedChain={srcChain}
-                  label="From"
-                  modalKey={ChainInputModalKey.ModalChainFrom}
-                  isSrcChain={true}
-                />
-              </div>
-              <div>
-                <swap.TokenInput
-                  label="Send"
-                  modalKey={TokenInputModalKey.ModalTokenInput}
-                  selectedToken={srcToken}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="mt-5">
-            <div>
-              <swap.AmountInput
-                className="mt-4"
-                selectedToken={srcToken}
-                validState={amountValidation}
-              />
-            </div>
+          <div className="flex items-center">
+            <swap.ChainInput
+              selectedChain={srcChain}
+              label="From"
+              modalKey={ChainInputModalKey.ModalChainFrom}
+              isSrcChain={true}
+            />
+            <swap.AmountInput
+              className="ml-4 flex-1"
+              selectedToken={srcToken}
+              validState={amountValidation}
+            />
           </div>
         </InputContainer>
       </div>
 
       <div className="mt-5">
-        <div className="mb-2 font-light text-white">To</div>
+        <div className="mb-2 text-white">Recipient</div>
         <InputContainer>
-          <div className="flex justify-center">
-            <div className="grid grid-cols-2 gap-5">
-              <div>
-                <swap.ChainInput
-                  selectedChain={destChain}
-                  label="To"
-                  modalKey={ChainInputModalKey.ModalChainTo}
-                />
-              </div>
-              <div>
-                <swap.TokenInput
-                  label="Receive"
-                  modalKey={TokenInputModalKey.ModalTokenOutput}
-                  selectedToken={destToken}
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="mt-5">
-            <swap.AddressInput />
+          <div className="flex items-center">
+            <swap.ChainInput
+              selectedChain={destChain}
+              label="To"
+              modalKey={ChainInputModalKey.ModalChainTo}
+            />
+            <swap.AddressInput className="ml-4 flex-1" />
           </div>
         </InputContainer>
       </div>
-      <div className="mt-10">
+      <div className="mt-8">
         <InputContainer>
           <SwapEstimator amount={amount} />
         </InputContainer>

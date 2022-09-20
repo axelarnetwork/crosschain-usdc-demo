@@ -14,7 +14,7 @@ import {
   setSrcToken,
 } from "slices/swapInputSlice";
 import { SquidChain } from "types/chain";
-import { useNetwork } from "wagmi";
+import { useSwitchNetwork } from "wagmi";
 import { ChainInputModalKey, ChainInputModal } from "components/modals";
 import { TokenInputModal, TokenInputModalKey } from "components/modals";
 import { Waves, Header } from "components/layout";
@@ -26,7 +26,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
   const destToken = useAppSelector(selectDestToken);
   const srcTokens = useTokens(srcChain);
   const destTokens = useTokens(destChain);
-  const { switchNetworkAsync, data } = useNetwork();
+  const { switchNetworkAsync, data, isError, isSuccess } = useSwitchNetwork();
   const dispatch = useAppDispatch();
 
   const updateSrcChain = useCallback(
@@ -72,7 +72,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
   return (
     <>
       <Head>
-        <title>SquiDex | The Cross Chain Decentralised Exchange</title>
+        <title>Circle Crosschain USDC</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col w-screen h-screen overflow-x-hidden bg-gray-200">

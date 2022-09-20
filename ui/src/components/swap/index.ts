@@ -1,6 +1,5 @@
 export * from "./AddressInput";
 export * from "./SwapButton";
-export * from "./ApproveButton";
 export * from "./InputContainer";
 export * from "./TokenInput";
 export * from "./TokenBalance";

@@ -14,6 +14,7 @@ import { Web3Modal } from "../components/web3";
 
 import "react-loading-skeleton/dist/skeleton.css";
 import "styles/globals.css";
+import { useIsMounted } from "hooks/useIsMounted";
 
 const animation = {
   initial: {
@@ -32,6 +33,9 @@ const transition = {
 };
 
 function MyApp({ Component, pageProps, router }: AppProps) {
+  const isMounted = useIsMounted();
+  if (!isMounted) return null;
+
   return (
     <Provider store={store}>
       <WagmiConfig client={wagmiClient}>
