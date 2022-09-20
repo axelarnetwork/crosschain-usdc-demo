@@ -86,14 +86,7 @@ const Home: NextPage = () => {
         <SwapRoute />
       </div>
       <div className="flex flex-col mt-8">
-        {isRequiredApproval ? (
-          <swap.ApproveButton />
-        ) : (
-          <swap.SwapButton
-            amount={amount}
-            amountValidation={amountValidation}
-          />
-        )}
+        <swap.SwapButton amount={amount} amountValidation={amountValidation} />
       </div>
     </swap.SwapContainer>
   );
