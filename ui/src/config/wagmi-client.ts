@@ -13,26 +13,33 @@ const { chains, provider } = configureChains(_chains, [
   }),
 ]);
 
-console.log(chains);
-
 export const wagmiClient = createClient({
   autoConnect: true,
   provider,
   connectors: [
     new InjectedConnector({
-      chains,
+      chains: chains.map((chain) => ({
+        ...chain,
+        name: chain.name[0].toUpperCase() + chain.name.slice(1) + " Testnet",
+      })),
       options: {
         shimChainChangedDisconnect: true,
       },
     }),
     new WalletConnectConnector({
-      chains,
+      chains: chains.map((chain) => ({
+        ...chain,
+        name: chain.name[0].toUpperCase() + chain.name.slice(1) + " Testnet",
+      })),
       options: {
         qrcode: true,
       },
     }),
     new CoinbaseWalletConnector({
-      chains,
+      chains: chains.map((chain) => ({
+        ...chain,
+        name: chain.name[0].toUpperCase() + chain.name.slice(1) + " Testnet",
+      })),
       options: {
         appName: "SquiDex",
       },
