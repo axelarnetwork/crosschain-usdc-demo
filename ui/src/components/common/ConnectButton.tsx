@@ -52,6 +52,7 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
   // console.log("==========");
   // console.log("isConnected", account.isConnected);
   // console.log("isDisconnected", account.isDisconnected);
+  // console.log(account);
   if (!account?.isConnected)
     return (
       <label

@@ -32,13 +32,9 @@ export const PageLayout: FunctionComponent = ({ children }) => {
   const updateSrcChain = useCallback(
     async (chain: SquidChain) => {
       if (!switchNetworkAsync) return;
-      console.log("switch network to ", chain.name);
-      await switchNetworkAsync(chain.id).catch((err) => {
-        console.log(err);
-      });
-      console.log("done", isError, isSuccess);
+      await switchNetworkAsync(chain.id);
     },
-    [isError, isSuccess, switchNetworkAsync]
+    [switchNetworkAsync]
   );
 
   const updateDestChain = useCallback(
