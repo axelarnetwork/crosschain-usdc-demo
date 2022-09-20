@@ -16,14 +16,22 @@ export const Header = () => {
       <div className="h-20 max-w-screen-xl mx-auto navbar">
         <Link href={"/"} passHref>
           <a className="flex">
-            <Image
-              src="/assets/png/squid-logo.png"
-              width={32}
-              height={32}
-              alt="logo"
-            />
+            <div className="flex gap-x-2">
+              {/* <Image
+                src="/assets/png/usdc.png"
+                width={32}
+                height={32}
+                alt="logo"
+              /> */}
+              <Image
+                src="/assets/png/axl.png"
+                width={32}
+                height={32}
+                alt="logo"
+              />
+            </div>
             <span className="hidden ml-4 text-2xl font-light text-white sm:flex">
-              SquiDex
+              Crosschain Swap Demo
             </span>
           </a>
         </Link>

@@ -72,7 +72,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
   return (
     <>
       <Head>
-        <title>SquiDex | The Cross Chain Decentralised Exchange</title>
+        <title>Circle Crosschain USDC</title>
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <div className="flex flex-col w-screen h-screen overflow-x-hidden bg-gray-200">

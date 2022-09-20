@@ -36,8 +36,6 @@ const Home: NextPage = () => {
   useNetworkSwitcher();
 
   useEffect(() => {
-    // dispatch(resetSwapStatus());
-
     if (!srcToken && !destToken) {
       dispatch(setSrcToken(srcTokens.find((token) => !token.crosschain)));
       dispatch(setDestToken(destTokens.find((token) => !token.crosschain)));
@@ -47,7 +45,7 @@ const Home: NextPage = () => {
   return (
     <swap.SwapContainer>
       <h1 className="text-3xl font-thin text-center text-white">
-        Cross Chain Swap
+        Swap Native Tokens ✨
       </h1>
       <div className="mt-5">
         <div className="mb-2 font-light text-white">From</div>
