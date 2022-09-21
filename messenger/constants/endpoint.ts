@@ -7,7 +7,7 @@ export const RPC = {
     "https://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
   [Chain.POLYGON]: "https://rpc-mumbai.maticvigil.com",
   [Chain.ETHEREUM]:
-    "https://ropsten.infura.io/v3/6b8c3c7f3f1d4c3e9c2d3f7f8e7e5e65",
+    "https://goerli.infura.io/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
 };
 
 export const WSS = {
@@ -17,5 +17,7 @@ export const WSS = {
     "wss://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
   [Chain.POLYGON]: "wss://rpc-mumbai.maticvigil.com/ws",
   [Chain.ETHEREUM]:
-    "wss://ropsten.infura.io/ws/v3/6b8c3c7f3f1d4c3e9c2d3f7f8e7e5e65",
+    "wss://goerli.infura.io/ws/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
 };
+
+export const ATTESTATION_BASE_API = "https://iris-api-sandbox.circle.com";

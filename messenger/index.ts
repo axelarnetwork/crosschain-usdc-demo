@@ -3,12 +3,12 @@ import ora from "ora";
 import { fetch } from "cross-fetch";
 import { privateKey } from "./secret.json";
 import { Chain } from "./constants/chains";
-import { RPC, WSS } from "./constants/rpc";
+import { ATTESTATION_BASE_API, RPC, WSS } from "./constants/endpoint";
 import chalk from "chalk";
 import { CIRCLE_BRIDGE, MESSAGE_TRANSMITTER } from "./constants/address";
 
 // Mocked the MessageTransmitter contract address
-const supportedChains = [Chain.AVALANCHE, Chain.FANTOM];
+const supportedChains = [Chain.AVALANCHE, Chain.ETHEREUM];
 if (supportedChains.length > 2) {
   console.log("Only two chains are supported");
   process.exit(0);
@@ -37,10 +37,12 @@ const colorReceiveMessage = chalk.whiteBright("receiveMessage");
 const colorMessageTransmitter = chalk.yellowBright("MessageTransmitter");
 const colorUSDC = chalk.whiteBright("USDC");
 
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
 for (const chain of supportedChains) {
   const destChain = supportedChains.find((c) => c !== chain);
   if (!destChain) continue;
-  const circleBridgeAddress = CIRCLE_BRIDGE[chain];
+  const srcMessageTransmitterAddress = MESSAGE_TRANSMITTER[chain];
   const messageTransmitterAddress = MESSAGE_TRANSMITTER[destChain];
   const srcProvider = new ethers.providers.WebSocketProvider(WSS[chain]);
   const destProvider = new ethers.providers.JsonRpcProvider(RPC[destChain]);
@@ -48,7 +50,7 @@ for (const chain of supportedChains) {
 
   // Step 1: Observe for the MessageSent event
   const srcContract = new ethers.Contract(
-    circleBridgeAddress,
+    srcMessageTransmitterAddress,
     ["event MessageSent(bytes message)"],
     srcProvider
   );
@@ -65,31 +67,45 @@ for (const chain of supportedChains) {
           chalk.green(message)
       );
     const oraApiCall = ora("Waiting for Attestation API response").start();
-    const response = await fetch(
-      `http://localhost:4000/v1/attestations/${destChain}/${ethers.utils.solidityKeccak256(
-        ["bytes"],
-        [message]
-      )}`
-    )
-      .then((resp) => resp.json())
-      .catch((err: any) => {
-        oraApiCall.fail(
-          "Error fetching attestation: " + chalk.redBright(err.message)
-        );
-      });
+    sleep(10000);
+    let response;
+    while (!response) {
+      const _response = await fetch(
+        `${ATTESTATION_BASE_API}/attestations/${ethers.utils.solidityKeccak256(
+          ["bytes"],
+          [message]
+        )}`
+      )
+        .then((resp) => resp.json())
+        .catch((err: any) => {
+          oraApiCall.fail(
+            "Error fetching attestation: " + chalk.redBright(err.message)
+          );
+        });
+      console.log(" ", _response);
+
+      if (_response.error || _response.status !== "complete") {
+        await sleep(5000);
+      } else {
+        response = _response;
+      }
+    }
+
     oraApiCall.prefixText = `[${getDateTime()}]`;
     oraApiCall.succeed(
       `Received ${colorAttestation} from the ${colorAttestationApi}: ` +
-        chalk.green(response.signature)
+        chalk.green(response.attestation)
     );
-    if (response.success) {
+    if (response.status === "complete") {
       const destContract = new ethers.Contract(
         messageTransmitterAddress,
-        ["function receiveMessage(bytes message, bytes signature)"],
+        [
+          "function receiveMessage(bytes memory _message, bytes calldata _attestation)",
+        ],
         destSigner
       );
 
-      const signature = response.signature;
+      const signature = response.attestation;
 
       // Step 3: Call the receiveMessage function with the signature
       const oraTx = ora(
@@ -106,13 +122,11 @@ for (const chain of supportedChains) {
         });
       oraTx.prefixText = `[${getDateTime()}]`;
 
-      const [, , , messageBody] = ethers.utils.defaultAbiCoder.decode(
-        ["uint32", "uint64", "address", "bytes"],
-        message
-      );
-      const [amount, _recipient] = ethers.utils.defaultAbiCoder.decode(
-        ["uint256", "bytes32"],
-        messageBody
+      const messageBody = message.slice(170);
+
+      const [, _recipient, amount] = ethers.utils.defaultAbiCoder.decode(
+        ["uint256", "address", "uint256"],
+        "0x" + messageBody.slice(72)
       );
       const colorRecipient = chalk.greenBright("0x" + _recipient.slice(-40));
       const colorAmount = chalk.cyanBright(ethers.utils.formatUnits(amount, 6));

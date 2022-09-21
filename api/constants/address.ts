@@ -1,8 +1,8 @@
 import { Chain } from "./chains";
 
 export const CIRCLE_SWAP_EXECUTABLE = {
-  [Chain.AVALANCHE]: "",
-  [Chain.ETHEREUM]: "",
+  [Chain.AVALANCHE]: "0x5010710477b32c9c0F48B303b1aAa51e7C12b652",
+  [Chain.ETHEREUM]: "0x20BD2DDceBbb53B8Aa84C141A40A8995ac5Ab250",
 };
 
 export const MESSAGE_TRANSMITTER = {

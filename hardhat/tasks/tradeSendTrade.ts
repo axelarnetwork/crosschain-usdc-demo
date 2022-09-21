@@ -24,10 +24,10 @@ task(
     const { amount, destinationChain } = taskArgs;
     const chainName = hre.network.name as Chain;
     const destinationChainName = destinationChain as Chain;
-    if (chainName !== Chain.AVALANCHE && chainName !== Chain.FANTOM) return;
+    if (chainName !== Chain.AVALANCHE && chainName !== Chain.ETHEREUM) return;
     if (
       destinationChainName !== Chain.AVALANCHE &&
-      destinationChainName !== Chain.FANTOM
+      destinationChainName !== Chain.ETHEREUM
     )
       return;
 
@@ -75,6 +75,15 @@ task(
       deployer
     );
 
+    console.log(
+      destinationChainName,
+      tradeDataSrc,
+      tradeDataDest,
+      traceId,
+      fallbackRecipient,
+      inputPos
+    );
+
     const tx = await contract
       .nativeTradeSendTrade(
         destinationChainName,
@@ -89,8 +98,5 @@ task(
       )
       .then((tx: any) => tx.wait());
 
-    console.log(
-      "Tracking at Axelarscan:",
-      "https://testnet.axelarscan.io/gmp/" + tx.transactionHash
-    );
+    console.log("Tx Hash:", tx.transactionHash);
   });

@@ -11,12 +11,7 @@ task("approve", "Approve USDC given to given `spender`")
     const [deployer] = await ethers.getSigners();
     const chainName = hre.network.name as Chain;
 
-    if (
-      chainName !== Chain.MOONBEAM &&
-      chainName !== Chain.AVALANCHE &&
-      chainName !== Chain.FANTOM
-    )
-      return;
+    if (chainName !== Chain.AVALANCHE && chainName !== Chain.ETHEREUM) return;
 
     const tokenAddress = USDC[chainName];
 

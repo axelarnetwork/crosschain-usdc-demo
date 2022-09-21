@@ -183,11 +183,13 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         uint16 inputPos
     ) external payable onlyValidChain(destinationChain) {
         (uint256 amount, uint256 burnAmount) = _trade(tradeData1);
+        IERC20(address(usdc)).approve(address(circleBridge), burnAmount);
+
         uint64 _nonce = circleBridge.depositForBurn(
             burnAmount,
             this.destinationDomains(destinationChain),
             bytes32(uint256(uint160(this.siblings(destinationChain)))),
-            address(this)
+            address(usdc)
         );
 
         _nativeSendTrade(
@@ -214,7 +216,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
             amount,
             this.destinationDomains(destinationChain),
             bytes32(uint256(uint160(this.siblings(destinationChain)))),
-            address(this)
+            address(usdc)
         );
 
         _nativeSendTrade(
