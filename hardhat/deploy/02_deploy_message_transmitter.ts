@@ -23,5 +23,5 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
 
 deploy.tags = ["MessageTransmitter"];
 deploy.dependencies = ["USDC"];
-
+deploy.skip = () => Promise.resolve(true);
 export default deploy;

@@ -19,9 +19,9 @@ const config: HardhatUserConfig = {
   defaultNetwork: Chain.AVALANCHE,
   networks: {
     ethereum: {
-      chainId: 3,
+      chainId: 5,
       gasMultiplier: 2,
-      url: "https://ropsten.infura.io/v3/a3a667b533f34fd48ca350546454ea05",
+      url: "https://goerli.infura.io/v3/a3a667b533f34fd48ca350546454ea05",
       accounts: [privateKey],
     },
     avalanche: {
@@ -50,7 +50,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      ropsten: apiKey.ETHERSCAN_API_KEY,
+      goerli: apiKey.ETHERSCAN_API_KEY,
       avalancheFujiTestnet: apiKey.SNOWTRACE_API_KEY,
       moonbaseAlpha: apiKey.MOONSCAN_API_KEY,
       polygonMumbai: apiKey.MUMBAISCAN_API_KEY,

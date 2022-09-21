@@ -1,0 +1,117 @@
+{
+  "address": "0x67BF1EeBbCB7994703A1827261493083D1233Cd0",
+  "abi": [
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "sourceAddress",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "destinationChain",
+          "type": "string"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "destinationAddress",
+          "type": "string"
+        },
+        {
+          "indexed": true,
+          "internalType": "bytes32",
+          "name": "payloadHash",
+          "type": "bytes32"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "gasFeeAmount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "refundAddress",
+          "type": "address"
+        }
+      ],
+      "name": "NativeGasPaidForContractCall",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "string",
+          "name": "destinationChain",
+          "type": "string"
+        },
+        {
+          "internalType": "string",
+          "name": "destinationAddress",
+          "type": "string"
+        },
+        {
+          "internalType": "bytes",
+          "name": "payload",
+          "type": "bytes"
+        },
+        {
+          "internalType": "address",
+          "name": "refundAddress",
+          "type": "address"
+        }
+      ],
+      "name": "payNativeGasForContractCall",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ],
+  "transactionHash": "0x9ed45f002fe8aba218e26e4992e3a6e05e791c7e64c63a2202608198bb04224b",
+  "receipt": {
+    "to": null,
+    "from": "0xa411977dd24F1547065C6630E468a43275cB4d7f",
+    "contractAddress": "0x67BF1EeBbCB7994703A1827261493083D1233Cd0",
+    "transactionIndex": 6,
+    "gasUsed": "278631",
+    "logsBloom": "0x00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "blockHash": "0xc327d1ffddbabdbbc8f5875eb68dfe6312f53b9740707a75969acbdc567a8d06",
+    "transactionHash": "0x9ed45f002fe8aba218e26e4992e3a6e05e791c7e64c63a2202608198bb04224b",
+    "logs": [],
+    "blockNumber": 13739404,
+    "cumulativeGasUsed": "933153",
+    "status": 1,
+    "byzantium": true
+  },
+  "args": [],
+  "numDeployments": 1,
+  "solcInputHash": "ff8c359119a2cec81f2c9f549ce7abd0",
+  "metadata": "{\"compiler\":{\"version\":\"0.8.9+commit.e5eed63a\"},\"language\":\"Solidity\",\"output\":{\"abi\":[{\"anonymous\":false,\"inputs\":[{\"indexed\":true,\"internalType\":\"address\",\"name\":\"sourceAddress\",\"type\":\"address\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"destinationChain\",\"type\":\"string\"},{\"indexed\":false,\"internalType\":\"string\",\"name\":\"destinationAddress\",\"type\":\"string\"},{\"indexed\":true,\"internalType\":\"bytes32\",\"name\":\"payloadHash\",\"type\":\"bytes32\"},{\"indexed\":false,\"internalType\":\"uint256\",\"name\":\"gasFeeAmount\",\"type\":\"uint256\"},{\"indexed\":false,\"internalType\":\"address\",\"name\":\"refundAddress\",\"type\":\"address\"}],\"name\":\"NativeGasPaidForContractCall\",\"type\":\"event\"},{\"inputs\":[{\"internalType\":\"address\",\"name\":\"sender\",\"type\":\"address\"},{\"internalType\":\"string\",\"name\":\"destinationChain\",\"type\":\"string\"},{\"internalType\":\"string\",\"name\":\"destinationAddress\",\"type\":\"string\"},{\"internalType\":\"bytes\",\"name\":\"payload\",\"type\":\"bytes\"},{\"internalType\":\"address\",\"name\":\"refundAddress\",\"type\":\"address\"}],\"name\":\"payNativeGasForContractCall\",\"outputs\":[],\"stateMutability\":\"payable\",\"type\":\"function\"}],\"devdoc\":{\"kind\":\"dev\",\"methods\":{},\"version\":1},\"userdoc\":{\"kind\":\"user\",\"methods\":{},\"version\":1}},\"settings\":{\"compilationTarget\":{\"contracts/FakeAxelarGasService.sol\":\"FakeAxelarGasService\"},\"evmVersion\":\"london\",\"libraries\":{},\"metadata\":{\"bytecodeHash\":\"ipfs\",\"useLiteralContent\":true},\"optimizer\":{\"enabled\":false,\"runs\":200},\"remappings\":[]},\"sources\":{\"contracts/FakeAxelarGasService.sol\":{\"content\":\"// SPDX-License-Identifier: MIT\\n\\npragma solidity 0.8.9;\\n\\ncontract FakeAxelarGasService {\\n    event NativeGasPaidForContractCall(\\n        address indexed sourceAddress,\\n        string destinationChain,\\n        string destinationAddress,\\n        bytes32 indexed payloadHash,\\n        uint256 gasFeeAmount,\\n        address refundAddress\\n    );\\n\\n    // This is called on the source chain before calling the gateway to execute a remote contract.\\n    function payNativeGasForContractCall(\\n        address sender,\\n        string calldata destinationChain,\\n        string calldata destinationAddress,\\n        bytes calldata payload,\\n        address refundAddress\\n    ) external payable {\\n        emit NativeGasPaidForContractCall(\\n            sender,\\n            destinationChain,\\n            destinationAddress,\\n            keccak256(payload),\\n            msg.value,\\n            refundAddress\\n        );\\n    }\\n}\\n\",\"keccak256\":\"0xd123e85b4cbebf0f4705daf94a4d0e799bf0c85a42a7262622fd9dc1975a3e84\",\"license\":\"MIT\"}},\"version\":1}",
+  "bytecode": "0x608060405234801561001057600080fd5b50610414806100206000396000f3fe60806040526004361061001e5760003560e01c80630c93e3bb14610023575b600080fd5b61003d600480360381019061003891906101dc565b61003f565b005b828260405161004f9291906102f7565b60405180910390208873ffffffffffffffffffffffffffffffffffffffff167f617332c1832058df6ee45fcbdf471251474c9945a8e5d229287a21a5f67ccf0a8989898934886040516100a796959493929190610387565b60405180910390a35050505050505050565b600080fd5b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006100ee826100c3565b9050919050565b6100fe816100e3565b811461010957600080fd5b50565b60008135905061011b816100f5565b92915050565b600080fd5b600080fd5b600080fd5b60008083601f84011261014657610145610121565b5b8235905067ffffffffffffffff81111561016357610162610126565b5b60208301915083600182028301111561017f5761017e61012b565b5b9250929050565b60008083601f84011261019c5761019b610121565b5b8235905067ffffffffffffffff8111156101b9576101b8610126565b5b6020830191508360018202830111156101d5576101d461012b565b5b9250929050565b60008060008060008060008060a0898b0312156101fc576101fb6100b9565b5b600061020a8b828c0161010c565b985050602089013567ffffffffffffffff81111561022b5761022a6100be565b5b6102378b828c01610130565b9750975050604089013567ffffffffffffffff81111561025a576102596100be565b5b6102668b828c01610130565b9550955050606089013567ffffffffffffffff811115610289576102886100be565b5b6102958b828c01610186565b935093505060806102a88b828c0161010c565b9150509295985092959890939650565b600081905092915050565b82818337600083830152505050565b60006102de83856102b8565b93506102eb8385846102c3565b82840190509392505050565b60006103048284866102d2565b91508190509392505050565b600082825260208201905092915050565b6000601f19601f8301169050919050565b600061033e8385610310565b935061034b8385846102c3565b61035483610321565b840190509392505050565b6000819050919050565b6103728161035f565b82525050565b610381816100e3565b82525050565b600060808201905081810360008301526103a281888a610332565b905081810360208301526103b7818688610332565b90506103c66040830185610369565b6103d36060830184610378565b97965050505050505056fea26469706673582212207afa182f5a0b4d7eb0801d8f2102db53c3ee728e71c83fc0dbaa13fde8fdc03764736f6c63430008090033",
+  "deployedBytecode": "0x60806040526004361061001e5760003560e01c80630c93e3bb14610023575b600080fd5b61003d600480360381019061003891906101dc565b61003f565b005b828260405161004f9291906102f7565b60405180910390208873ffffffffffffffffffffffffffffffffffffffff167f617332c1832058df6ee45fcbdf471251474c9945a8e5d229287a21a5f67ccf0a8989898934886040516100a796959493929190610387565b60405180910390a35050505050505050565b600080fd5b600080fd5b600073ffffffffffffffffffffffffffffffffffffffff82169050919050565b60006100ee826100c3565b9050919050565b6100fe816100e3565b811461010957600080fd5b50565b60008135905061011b816100f5565b92915050565b600080fd5b600080fd5b600080fd5b60008083601f84011261014657610145610121565b5b8235905067ffffffffffffffff81111561016357610162610126565b5b60208301915083600182028301111561017f5761017e61012b565b5b9250929050565b60008083601f84011261019c5761019b610121565b5b8235905067ffffffffffffffff8111156101b9576101b8610126565b5b6020830191508360018202830111156101d5576101d461012b565b5b9250929050565b60008060008060008060008060a0898b0312156101fc576101fb6100b9565b5b600061020a8b828c0161010c565b985050602089013567ffffffffffffffff81111561022b5761022a6100be565b5b6102378b828c01610130565b9750975050604089013567ffffffffffffffff81111561025a576102596100be565b5b6102668b828c01610130565b9550955050606089013567ffffffffffffffff811115610289576102886100be565b5b6102958b828c01610186565b935093505060806102a88b828c0161010c565b9150509295985092959890939650565b600081905092915050565b82818337600083830152505050565b60006102de83856102b8565b93506102eb8385846102c3565b82840190509392505050565b60006103048284866102d2565b91508190509392505050565b600082825260208201905092915050565b6000601f19601f8301169050919050565b600061033e8385610310565b935061034b8385846102c3565b61035483610321565b840190509392505050565b6000819050919050565b6103728161035f565b82525050565b610381816100e3565b82525050565b600060808201905081810360008301526103a281888a610332565b905081810360208301526103b7818688610332565b90506103c66040830185610369565b6103d36060830184610378565b97965050505050505056fea26469706673582212207afa182f5a0b4d7eb0801d8f2102db53c3ee728e71c83fc0dbaa13fde8fdc03764736f6c63430008090033",
+  "devdoc": {
+    "kind": "dev",
+    "methods": {},
+    "version": 1
+  },
+  "userdoc": {
+    "kind": "user",
+    "methods": {},
+    "version": 1
+  },
+  "storageLayout": {
+    "storage": [],
+    "types": null
+  }
+}

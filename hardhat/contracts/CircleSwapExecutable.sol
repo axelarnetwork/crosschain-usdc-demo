@@ -70,11 +70,11 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     //Use this to register additional siblings. Siblings are used to send headers to as well as to know who to trust for headers.
     function addSibling(
         string memory chain_,
-        uint32 chainId,
+        uint32 domain,
         address address_
     ) external onlyOwner {
         siblings[chain_] = address_;
-        destinationDomains[chain_] = chainId;
+        destinationDomains[chain_] = domain;
     }
 
     function _tradeSrc(bytes memory tradeData)
@@ -183,14 +183,12 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         uint16 inputPos
     ) external payable onlyValidChain(destinationChain) {
         (uint256 amount, uint256 burnAmount) = _trade(tradeData1);
-        bool burnSuccess = circleBridge.depositForBurn(
+        uint64 _nonce = circleBridge.depositForBurn(
             burnAmount,
             this.destinationDomains(destinationChain),
             bytes32(uint256(uint160(this.siblings(destinationChain)))),
             address(this)
         );
-
-        require(burnSuccess, "BURN_FAILED");
 
         _nativeSendTrade(
             destinationChain,
@@ -212,13 +210,12 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         uint16 inputPos
     ) external payable onlyValidChain(destinationChain) {
         usdc.transferFrom(msg.sender, address(this), amount);
-        bool success = circleBridge.depositForBurn(
+        uint64 nonce = circleBridge.depositForBurn(
             amount,
             this.destinationDomains(destinationChain),
             bytes32(uint256(uint160(this.siblings(destinationChain)))),
             address(this)
         );
-        require(success, "DEPOSIT_FAILED");
 
         _nativeSendTrade(
             destinationChain,
@@ -268,11 +265,11 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         SafeERC20.safeTransfer(IERC20(address(usdc)), destination, amount);
     }
 
-    function _execute(
+    function execute(
         string memory, /*sourceChain*/
         string memory, /*sourceAddress*/
         bytes calldata payload
-    ) internal override {
+    ) public {
         (
             bytes memory data,
             uint256 amount,

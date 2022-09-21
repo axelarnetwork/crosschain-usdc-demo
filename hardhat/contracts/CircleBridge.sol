@@ -48,14 +48,14 @@ contract CircleBridge is Ownable {
     * @param _mintRecipient address of mint recipient on destination domain
     * @param _burnToken address of contract to burn deposited tokens, on local
     domain
-    * @return success bool, true if successful
+    * @return _nonce uint64, unique nonce for each burn
     */
     function depositForBurn(
         uint256 _amount,
         uint32 _destinationDomain,
         bytes32 _mintRecipient,
         address _burnToken
-    ) external returns (bool success) {
+    ) external returns (uint64 _nonce) {
         usdc.burn(msg.sender, _amount);
         bytes memory messageBody = abi.encode(_amount, _mintRecipient);
         bytes memory message = abi.encode(
@@ -74,7 +74,7 @@ contract CircleBridge is Ownable {
             circleBridgeSiblings[_destinationDomain]
         );
         emit MessageSent(message);
-        return true;
+        return nonce;
     }
 
     /**

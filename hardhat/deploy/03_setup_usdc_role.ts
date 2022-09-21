@@ -27,5 +27,6 @@ const setupMinterRole = async (hre: HardhatRuntimeEnvironment) => {
 
 setupMinterRole.tags = ["MessageTransmitter", "CircleBridge"];
 setupMinterRole.runAtTheEnd = true;
+setupMinterRole.skip = () => Promise.resolve(true);
 
 export default setupMinterRole;
