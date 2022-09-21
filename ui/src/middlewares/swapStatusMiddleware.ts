@@ -173,7 +173,6 @@ swapStatusStartListening({
       if (args[0] !== destChain.swapExecutorAddress) return;
       const txHash = args[args.length - 1].transactionHash;
       listenerApi.dispatch(setStep(2));
-      // listenerApi.dispatch(setCommandId(commandId));
       listenerApi.dispatch(setDestApprovalTx(txHash));
       destCircleBridge.removeAllListeners(eventFilter);
     });
