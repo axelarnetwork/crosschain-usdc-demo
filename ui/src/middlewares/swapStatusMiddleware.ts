@@ -5,7 +5,6 @@ import {
 import { AppDispatch, RootState } from "store";
 import {
   setChain,
-  setCommandId,
   setRefundAddress,
   setStep,
   setSwapFailed,
@@ -16,24 +15,14 @@ import {
 } from "slices/swapStatusSlice";
 import { ethers } from "ethers";
 import { getProvider } from "utils/provider";
-import gatewayAbi from "abi/axelarGateway.json";
 import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
 import { requiredSwapDest } from "utils/swap";
 import { SquidChain } from "types/chain";
-import {
-  getSwapFailedEvent,
-  getSwapPendingEvent,
-  getSwapSuccessEvent,
-} from "utils/contract";
+import { getSwapPendingEvent } from "utils/contract";
 import { selectTokensByChainId } from "slices/tokenSlice";
-import {
-  setDestChain,
-  setDestToken,
-  setSrcChain,
-  setSrcToken,
-} from "slices/swapInputSlice";
+import { setDestChain, setSrcChain, setSrcToken } from "slices/swapInputSlice";
 import { Token } from "types/token";
-import { fetchSwapStatus } from "clients/apiClient";
+import { CIRCLE_BRIDGE } from "config/constants";
 
 export const swapStatusMiddleware = createListenerMiddleware();
 
@@ -74,53 +63,53 @@ swapStatusStartListening({
       dispatch(setSrcChain(srcChain));
       dispatch(setDestChain(destChain as SquidChain));
 
-      const swapStatusData = await fetchSwapStatus(txHash);
-      if (!swapStatusData) return;
+      // const swapStatusData = await fetchSwapStatus(txHash);
+      // if (!swapStatusData) return;
 
-      const approveData = swapStatusData.approved;
-      const executeData = swapStatusData.executed;
+      // const approveData = swapStatusData.approved;
+      // const executeData = swapStatusData.executed;
 
-      if (executeData) {
-        const executeTxHash = executeData.transactionHash;
-        const executeTxReceipt = executeData.receipt;
-        dispatch(setDestSwapTx(executeTxHash));
-        const swapSuccessEvent = getSwapSuccessEvent(
-          contract,
-          executeTxReceipt
-        );
-        const swapFailedEvent = getSwapFailedEvent(contract, executeTxReceipt);
-        if (swapSuccessEvent) {
-          dispatch(setSwapFailed(false));
-        } else if (swapFailedEvent) {
-          dispatch(setSwapFailed(true));
-          const refundAddress =
-            swapFailedEvent.args[swapFailedEvent.args.length - 1];
-          dispatch(setRefundAddress(refundAddress));
-        }
-      }
+      // if (executeData) {
+      //   const executeTxHash = executeData.transactionHash;
+      //   const executeTxReceipt = executeData.receipt;
+      //   dispatch(setDestSwapTx(executeTxHash));
+      //   const swapSuccessEvent = getSwapSuccessEvent(
+      //     contract,
+      //     executeTxReceipt
+      //   );
+      //   const swapFailedEvent = getSwapFailedEvent(contract, executeTxReceipt);
+      //   if (swapSuccessEvent) {
+      //     dispatch(setSwapFailed(false));
+      //   } else if (swapFailedEvent) {
+      //     dispatch(setSwapFailed(true));
+      //     const refundAddress =
+      //       swapFailedEvent.args[swapFailedEvent.args.length - 1];
+      //     dispatch(setRefundAddress(refundAddress));
+      //   }
+      // }
 
-      if (approveData) {
-        const approveTxHash = approveData.transactionHash;
-        const commandId = approveData.returnValues.commandId;
-        dispatch(setCommandId(commandId));
-        dispatch(setDestApprovalTx(approveTxHash));
-      }
+      // if (approveData) {
+      //   const approveTxHash = approveData.transactionHash;
+      //   const commandId = approveData.returnValues.commandId;
+      //   dispatch(setCommandId(commandId));
+      //   dispatch(setDestApprovalTx(approveTxHash));
+      // }
 
-      if (swapStatusData.status === "executed") {
-        dispatch(setStep(3));
-        return;
-      } else if (swapStatusData.status === "approved") dispatch(setStep(2));
+      // if (swapStatusData.status === "executed") {
+      //   dispatch(setStep(3));
+      //   return;
+      // } else if (swapStatusData.status === "approved") dispatch(setStep(2));
 
-      const destTokens = selectTokensByChainId(state, destChain?.id);
-      const destToken = destTokens?.find((token) => !token.crosschain) as Token;
-      dispatch(setDestToken(destToken));
-      dispatch(
-        setSrcTx({
-          txHash,
-          traceId,
-          payloadHash,
-        })
-      );
+      // const destTokens = selectTokensByChainId(state, destChain?.id);
+      // const destToken = destTokens?.find((token) => !token.crosschain) as Token;
+      // dispatch(setDestToken(destToken));
+      // dispatch(
+      //   setSrcTx({
+      //     txHash,
+      //     traceId,
+      //     payloadHash,
+      //   })
+      // );
     }
   },
 });
@@ -167,24 +156,24 @@ swapStatusStartListening({
     const payloadHash = pendingEvent.payloadHash;
     listenerApi.dispatch(setPayloadHash(payloadHash));
 
-    // wait for relay tx
-    const gatewayContract = new ethers.Contract(
-      destChain.gatewayAddress,
-      gatewayAbi,
+    // wait for usdc mint token
+    const destCircleBridge = new ethers.Contract(
+      CIRCLE_BRIDGE[destChain.name],
+      [
+        "event MintAndWithdraw(address _mintRecipient, uint256 _amount, address _mintToken)",
+      ],
       destProvider
     );
-    const eventFilter = gatewayContract.filters.ContractCallApproved(
+    const eventFilter = destCircleBridge.filters.MintAndWithdraw(
       null,
       null,
-      null,
-      destChain.swapExecutorAddress,
-      payloadHash
+      null
     );
-    gatewayContract.once(eventFilter, (...args) => {
-      const commandId = args[0];
+    destCircleBridge.once(eventFilter, (...args) => {
+      console.log(args);
       const txHash = args[args.length - 1].transactionHash;
       listenerApi.dispatch(setStep(2));
-      listenerApi.dispatch(setCommandId(commandId));
+      // listenerApi.dispatch(setCommandId(commandId));
       listenerApi.dispatch(setDestApprovalTx(txHash));
     });
   },

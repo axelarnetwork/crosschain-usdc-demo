@@ -35,11 +35,11 @@ export const SwapProgress: FunctionComponent<SwapProgressProps> = ({
       }
     } else if (step === 1) {
       if (currentStep <= step) {
-        setTitle("Transaction Relay");
+        setTitle(`Relaying USDC to ${destChain.name}`);
       } else if (!destChain || !txHash) {
-        setTitle("Relayed transaction");
+        setTitle("Minted USDC.");
       } else {
-        setTitle(`Relayed tx to ${destChain.name}`);
+        setTitle(`USDC has been minted`);
       }
     } else if (step === 2) {
       if (currentStep <= step) {

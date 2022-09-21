@@ -12,7 +12,7 @@ export default async function handler(
   const privateKey = process.env.PRIVATE_KEY || "";
   const chain = req.body.chain as ChainName;
   const rawTx = req.body.rawTx as PopulatedTransaction;
-  if (chain !== ChainName.AVALANCHE && chain !== ChainName.FANTOM) {
+  if (chain !== ChainName.AVALANCHE && chain !== ChainName.ETHEREUM) {
     return res
       .status(400)
       .json({ success: false, error: `${chain} is not supported.` });

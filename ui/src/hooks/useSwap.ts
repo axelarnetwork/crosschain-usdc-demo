@@ -22,11 +22,7 @@ import { createDestTradeData, createSrcTradeData } from "utils/contract";
 import gatewayAbi from "abi/axelarGateway.json";
 import { SquidChain } from "types/chain";
 import { Token } from "types/token";
-import {
-  AxelarQueryAPI,
-  Environment,
-  EvmChain,
-} from "@axelar-network/axelarjs-sdk";
+import { AxelarQueryAPI, Environment } from "@axelar-network/axelarjs-sdk";
 
 const AMOUNT_INPUT_POS = 196; // length of tradeData (32) + token in (32) + amount in (32) + router (32) + length of data (32) + 36
 
@@ -112,11 +108,7 @@ const useSwap = () => {
   useEffect(() => {
     async function loadGasFee() {
       const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
-      const gasFee = await api.estimateGasFee(
-        srcChain.name as unknown as EvmChain,
-        destChain.name as unknown as EvmChain,
-        srcChain.nativeCurrency?.symbol
-      );
+      const gasFee = ethers.utils.parseEther("0.001").toString();
       setGasFee(gasFee);
     }
     loadGasFee();

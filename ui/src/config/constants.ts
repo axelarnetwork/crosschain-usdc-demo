@@ -1,55 +1,56 @@
 import { ChainId, ChainName, SquidChain } from "../types/chain";
 export const RPC = {
   [ChainName.AVALANCHE]: "https://api.avax-test.network/ext/bc/C/rpc",
-  [ChainName.FANTOM]:
-    "https://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
+  [ChainName.ETHEREUM]:
+    "https://goerli.infura.io/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
 };
 
 export const WSS = {
   [ChainName.AVALANCHE]: "wss://api.avax-test.network/ext/bc/C/ws",
-  [ChainName.FANTOM]:
-    "wss://fantom-testnet.blastapi.io/aa724548-b1ae-4f26-935b-69827f8a1706",
+  [ChainName.ETHEREUM]:
+    "wss://goerli.infura.io/ws/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
 };
 
 export const CIRCLE_SWAP_EXECUTABLE = {
-  [ChainName.AVALANCHE]: "0x8679E0Ee1679541CD79fA0584aD07AB5babB2F1E",
-  [ChainName.FANTOM]: "0x3Ee316Ea3DB93771625D6b0D20753aE3fE1c498f",
+  [ChainName.AVALANCHE]: "0x5010710477b32c9c0F48B303b1aAa51e7C12b652",
+  [ChainName.ETHEREUM]: "0x20BD2DDceBbb53B8Aa84C141A40A8995ac5Ab250",
 };
 
 export const MESSAGE_TRANSMITTER = {
-  [ChainName.AVALANCHE]: "0x734F0304B84Fef46161845db517eA144FDF7F277",
-  [ChainName.FANTOM]: "0x3cC062d269169FF4f4Ae6876db7da1DAfB454952",
+  [ChainName.AVALANCHE]: "0x52FfFb3EE8Fa7838e9858A2D5e454007b9027c3C",
+  [ChainName.ETHEREUM]: "0x40A61D3D2AfcF5A5d31FcDf269e575fB99dd87f7",
 };
 
 export const CIRCLE_BRIDGE = {
-  [ChainName.AVALANCHE]: "0x10c85E0D6e8aD1F71F0b9926f962e2f266d39a69",
-  [ChainName.FANTOM]: "0x5f15259E326B4156b33D6a00C6AD238A018b592a",
+  [ChainName.AVALANCHE]: "0x0fC1103927AF27aF808D03135214718bCEDbE9ad",
+  [ChainName.ETHEREUM]: "0xdAbec94B97F7b5FCA28f050cC8EeAc2Dc9920476",
 };
 
+export const ATTESTATION_BASE_API = "https://iris-api-sandbox.circle.com";
+
 export const chains: SquidChain[] = [
-  // {
-  //   id: ChainId.ETHEREUM,
-  //   name: ChainName.ETHEREUM,
-  //   network: "ropsten",
-  //   icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
-  //   rpcUrls: {
-  //     default: "https://ropsten.infura.io/v3/510b6d5b3c56497b8070626a54f565a9",
-  //   },
-  //   multicallAddress: "0x53c43764255c17bd724f74c4ef150724ac50a3ed",
-  //   gatewayAddress: "0xBC6fcce7c5487d43830a219CA6E7B83238B41e71",
-  //   swapExecutorAddress: "0x14e55b9517D59eB5d250D8d048c94992739CA38E",
-  //   routerAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
-  //   defaultCrosschainToken: "0x1487F3faefE78792CDC48D87FF32aaC6650fd85f",
-  //   wrappedNativeToken: "0xc778417E063141139Fce010982780140Aa0cD5Ab",
-  //   distributionENSExecutableAddress:
-  //     "0xb123d4aA48fC5012293cf4BFD3659277468e27Cf",
-  //   ensRegistryAddress: "0x00000000000C2E074eC69A0dFb2997BA6C7d2e1e",
-  //   nativeCurrency: {
-  //     name: "Ethereum",
-  //     symbol: "ETH",
-  //     decimals: 18,
-  //   },
-  // },
+  {
+    id: ChainId.ETHEREUM,
+    name: ChainName.ETHEREUM,
+    network: "goerli",
+    icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    rpcUrls: {
+      default: "https://goerli.infura.io/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
+    },
+    multicallAddress: "0x77dCa2C955b15e9dE4dbBCf1246B4B85b651e50e",
+    gatewayAddress: "0x9d71b2bA8a9359f24A0e0d43C29d654e47a98Ca6",
+    swapExecutorAddress: "0x2bF739f86e437b742b062aA416e3d31a69218923",
+    routerAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
+    blockExplorers: {
+      default: { name: "Etherscan", url: "https://goerli.etherscan.io/" },
+    },
+    wrappedNativeToken: "0xb4fbf271143f4fbf7b91a5ded31805e42b2208d6",
+    nativeCurrency: {
+      name: "Ethereum",
+      symbol: "ETH",
+      decimals: 18,
+    },
+  },
   // {
   //   id: ChainId.MOONBEAM,
   //   name: ChainName.MOONBEAM,
@@ -74,29 +75,29 @@ export const chains: SquidChain[] = [
   //   },
   //   testnet: true,
   // },
-  {
-    id: ChainId.FANTOM,
-    name: ChainName.FANTOM,
-    network: "Fantom Testnet",
-    icon: "https://assets.coingecko.com/coins/images/4001/small/Fantom.png?1558015016",
-    rpcUrls: {
-      default: "https://rpc.testnet.fantom.network/",
-    },
-    multicallAddress: "0xf44a24e4447f01e410ea736a8295489b840bad3c",
-    gatewayAddress: "0x97837985Ec0494E7b9C71f5D3f9250188477ae14",
-    swapExecutorAddress: "0x3Ee316Ea3DB93771625D6b0D20753aE3fE1c498f",
-    routerAddress: "0x9fE0E1636735153B0b1f5f5b98B5e93C203c94cc",
-    wrappedNativeToken: "0x3a34e91226052c509cb0dc38dcdefe6a028f869e",
-    blockExplorers: {
-      default: { name: "Ftmscan", url: "https://testnet.ftmscan.com" },
-    },
-    nativeCurrency: {
-      name: "Fantom",
-      symbol: "FTM",
-      decimals: 18,
-    },
-    testnet: true,
-  },
+  // {
+  //   id: ChainId.FANTOM,
+  //   name: ChainName.FANTOM,
+  //   network: "Fantom Testnet",
+  //   icon: "https://assets.coingecko.com/coins/images/4001/small/Fantom.png?1558015016",
+  //   rpcUrls: {
+  //     default: "https://rpc.testnet.fantom.network/",
+  //   },
+  //   multicallAddress: "0xf44a24e4447f01e410ea736a8295489b840bad3c",
+  //   gatewayAddress: "0x97837985Ec0494E7b9C71f5D3f9250188477ae14",
+  //   swapExecutorAddress: "0x3Ee316Ea3DB93771625D6b0D20753aE3fE1c498f",
+  //   routerAddress: "0x9fE0E1636735153B0b1f5f5b98B5e93C203c94cc",
+  //   wrappedNativeToken: "0x3a34e91226052c509cb0dc38dcdefe6a028f869e",
+  //   blockExplorers: {
+  //     default: { name: "Ftmscan", url: "https://testnet.ftmscan.com" },
+  //   },
+  //   nativeCurrency: {
+  //     name: "Fantom",
+  //     symbol: "FTM",
+  //     decimals: 18,
+  //   },
+  //   testnet: true,
+  // },
   {
     id: ChainId.AVALANCHE,
     name: ChainName.AVALANCHE,
@@ -106,8 +107,8 @@ export const chains: SquidChain[] = [
       default: "https://api.avax-test.network/ext/bc/C/rpc",
     },
     multicallAddress: "0x3D015943d2780fE97FE3f69C97edA2CCC094f78c",
-    gatewayAddress: "0xC249632c2D40b9001FE907806902f63038B737Ab",
-    swapExecutorAddress: "0x8679E0Ee1679541CD79fA0584aD07AB5babB2F1E",
+    gatewayAddress: "0x19E75c24e67dc3161A2659E1D6D1bd50D255E536",
+    swapExecutorAddress: "0xc57ECE4ebc492EA806fA468037a4ad6Df4652aa8",
     routerAddress: "0x2D99ABD9008Dc933ff5c0CD271B88309593aB921",
     wrappedNativeToken: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
     blockExplorers: {
