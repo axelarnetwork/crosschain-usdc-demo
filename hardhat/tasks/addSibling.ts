@@ -34,8 +34,8 @@ task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
       .addSibling(
         siblingChain,
         SIBLING_CHAINS[siblingChainName],
-        "0xa411977dd24F1547065C6630E468a43275cB4d7f"
-        // CIRCLE_SWAP_EXECUTABLE[siblingChainName]
+        // "0xa411977dd24F1547065C6630E468a43275cB4d7f"
+        CIRCLE_SWAP_EXECUTABLE[siblingChainName]
       )
       .then((tx: any) => tx.wait());
 

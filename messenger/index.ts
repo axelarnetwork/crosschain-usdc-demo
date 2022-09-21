@@ -5,7 +5,14 @@ import { privateKey } from "./secret.json";
 import { Chain } from "./constants/chains";
 import { ATTESTATION_BASE_API, RPC, WSS } from "./constants/endpoint";
 import chalk from "chalk";
-import { CIRCLE_BRIDGE, MESSAGE_TRANSMITTER } from "./constants/address";
+import {
+  CIRCLE_BRIDGE,
+  CIRCLE_SWAP_EXECUTABLE,
+  GATEWAY,
+  MESSAGE_TRANSMITTER,
+} from "./constants/address";
+import { getCallContractEvent } from "./utils/event";
+import { parseCallContractLog } from "./utils/parser";
 
 // Mocked the MessageTransmitter contract address
 const supportedChains = [Chain.AVALANCHE, Chain.ETHEREUM];
@@ -43,7 +50,8 @@ for (const chain of supportedChains) {
   const destChain = supportedChains.find((c) => c !== chain);
   if (!destChain) continue;
   const srcMessageTransmitterAddress = MESSAGE_TRANSMITTER[chain];
-  const messageTransmitterAddress = MESSAGE_TRANSMITTER[destChain];
+  const destMessageTransmitterAddress = MESSAGE_TRANSMITTER[destChain];
+  const destExecutableContractAddress = CIRCLE_SWAP_EXECUTABLE[destChain];
   const srcProvider = new ethers.providers.WebSocketProvider(WSS[chain]);
   const destProvider = new ethers.providers.JsonRpcProvider(RPC[destChain]);
   const destSigner = new ethers.Wallet(privateKey, destProvider);
@@ -55,7 +63,10 @@ for (const chain of supportedChains) {
     srcProvider
   );
 
-  srcContract.on("MessageSent", async (message) => {
+  srcContract.on("MessageSent", async (message, event) => {
+    console.log(event);
+    const txHash = event.transactionHash;
+
     // Step 2: Call the Attestation API to get the signature
     console.log(""); // Add a new line
     ora({
@@ -98,7 +109,7 @@ for (const chain of supportedChains) {
     );
     if (response.status === "complete") {
       const destContract = new ethers.Contract(
-        messageTransmitterAddress,
+        destMessageTransmitterAddress,
         [
           "function receiveMessage(bytes memory _message, bytes calldata _attestation)",
         ],
@@ -136,6 +147,36 @@ for (const chain of supportedChains) {
           chalk.greenBright(tx.transactionHash) +
           ` which means ${colorAmount} ${colorUSDC} has been minted to the recipient ${colorRecipient}`
       );
+
+      const log = await parseCallContractLog(txHash, chain);
+      if (log) {
+        const payload = log?.args.payload;
+        const sender = log?.args.sender;
+
+        const destExecutableContract = new ethers.Contract(
+          destExecutableContractAddress,
+          [
+            "function execute(string memory sourceChain, string memory sourceAddress, bytes calldata payload)",
+          ],
+          destSigner
+        );
+        const oraDestContract = ora(
+          "Executing destination executable contract..."
+        ).start();
+        const tx = await destExecutableContract
+          .execute(chain, sender, payload)
+          .then((tx: any) => tx.wait())
+          .catch((e: any) => {
+            oraDestContract.fail(
+              "Error calling 'execute' function: " + chalk.redBright(e.message)
+            );
+          });
+        oraDestContract.prefixText = `[${getDateTime()}]`;
+        oraDestContract.succeed(
+          "Executed destination executable contract: " +
+            chalk.greenBright(tx.transactionHash)
+        );
+      }
     }
   });
 }
