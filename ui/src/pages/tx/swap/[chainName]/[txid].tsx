@@ -147,7 +147,7 @@ const SwapTransactionDetail = () => {
               objectFit="cover"
             />
           </div>
-          <div>
+          {/* <div>
             <a
               href={`${AXELAR_SCAN}/gmp/${txHash}`}
               rel="noreferrer"
@@ -156,7 +156,7 @@ const SwapTransactionDetail = () => {
             >
               Track at AxelarScan
             </a>
-          </div>
+          </div> */}
         </div>
       </div>
       <span id="rewardId" className="z-20 self-center" />
