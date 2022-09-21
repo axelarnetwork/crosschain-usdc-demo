@@ -1,4 +1,4 @@
-import { AXELAR_SCAN, chains } from "config/constants";
+import { chains } from "config/constants";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import cn from "classnames";
