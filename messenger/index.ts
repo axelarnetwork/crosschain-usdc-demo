@@ -64,9 +64,6 @@ for (const chain of supportedChains) {
   );
 
   srcContract.on("MessageSent", async (message, event) => {
-    console.log(event);
-    const txHash = event.transactionHash;
-
     // Step 2: Call the Attestation API to get the signature
     console.log(""); // Add a new line
     ora({
@@ -78,7 +75,7 @@ for (const chain of supportedChains) {
           chalk.green(message)
       );
     const oraApiCall = ora("Waiting for Attestation API response").start();
-    sleep(10000);
+    sleep(20000);
     let response;
     while (!response) {
       const _response = await fetch(
@@ -93,7 +90,6 @@ for (const chain of supportedChains) {
             "Error fetching attestation: " + chalk.redBright(err.message)
           );
         });
-      console.log(" ", _response);
 
       if (_response.error || _response.status !== "complete") {
         await sleep(5000);
@@ -148,7 +144,7 @@ for (const chain of supportedChains) {
           ` which means ${colorAmount} ${colorUSDC} has been minted to the recipient ${colorRecipient}`
       );
 
-      const log = await parseCallContractLog(txHash, chain);
+      const log = await parseCallContractLog(event.transactionHash, chain);
       if (log) {
         const payload = log?.args.payload;
         const sender = log?.args.sender;

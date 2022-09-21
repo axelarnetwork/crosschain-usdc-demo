@@ -75,15 +75,6 @@ task(
       deployer
     );
 
-    console.log(
-      destinationChainName,
-      tradeDataSrc,
-      tradeDataDest,
-      traceId,
-      fallbackRecipient,
-      inputPos
-    );
-
     const tx = await contract
       .nativeTradeSendTrade(
         destinationChainName,
