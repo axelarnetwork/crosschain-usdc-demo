@@ -10,9 +10,9 @@ A demo for the cross-chain usdc without fragmentation issue (it is officially mi
 yarn
 ```
 
-2. Create .env from .env.sample, then fill the Openzeppelin defender relay's api key and secret key.
+1. Create `.env` from `.env.sample`, then fill the Openzeppelin Defender Relay API credentials.
 
-3. Run
+2. Run
 
 ```
 yarn dev
