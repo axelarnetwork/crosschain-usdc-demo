@@ -1,6 +1,6 @@
 import { ChainName } from "types/chain";
 import { Relayer } from "defender-relay-client";
-import { ethers, PopulatedTransaction } from "ethers";
+import { PopulatedTransaction } from "ethers";
 
 export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
   const credentials = getCredential(chain);
@@ -10,7 +10,7 @@ export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
     to: rawTx.to,
     data: rawTx.data,
     value: rawTx.value?.toNumber() || 0,
-    gasPrice: ethers.utils.parseUnits("0.01", "gwei").toString(),
+    speed: getTxSpeed(chain),
   });
 }
 
@@ -25,5 +25,13 @@ function getCredential(chain: ChainName) {
       apiKey: process.env.DEFENDER_ETHEREUM_API_KEY || "",
       apiSecret: process.env.DEFENDER_ETHEREUM_API_SECRET || "",
     };
+  }
+}
+
+function getTxSpeed(chain: ChainName) {
+  if (chain === ChainName.AVALANCHE) {
+    return "fast";
+  } else {
+    return "average";
   }
 }
