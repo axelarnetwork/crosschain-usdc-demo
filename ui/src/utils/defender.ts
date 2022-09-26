@@ -1,10 +1,13 @@
 import { ChainName } from "types/chain";
 import { Relayer } from "defender-relay-client";
 import { PopulatedTransaction } from "ethers";
+import { CIRCLE_SWAP_EXECUTABLE, MESSAGE_TRANSMITTER } from "config/constants";
 
 export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
   const credentials = getCredential(chain);
   const relayer = new Relayer(credentials);
+  if (!isValidTx(chain, rawTx)) throw new Error("Invalid tx");
+
   return relayer.sendTransaction({
     gasLimit: rawTx.gasLimit?.toNumber() || 1000000,
     to: rawTx.to,
@@ -12,6 +15,12 @@ export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
     value: rawTx.value?.toNumber() || 0,
     speed: getTxSpeed(chain),
   });
+}
+
+export function isValidTx(chain: ChainName, rawTx: PopulatedTransaction) {
+  return [MESSAGE_TRANSMITTER[chain], CIRCLE_SWAP_EXECUTABLE[chain]].includes(
+    rawTx.to || ""
+  );
 }
 
 function getCredential(chain: ChainName) {
