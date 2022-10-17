@@ -239,11 +239,11 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         SafeERC20.safeTransfer(IERC20(address(usdc)), destination, amount);
     }
 
-    function execute(
+    function _execute(
         string memory, /*sourceChain*/
         string memory, /*sourceAddress*/
         bytes calldata payload
-    ) public {
+    ) internal override {
         (
             bytes memory data,
             uint256 amount,
