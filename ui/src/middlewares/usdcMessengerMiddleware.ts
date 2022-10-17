@@ -6,7 +6,7 @@ import { AppDispatch, RootState } from "store";
 import { ethers } from "ethers";
 import { MESSAGE_TRANSMITTER, WSS } from "config/constants";
 import { setStep } from "slices/swapStatusSlice";
-import { getCallContractEvent, getMessageSentEvent } from "utils/contract";
+import { getMessageSentEvent } from "utils/contract";
 import { getTxLink } from "utils/explorer";
 
 export const usdcMessengerMiddleware = createListenerMiddleware();
@@ -102,45 +102,45 @@ usdcMessengerStartListening({
       }
 
       // Step 5: Call execute swap
-      const srcGatewayContract = new ethers.Contract(srcChain.gatewayAddress, [
-        "event ContractCall(address indexed sender, string destinationChain, string destinationContractAddress, bytes32 indexed payloadHash, bytes payload)",
-      ]);
+      // const srcGatewayContract = new ethers.Contract(srcChain.gatewayAddress, [
+      //   "event ContractCall(address indexed sender, string destinationChain, string destinationContractAddress, bytes32 indexed payloadHash, bytes payload)",
+      // ]);
 
-      const logCallContract = await getCallContractEvent(
-        srcGatewayContract,
-        messageSentReceipt
-      );
+      // const logCallContract = await getCallContractEvent(
+      //   srcGatewayContract,
+      //   messageSentReceipt
+      // );
 
-      if (logCallContract) {
-        const payload = logCallContract?.args.payload;
-        const sender = logCallContract?.args.sender;
+      // if (logCallContract) {
+      //   const payload = logCallContract?.args.payload;
+      //   const sender = logCallContract?.args.sender;
 
-        const destExecutableContract = new ethers.Contract(
-          destChain.swapExecutorAddress,
-          [
-            "function execute(string memory sourceChain, string memory sourceAddress, bytes calldata payload)",
-          ]
-        );
-        const executeTxRequest =
-          await destExecutableContract.populateTransaction.execute(
-            srcChain.name,
-            sender,
-            payload
-          );
-        const executeTx = await fetch("/api/sendTx", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            chain: destChain.name,
-            rawTx: executeTxRequest,
-          }),
-        })
-          .then((resp) => resp.json())
-          .catch(() => undefined);
-        console.log("Executed swap", getTxLink(destChain.id, executeTx.hash));
-      }
+      //   const destExecutableContract = new ethers.Contract(
+      //     destChain.swapExecutorAddress,
+      //     [
+      //       "function execute(string memory sourceChain, string memory sourceAddress, bytes calldata payload)",
+      //     ]
+      //   );
+      //   const executeTxRequest =
+      //     await destExecutableContract.populateTransaction.execute(
+      //       srcChain.name,
+      //       sender,
+      //       payload
+      //     );
+      //   const executeTx = await fetch("/api/sendTx", {
+      //     method: "POST",
+      //     headers: {
+      //       "Content-Type": "application/json",
+      //     },
+      //     body: JSON.stringify({
+      //       chain: destChain.name,
+      //       rawTx: executeTxRequest,
+      //     }),
+      //   })
+      //     .then((resp) => resp.json())
+      //     .catch(() => undefined);
+      //   console.log("Executed swap", getTxLink(destChain.id, executeTx.hash));
+      // }
     }
   },
 });
