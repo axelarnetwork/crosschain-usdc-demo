@@ -45,7 +45,7 @@ export const ChainInputModal: FunctionComponent<ChainInputModalProps> = ({
             alt="chain icon"
           />
           <div className="flex flex-col items-end flex-1">
-            <span className="ml-2">{chain.name}</span>
+            <span className="ml-2">{chain.alias}</span>
           </div>
         </label>
       </li>

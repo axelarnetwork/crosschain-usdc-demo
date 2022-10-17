@@ -1,4 +1,4 @@
-import { chains } from "config/constants";
+import { AXELAR_SCAN, chains } from "config/constants";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import cn from "classnames";
@@ -147,7 +147,7 @@ const SwapTransactionDetail = () => {
               objectFit="cover"
             />
           </div>
-          {/* <div>
+          <div>
             <a
               href={`${AXELAR_SCAN}/gmp/${txHash}`}
               rel="noreferrer"
@@ -156,7 +156,7 @@ const SwapTransactionDetail = () => {
             >
               Track at AxelarScan
             </a>
-          </div> */}
+          </div>
         </div>
       </div>
       <span id="rewardId" className="z-20 self-center" />

@@ -6,8 +6,7 @@ import {IAxelarGasService} from "@axelar-network/axelar-cgp-solidity/contracts/i
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {USDC} from "./USDC.sol";
-import {CircleBridge} from "./CircleBridge.sol";
+import {ICircleBridge} from "./ICircleBridge.sol";
 import "./StringAddressUtils.sol";
 
 // Only support a native token for now.
@@ -33,9 +32,9 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
     );
 
     IAxelarGasService immutable gasReceiver;
-    USDC public usdc;
+    IERC20 public usdc;
     address public wrappedNativeToken;
-    CircleBridge public circleBridge;
+    ICircleBridge public circleBridge;
 
     // destination chain name => destination contract address
     mapping(string => address) public siblings;
@@ -51,8 +50,8 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         address _wrappedNativeAddress
     ) IAxelarForecallable(_gateway) Ownable() {
         gasReceiver = IAxelarGasService(_gasReceiver);
-        usdc = USDC(_usdc);
-        circleBridge = CircleBridge(_circleBridge);
+        usdc = IERC20(_usdc);
+        circleBridge = ICircleBridge(_circleBridge);
         wrappedNativeToken = _wrappedNativeAddress;
     }
 
@@ -185,7 +184,7 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         (uint256 amount, uint256 burnAmount) = _trade(tradeData1);
         IERC20(address(usdc)).approve(address(circleBridge), burnAmount);
 
-        uint64 _nonce = circleBridge.depositForBurn(
+        circleBridge.depositForBurn(
             burnAmount,
             this.destinationDomains(destinationChain),
             bytes32(uint256(uint160(this.siblings(destinationChain)))),
@@ -197,33 +196,6 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
             tradeData2,
             burnAmount, // total burned amount (usdc)
             msg.value - amount, // total sent eth - eth for trade
-            traceId,
-            fallbackRecipient,
-            inputPos
-        );
-    }
-
-    function nativeSendTrade(
-        string memory destinationChain,
-        uint256 amount,
-        bytes memory tradeData,
-        bytes32 traceId,
-        address fallbackRecipient,
-        uint16 inputPos
-    ) external payable onlyValidChain(destinationChain) {
-        usdc.transferFrom(msg.sender, address(this), amount);
-        uint64 nonce = circleBridge.depositForBurn(
-            amount,
-            this.destinationDomains(destinationChain),
-            bytes32(uint256(uint160(this.siblings(destinationChain)))),
-            address(usdc)
-        );
-
-        _nativeSendTrade(
-            destinationChain,
-            tradeData,
-            amount,
-            msg.value,
             traceId,
             fallbackRecipient,
             inputPos
@@ -267,11 +239,11 @@ contract CircleSwapExecutable is IAxelarForecallable, Ownable {
         SafeERC20.safeTransfer(IERC20(address(usdc)), destination, amount);
     }
 
-    function execute(
+    function _execute(
         string memory, /*sourceChain*/
         string memory, /*sourceAddress*/
         bytes calldata payload
-    ) public {
+    ) internal override {
         (
             bytes memory data,
             uint256 amount,

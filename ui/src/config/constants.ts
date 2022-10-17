@@ -12,8 +12,8 @@ export const WSS = {
 };
 
 export const CIRCLE_SWAP_EXECUTABLE = {
-  [ChainName.AVALANCHE]: "0xc57ECE4ebc492EA806fA468037a4ad6Df4652aa8",
-  [ChainName.ETHEREUM]: "0x2bF739f86e437b742b062aA416e3d31a69218923",
+  [ChainName.AVALANCHE]: "0xb7690afD76081A688C0C022FD31393dE657448D3",
+  [ChainName.ETHEREUM]: "0xA360dBb98Cd1af3bEA607dE9b3A0655ECADe2c41",
 };
 
 export const MESSAGE_TRANSMITTER = {
@@ -32,14 +32,15 @@ export const chains: SquidChain[] = [
   {
     id: ChainId.ETHEREUM,
     name: ChainName.ETHEREUM,
+    alias: "Ethereum",
     network: "goerli",
     icon: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
     rpcUrls: {
       default: "https://goerli.infura.io/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
     },
     multicallAddress: "0x77dCa2C955b15e9dE4dbBCf1246B4B85b651e50e",
-    gatewayAddress: "0x9d71b2bA8a9359f24A0e0d43C29d654e47a98Ca6",
-    swapExecutorAddress: "0x2bF739f86e437b742b062aA416e3d31a69218923",
+    gatewayAddress: "0xe432150cce91c13a887f7D836923d5597adD8E31",
+    swapExecutorAddress: "0xA360dBb98Cd1af3bEA607dE9b3A0655ECADe2c41",
     routerAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     blockExplorers: {
       default: { name: "Etherscan", url: "https://goerli.etherscan.io/" },
@@ -101,14 +102,15 @@ export const chains: SquidChain[] = [
   {
     id: ChainId.AVALANCHE,
     name: ChainName.AVALANCHE,
+    alias: "Avalanche",
     network: "Avalanche FUJI C-Chain",
     icon: "https://assets.coingecko.com/coins/images/12559/small/coin-round-red.png?1604021818",
     rpcUrls: {
       default: "https://api.avax-test.network/ext/bc/C/rpc",
     },
     multicallAddress: "0x3D015943d2780fE97FE3f69C97edA2CCC094f78c",
-    gatewayAddress: "0x19E75c24e67dc3161A2659E1D6D1bd50D255E536",
-    swapExecutorAddress: "0xc57ECE4ebc492EA806fA468037a4ad6Df4652aa8",
+    gatewayAddress: "0xC249632c2D40b9001FE907806902f63038B737Ab",
+    swapExecutorAddress: "0xb7690afD76081A688C0C022FD31393dE657448D3",
     routerAddress: "0x2D99ABD9008Dc933ff5c0CD271B88309593aB921",
     wrappedNativeToken: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
     blockExplorers: {

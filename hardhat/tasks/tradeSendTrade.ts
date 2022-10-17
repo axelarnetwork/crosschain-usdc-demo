@@ -37,6 +37,7 @@ task(
       destinationChainName as unknown as EvmChain,
       NativeToken[chainName]
     );
+    console.log(gasFee);
     const ethers = hre.ethers;
     console.log(
       `Total fee for ${chainName} to ${destinationChainName}:`,

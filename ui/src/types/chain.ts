@@ -2,7 +2,7 @@ import { Chain } from "wagmi";
 
 export enum ChainName {
   AVALANCHE = "avalanche",
-  ETHEREUM = "ethereum",
+  ETHEREUM = "ethereum-2",
 }
 
 export enum ChainId {
@@ -13,6 +13,7 @@ export enum ChainId {
 export interface SquidChain extends Chain {
   name: ChainName;
   icon: string;
+  alias: string;
   swapExecutorAddress: string;
   gatewayAddress: string;
   routerAddress: string;

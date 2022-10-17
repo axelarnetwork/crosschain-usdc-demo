@@ -15,7 +15,7 @@ export function createSwapPayloadForNative(
   const swapRouterAbi = getAbi(chain);
 
   const iface = new ethers.utils.Interface(swapRouterAbi);
-  const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 20;
+  const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24; // within a day
   const swapPayload = iface.encodeFunctionData(swapFunctionName, [
     0,
     swapPath,
@@ -36,7 +36,7 @@ export function createSwapPayloadForErc20(
   const swapRouterAbi = getAbi(chain);
 
   const iface = new ethers.utils.Interface(swapRouterAbi);
-  const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 20;
+  const deadline = Math.floor(new Date().getTime() / 1000) + 60 * 60 * 24; // within a day
   const swapPayload = iface.encodeFunctionData(swapFunctionName, [
     amount,
     0,
@@ -143,7 +143,7 @@ export async function estimateSwapOutputAmount(payload: SwapEstimatorPayload) {
     return amountOuts[amountOuts.length - 1].toString();
   } catch (e: any) {
     console.log(e);
-    let errMsg = `No ${token.symbol} liquidity at ${chain.name}`;
+    let errMsg = `No ${token.symbol} liquidity at ${chain.alias}`;
     if (e.message.indexOf("out-of-bounds") > -1) {
       errMsg = "Swap amount is too low";
     }
