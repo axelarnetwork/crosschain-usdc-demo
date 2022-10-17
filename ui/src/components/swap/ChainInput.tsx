@@ -35,7 +35,7 @@ export const ChainInput: FunctionComponent<ChainInputProps> = ({
             />
           )}
           <span className="uppercase ml-4">
-            {selectedChain?.name || "Select Chain"}
+            {selectedChain?.alias || "Select Chain"}
           </span>
         </div>
         <div className="flex items-center justify-end">

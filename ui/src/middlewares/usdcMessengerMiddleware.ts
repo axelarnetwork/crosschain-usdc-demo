@@ -83,7 +83,7 @@ usdcMessengerStartListening({
         );
 
         // Step 4: Request to send tx
-        console.log("Sending tx to mint USDC on ", destChain.name, "...");
+        console.log("Sending tx to mint USDC on ", destChain.alias, "...");
         const mintTx = await fetch("/api/sendTx", {
           method: "POST",
           headers: {

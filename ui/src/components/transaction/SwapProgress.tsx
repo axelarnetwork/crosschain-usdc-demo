@@ -35,7 +35,7 @@ export const SwapProgress: FunctionComponent<SwapProgressProps> = ({
       }
     } else if (step === 1) {
       if (currentStep <= step) {
-        setTitle(`Relaying USDC to ${destChain.name}`);
+        setTitle(`Relaying USDC to ${destChain.alias}`);
       } else if (!destChain || !txHash) {
         setTitle("Minted USDC.");
       } else {
