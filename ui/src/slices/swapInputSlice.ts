@@ -11,6 +11,7 @@ interface SwapInputState {
   destToken?: Token;
   amount: string;
   swappable: boolean;
+  fee?: string;
   destContractAddress?: string;
   destRouterAddress?: string;
   destNativeAmount?: string;
@@ -89,6 +90,9 @@ export const swapInputSlice = createSlice({
     setSwappable: (state: SwapInputState, action: PayloadAction<boolean>) => {
       state.swappable = action.payload;
     },
+    setFee: (state: SwapInputState, action: PayloadAction<string>) => {
+      state.fee = action.payload;
+    },
     resetSwapInputs: (state: SwapInputState) => initialState,
   },
 });
@@ -104,6 +108,7 @@ export const {
   setRecipientAddress,
   setSenderAddress,
   setSrcToken,
+  setFee,
   setSrcChain,
   setSwappable,
 } = swapInputSlice.actions;
@@ -114,6 +119,7 @@ export const selectSrcChain = (state: RootState) => state.swapInputs.srcChain;
 export const selectDestChain = (state: RootState) => state.swapInputs.destChain;
 export const selectDestToken = (state: RootState) => state.swapInputs.destToken;
 export const selectSwappable = (state: RootState) => state.swapInputs.swappable;
+export const selectFee = (state: RootState) => state.swapInputs.fee;
 export const selectSenderAddress = (state: RootState) =>
   state.swapInputs.senderAddress;
 export const selectRecipientAddress = (state: RootState) =>
