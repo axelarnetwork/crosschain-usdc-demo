@@ -3,7 +3,7 @@ import { GasToken } from "@axelar-network/axelarjs-sdk";
 export enum Chain {
   MOONBEAM = "moonbeam",
   AVALANCHE = "avalanche",
-  ETHEREUM = "ethereum-2",
+  ETHEREUM = "ethereum",
   FANTOM = "fantom",
   POLYGON = "polygon",
 }

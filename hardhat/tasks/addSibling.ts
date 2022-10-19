@@ -31,7 +31,10 @@ task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
       deployer
     );
     const tx = await contract
-      .addSibling(siblingChain, CROSSCHAIN_NATIVE_SWAP[siblingChainName])
+      .addSibling(
+        siblingChain === "ethereum" ? "ethereum-2" : siblingChain,
+        CROSSCHAIN_NATIVE_SWAP[siblingChainName]
+      )
       .then((tx: any) => tx.wait());
 
     console.log("Added sibling", tx.transactionHash);
