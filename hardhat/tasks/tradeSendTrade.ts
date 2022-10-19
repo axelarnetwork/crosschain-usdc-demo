@@ -1,6 +1,6 @@
 import { task } from "hardhat/config";
 import {
-  CIRCLE_SWAP_EXECUTABLE,
+  CROSSCHAIN_NATIVE_SWAP,
   USDC,
   WRAPPED_NATIVE_ASSET,
 } from "../constants/address";
@@ -37,7 +37,7 @@ task(
       destinationChainName as unknown as EvmChain,
       NativeToken[chainName]
     );
-    console.log(gasFee);
+    console.log("Gas Fee:", gasFee);
     const ethers = hre.ethers;
     console.log(
       `Total fee for ${chainName} to ${destinationChainName}:`,
@@ -54,7 +54,7 @@ task(
     const tradeDataSrc = createSrcTradeData(
       [WRAPPED_NATIVE_ASSET[chainName], srcUsdcAddress],
       chainName,
-      CIRCLE_SWAP_EXECUTABLE[chainName],
+      CROSSCHAIN_NATIVE_SWAP[chainName],
       subunitAmount
     );
     const tradeDataDest = createDestTradeData(
@@ -71,7 +71,7 @@ task(
     const inputPos = 196;
     // Step 2: Send the trade to CircleSwapExecutable
     const contract = new ethers.Contract(
-      CIRCLE_SWAP_EXECUTABLE[chainName],
+      CROSSCHAIN_NATIVE_SWAP[chainName],
       circleSwapExecutableAbi,
       deployer
     );
