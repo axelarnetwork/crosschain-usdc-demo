@@ -27,7 +27,7 @@ export const SwapEstimator: FunctionComponent<SwapEstimatorProps> = ({
         estimatedAmount,
         destToken?.decimals
       );
-      const floatTextAmount = parseFloat(textAmount).toFixed(3);
+      const floatTextAmount = parseFloat(textAmount).toFixed(6);
       return (
         <span className="flex">
           {loading ? (
