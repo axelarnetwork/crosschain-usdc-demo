@@ -14,7 +14,7 @@ export interface SquidChain extends Chain {
   name: ChainName;
   icon: string;
   alias: string;
-  swapExecutorAddress: string;
+  crosschainNativeSwapAddress: string;
   gatewayAddress: string;
   routerAddress: string;
   wrappedNativeToken: string;

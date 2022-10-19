@@ -3,7 +3,7 @@
     "inputs": [
       {
         "internalType": "address",
-        "name": "_gateway",
+        "name": "_usdc",
         "type": "address"
       },
       {
@@ -13,7 +13,7 @@
       },
       {
         "internalType": "address",
-        "name": "_usdc",
+        "name": "_gateway",
         "type": "address"
       },
       {
@@ -109,43 +109,6 @@
         "type": "bytes32"
       },
       {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "payloadHash",
-        "type": "bytes32"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "destinationChain",
-        "type": "string"
-      },
-      {
-        "indexed": false,
-        "internalType": "bytes",
-        "name": "payload",
-        "type": "bytes"
-      }
-    ],
-    "name": "SwapPending",
-    "type": "event"
-  },
-  {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": true,
-        "internalType": "bytes32",
-        "name": "traceId",
-        "type": "bytes32"
-      },
-      {
         "indexed": false,
         "internalType": "uint256",
         "name": "amount",
@@ -167,11 +130,6 @@
         "internalType": "string",
         "name": "chain_",
         "type": "string"
-      },
-      {
-        "internalType": "uint32",
-        "name": "chainId",
-        "type": "uint32"
       },
       {
         "internalType": "address",
@@ -213,7 +171,7 @@
     "name": "circleBridge",
     "outputs": [
       {
-        "internalType": "contract CircleBridge",
+        "internalType": "contract ICircleBridge",
         "name": "",
         "type": "address"
       }
@@ -229,7 +187,7 @@
         "type": "string"
       }
     ],
-    "name": "destinationDomains",
+    "name": "circleDestinationDomains",
     "outputs": [
       {
         "internalType": "uint32",
@@ -393,51 +351,13 @@
         "type": "string"
       },
       {
-        "internalType": "uint256",
-        "name": "amount",
-        "type": "uint256"
-      },
-      {
         "internalType": "bytes",
-        "name": "tradeData",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes32",
-        "name": "traceId",
-        "type": "bytes32"
-      },
-      {
-        "internalType": "address",
-        "name": "fallbackRecipient",
-        "type": "address"
-      },
-      {
-        "internalType": "uint16",
-        "name": "inputPos",
-        "type": "uint16"
-      }
-    ],
-    "name": "nativeSendTrade",
-    "outputs": [],
-    "stateMutability": "payable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "destinationChain",
-        "type": "string"
-      },
-      {
-        "internalType": "bytes",
-        "name": "tradeData1",
+        "name": "srcTradeData",
         "type": "bytes"
       },
       {
         "internalType": "bytes",
-        "name": "tradeData2",
+        "name": "destTradeData",
         "type": "bytes"
       },
       {
@@ -518,7 +438,7 @@
     "name": "usdc",
     "outputs": [
       {
-        "internalType": "contract USDC",
+        "internalType": "contract IERC20",
         "name": "",
         "type": "address"
       }

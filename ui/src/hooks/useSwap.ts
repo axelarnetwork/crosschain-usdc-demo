@@ -47,7 +47,7 @@ const useSwap = () => {
   const [swapArgs, setSwapArgs] = useState<any[]>([]);
   const [sentAmount, setSentAmount] = useState<BigNumberish>();
   const { config } = usePrepareContractWrite({
-    addressOrName: srcChain?.swapExecutorAddress,
+    addressOrName: srcChain?.crosschainNativeSwapAddress,
     contractInterface: squidSwapExecutableAbi,
     functionName: "nativeTradeSendTrade",
     args: swapArgs,
@@ -61,7 +61,7 @@ const useSwap = () => {
   const { data: signer } = useSigner();
 
   const contract = useContract({
-    addressOrName: srcChain?.swapExecutorAddress,
+    addressOrName: srcChain?.crosschainNativeSwapAddress,
     contractInterface: squidSwapExecutableAbi,
     signerOrProvider: signer,
   });
@@ -80,7 +80,7 @@ const useSwap = () => {
       const srcTradeData = createSrcTradeData(
         [srcChain.wrappedNativeToken, srcCrosschainToken.address],
         srcChain.name,
-        srcChain.swapExecutorAddress,
+        srcChain.crosschainNativeSwapAddress,
         sendAmount
       );
       const destTradeData = createDestTradeData(
@@ -197,7 +197,7 @@ const useSwap = () => {
     const srcTradeData = createSrcTradeData(
       [srcChain.wrappedNativeToken, srcCrosschainToken.address],
       srcChain.name,
-      srcChain.swapExecutorAddress,
+      srcChain.crosschainNativeSwapAddress,
       sendAmount
     );
 

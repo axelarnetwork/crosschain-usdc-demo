@@ -48,7 +48,7 @@ swapStatusStartListening({
     const srcProvider = getProvider(srcChain);
     const srcTxReceipt = await srcProvider.getTransactionReceipt(txHash);
     const contract = new ethers.Contract(
-      srcChain.swapExecutorAddress,
+      srcChain.crosschainNativeSwapAddress,
       squidSwapExecutableAbi
     );
     const swapPendingEvent = getSwapPendingEvent(contract, srcTxReceipt);
@@ -147,7 +147,7 @@ swapStatusStartListening({
 
     // Fetch payload hash from source tx receipt
     const contract = new ethers.Contract(
-      srcChain.swapExecutorAddress,
+      srcChain.crosschainNativeSwapAddress,
       squidSwapExecutableAbi,
       srcProvider
     );
@@ -170,7 +170,7 @@ swapStatusStartListening({
       null
     );
     destCircleBridge.on(eventFilter, (...args) => {
-      if (args[0] !== destChain.swapExecutorAddress) return;
+      if (args[0] !== destChain.crosschainNativeSwapAddress) return;
       const txHash = args[args.length - 1].transactionHash;
       listenerApi.dispatch(setStep(2));
       listenerApi.dispatch(setDestApprovalTx(txHash));
@@ -192,7 +192,7 @@ swapStatusStartListening({
 
     const destProvider = getProvider(destChain);
     const swapContract = new ethers.Contract(
-      destChain.swapExecutorAddress,
+      destChain.crosschainNativeSwapAddress,
       squidSwapExecutableAbi,
       destProvider
     );
