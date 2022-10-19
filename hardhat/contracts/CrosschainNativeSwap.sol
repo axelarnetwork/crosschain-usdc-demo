@@ -204,20 +204,15 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
             uint16 inputPos
         ) = abi.decode(payload, (bytes, uint256, bytes32, address, uint16));
 
-        // Decode trade data to get srcToken, router and swap data
-        (address srcToken, , address router, bytes memory data) = abi.decode(
-            tradeData,
-            (address, uint256, address, bytes)
-        );
-
-        // If the input token is not USDC, refund USDC to the user.
-        if (srcToken != address(usdc))
-            return _refund(traceId, usdcAmount, fallbackRecipient);
-
         // This hack puts the amount in the correct position.
         assembly {
             mstore(add(tradeData, inputPos), usdcAmount)
         }
+
+        (address srcToken, , address router, bytes memory data) = abi.decode(
+            tradeData,
+            (address, uint256, address, bytes)
+        );
 
         // Approve USDC to the router contract
         IERC20(srcToken).approve(router, usdcAmount);
