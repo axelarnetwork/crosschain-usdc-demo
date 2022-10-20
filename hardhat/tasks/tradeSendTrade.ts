@@ -4,7 +4,7 @@ import {
   USDC,
   WRAPPED_NATIVE_ASSET,
 } from "../constants/address";
-import { NativeToken, Chain } from "../constants/chains";
+import { NativeToken, Chain, GMPChainId } from "../constants/chains";
 import crosschainNativeSwapAbi from "./abi/crosschainNativeSwap.json";
 import { createDestTradeData, createSrcTradeData } from "./utils/contract";
 import { v4 as uuidv4 } from "uuid";
@@ -13,6 +13,8 @@ import {
   Environment,
   EvmChain,
 } from "@axelar-network/axelarjs-sdk";
+import { isValidChain } from "./utils/validate";
+import { relayUSDC } from "./utils/usdcRelayer";
 
 task(
   "tradeSendTrade",
@@ -23,31 +25,33 @@ task(
   .setAction(async (taskArgs, hre) => {
     const { amount, destinationChain } = taskArgs;
     const chainName = hre.network.name as Chain;
-    const destinationChainName = destinationChain as Chain;
-    if (chainName !== Chain.AVALANCHE && chainName !== Chain.ETHEREUM) return;
-    if (
-      destinationChainName !== Chain.AVALANCHE &&
-      destinationChainName !== Chain.ETHEREUM
-    )
-      return;
+    if (!isValidChain(chainName))
+      return console.log(
+        `Supported only ${Chain.ETHEREUM} and ${Chain.AVALANCHE}`
+      );
+    if (!isValidChain(destinationChain))
+      return console.log(
+        `Supported only ${Chain.ETHEREUM} and ${Chain.AVALANCHE}`
+      );
 
+    const destinationChainId = GMPChainId[destinationChain as Chain];
     const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
     const gasFee = await api.estimateGasFee(
       chainName as unknown as EvmChain,
-      destinationChainName as unknown as EvmChain,
-      NativeToken[chainName]
+      destinationChainId as unknown as EvmChain,
+      NativeToken[chainName],
+      250000
     );
-    console.log("Gas Fee:", gasFee);
     const ethers = hre.ethers;
     console.log(
-      `Total fee for ${chainName} to ${destinationChainName}:`,
+      `Total fee for ${chainName} to ${destinationChain}:`,
       ethers.utils.formatEther(gasFee),
       NativeToken[chainName]
     );
     const [deployer] = await ethers.getSigners();
 
     const srcUsdcAddress = USDC[chainName];
-    const destUsdcAddress = USDC[destinationChainName];
+    const destUsdcAddress = USDC[destinationChain as Chain];
     const subunitAmount = ethers.utils.parseEther(amount);
 
     // Step 1: Create the tradeData for the trade
@@ -58,10 +62,10 @@ task(
       subunitAmount
     );
     const tradeDataDest = createDestTradeData(
-      [destUsdcAddress, WRAPPED_NATIVE_ASSET[destinationChainName]],
-      destinationChainName,
+      [destUsdcAddress, WRAPPED_NATIVE_ASSET[destinationChain as Chain]],
+      destinationChain,
       deployer.address,
-      "1",
+      "0",
       destUsdcAddress
     );
     const traceId = ethers.utils.id(uuidv4());
@@ -78,7 +82,7 @@ task(
 
     const tx = await contract
       .nativeTradeSendTrade(
-        destinationChainName,
+        destinationChainId,
         tradeDataSrc,
         tradeDataDest,
         traceId,
@@ -91,4 +95,12 @@ task(
       .then((tx: any) => tx.wait());
 
     console.log("Tx Hash:", tx.transactionHash);
+
+    // Step 3: Relay the USDC to destination chain
+    await relayUSDC(tx.transactionHash, chainName, deployer);
+
+    console.log(
+      "Continue tracking at",
+      `https://testnet.axelarscan.io/gmp/${tx.transactionHash}`
+    );
   });

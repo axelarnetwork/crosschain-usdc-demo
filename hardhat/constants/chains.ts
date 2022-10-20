@@ -8,6 +8,14 @@ export enum Chain {
   POLYGON = "polygon",
 }
 
+export const GMPChainId = {
+  [Chain.MOONBEAM]: "moonbeam",
+  [Chain.AVALANCHE]: "avalanche",
+  [Chain.ETHEREUM]: "ethereum-2",
+  [Chain.FANTOM]: "fantom",
+  [Chain.POLYGON]: "polygon",
+};
+
 export const NativeToken = {
   [Chain.MOONBEAM]: GasToken.GLMR,
   [Chain.AVALANCHE]: GasToken.AVAX,
