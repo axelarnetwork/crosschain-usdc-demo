@@ -5,7 +5,7 @@ import {
   WRAPPED_NATIVE_ASSET,
 } from "../constants/address";
 import { NativeToken, Chain } from "../constants/chains";
-import circleSwapExecutableAbi from "./abi/circleSwapExecutable.json";
+import crosschainNativeSwapAbi from "./abi/crosschainNativeSwap.json";
 import { createDestTradeData, createSrcTradeData } from "./utils/contract";
 import { v4 as uuidv4 } from "uuid";
 import {
@@ -72,7 +72,7 @@ task(
     // Step 2: Send the trade to CircleSwapExecutable
     const contract = new ethers.Contract(
       CROSSCHAIN_NATIVE_SWAP[chainName],
-      circleSwapExecutableAbi,
+      crosschainNativeSwapAbi,
       deployer
     );
 
