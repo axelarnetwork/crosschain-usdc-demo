@@ -22,7 +22,6 @@ export function createSwapPayloadForNative(
     recipientAddress,
     deadline,
   ]);
-  console.log(swapFunctionName, swapPath, recipientAddress, deadline);
 
   return swapPayload;
 }
