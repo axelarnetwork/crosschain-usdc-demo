@@ -3,6 +3,7 @@ import { MESSAGE_TRANSMITTER } from "../../constants/address";
 import { Chain } from "../../constants/chains";
 import fetch from "cross-fetch";
 import { isValidChain } from "./validate";
+import { privateKey } from "../../secret.json";
 
 export const RPC = {
   [Chain.AVALANCHE]: "https://api.avax-test.network/ext/bc/C/rpc",
@@ -75,12 +76,14 @@ export const relayUSDC = async (
       console.log("Received signature:", signature);
       const destChain =
         chain === Chain.AVALANCHE ? Chain.ETHEREUM : Chain.AVALANCHE;
+
+      const destProvider = new ethers.providers.JsonRpcProvider(RPC[destChain]);
       const destContract = new ethers.Contract(
         MESSAGE_TRANSMITTER[destChain],
         [
           "function receiveMessage(bytes memory _message, bytes calldata _attestation)",
         ],
-        signer
+        new ethers.Wallet(privateKey, destProvider)
       );
 
       // Step 3: Send a mint transaction

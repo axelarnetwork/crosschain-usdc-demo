@@ -1,13 +1,9 @@
-# Sample Hardhat Project
+# Running Crosschain USDC Example
 
-This project demonstrates a basic Hardhat use case. It comes with a sample contract, a test for that contract, and a script that deploys that contract.
+1. Install dependencies by running `yarn`
+2. Rename `secret.example.json` to `secret.json` and add your private key
+3. Run hardhat task with `yarn task tradeSendTrade amount destChain --network srcChain`
+   For example:
 
-Try running some of the following tasks:
-
-```shell
-npx hardhat help
-npx hardhat test
-GAS_REPORT=true npx hardhat test
-npx hardhat node
-npx hardhat run scripts/deploy.ts
-```
+- Swap 0.01 AVAX to USDC and sending to Goerli: `yarn task tradeSendTrade 0.01 ethereum --network avalanche`
+- Swap 0.1 ETH to USDC and sending to Avalanche: `yarn task tradeSendTrade 0.1 avalanche --network ethereum`

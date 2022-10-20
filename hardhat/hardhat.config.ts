@@ -2,16 +2,23 @@ import "hardhat-deploy";
 import "@nomiclabs/hardhat-etherscan";
 import "@nomiclabs/hardhat-ethers";
 import { HardhatUserConfig } from "hardhat/config";
-import { privateKey } from "./secret.json";
+import {
+  privateKey,
+  ETHERSCAN_API_KEY,
+  FTMSCAN_API_KEY,
+  MOONSCAN_API_KEY,
+  MUMBAISCAN_API_KEY,
+  SNOWTRACE_API_KEY,
+} from "./secret.json";
 import { Chain } from "./constants/chains";
 import "./tasks";
 
 const apiKey = {
-  ETHERSCAN_API_KEY: "VCKWHFAA6M5AR8SFVXC43DEMEA8JN2H3WZ",
-  MOONSCAN_API_KEY: "8H5PYNQ7P7ACZK46ZAPG67TTMHGIW49AR4",
-  SNOWTRACE_API_KEY: "VRT69FQUYP8AY6EGJDEMJRH2PWMZRTXZIG",
-  MUMBAISCAN_API_KEY: "JPEQY6SKPH488EUVJXRZN9DZYN8JPZPEGB",
-  FTMSCAN_API_KEY: "HS5GVV3QMUJ38ER6UJG6JYNSNJ1P5B8VBR",
+  ETHERSCAN_API_KEY: ETHERSCAN_API_KEY || "",
+  MOONSCAN_API_KEY: MOONSCAN_API_KEY || "",
+  SNOWTRACE_API_KEY: SNOWTRACE_API_KEY || "",
+  MUMBAISCAN_API_KEY: MUMBAISCAN_API_KEY || "",
+  FTMSCAN_API_KEY: FTMSCAN_API_KEY || "",
 };
 
 const config: HardhatUserConfig = {
