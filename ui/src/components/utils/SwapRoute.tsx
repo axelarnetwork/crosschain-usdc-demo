@@ -62,10 +62,10 @@ export const SwapRoute: FunctionComponent<ComponentStyle> = ({ className }) => {
 
   function createRoute(chain: SquidChain, token: Token, amount: string) {
     return (
-      <div className="flex items-center" key={token.address}>
+      <div className="flex items-center text-gray-300" key={token.address}>
         <Image src={chain.icon} width={24} height={24} alt={chain.name} />
         <span className="mx-2">
-          {toFixed(ethers.utils.formatUnits(amount, token.decimals))}
+          {toFixed(ethers.utils.formatUnits(amount, token.decimals), 2)}
         </span>
         <span>{token.symbol}</span>
       </div>

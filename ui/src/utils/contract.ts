@@ -63,8 +63,8 @@ export function createSrcTradeData(
   );
   const _chain = chains.find((c) => c.name === chain);
   return ethers.utils.defaultAbiCoder.encode(
-    ["address", "uint256", "address", "bytes"],
-    [ethers.constants.AddressZero, amount, _chain?.routerAddress, swapPayload]
+    ["uint256", "address", "bytes"],
+    [amount, _chain?.routerAddress, swapPayload]
   );
 }
 

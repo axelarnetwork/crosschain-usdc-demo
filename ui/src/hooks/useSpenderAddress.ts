@@ -17,7 +17,7 @@ const useSpenderAddress = () => {
     if (swapType === SWAP_TYPE.SEND) {
       _spender = srcChain.gatewayAddress;
     } else {
-      _spender = srcChain.swapExecutorAddress;
+      _spender = srcChain.crosschainNativeSwapAddress;
     }
 
     setSpender(_spender);

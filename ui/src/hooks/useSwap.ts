@@ -4,13 +4,15 @@ import {
   selectAmount,
   selectDestChain,
   selectDestToken,
+  selectFee,
   selectRecipientAddress,
   selectSrcChain,
   selectSrcToken,
+  setFee,
 } from "slices/swapInputSlice";
 import { useAppSelector } from "./useAppSelector";
 import useCrosschainToken from "./useCrosschainToken";
-import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
+import crosschainNativeSwap from "abi/crosschainNativeSwap.json";
 import {
   useContract,
   useContractWrite,
@@ -27,6 +29,7 @@ import {
   Environment,
   EvmChain,
 } from "@axelar-network/axelarjs-sdk";
+import { useDispatch } from "react-redux";
 
 const AMOUNT_INPUT_POS = 196; // length of tradeData (32) + token in (32) + amount in (32) + router (32) + length of data (32) + 36
 
@@ -37,28 +40,29 @@ const useSwap = () => {
   const destToken = useAppSelector(selectDestToken) as Token;
   const recipientAddress = useAppSelector(selectRecipientAddress) as string;
   const amount = useAppSelector(selectAmount);
+  const fee = useAppSelector(selectFee);
+  const dispatch = useDispatch();
   const srcCrosschainToken = useCrosschainToken(srcChain) as Token;
   const destCrosschainToken = useCrosschainToken(destChain) as Token;
   const [swapArgs, setSwapArgs] = useState<any[]>([]);
-  const [gasFee, setGasFee] = useState<string>();
   const [sentAmount, setSentAmount] = useState<BigNumberish>();
   const { config } = usePrepareContractWrite({
-    addressOrName: srcChain?.swapExecutorAddress,
-    contractInterface: squidSwapExecutableAbi,
+    addressOrName: srcChain?.crosschainNativeSwapAddress,
+    contractInterface: crosschainNativeSwap,
     functionName: "nativeTradeSendTrade",
     args: swapArgs,
     overrides: {
       value: sentAmount,
     },
     enabled:
-      swapArgs.length === 6 && gasFee !== undefined && sentAmount !== undefined,
+      swapArgs.length === 6 && fee !== undefined && sentAmount !== undefined,
   });
   const { writeAsync } = useContractWrite(config);
   const { data: signer } = useSigner();
 
   const contract = useContract({
-    addressOrName: srcChain?.swapExecutorAddress,
-    contractInterface: squidSwapExecutableAbi,
+    addressOrName: srcChain?.crosschainNativeSwapAddress,
+    contractInterface: crosschainNativeSwap,
     signerOrProvider: signer,
   });
 
@@ -76,7 +80,7 @@ const useSwap = () => {
       const srcTradeData = createSrcTradeData(
         [srcChain.wrappedNativeToken, srcCrosschainToken.address],
         srcChain.name,
-        srcChain.swapExecutorAddress,
+        srcChain.crosschainNativeSwapAddress,
         sendAmount
       );
       const destTradeData = createDestTradeData(
@@ -115,23 +119,24 @@ const useSwap = () => {
       const gasFee = await api.estimateGasFee(
         srcChain.name as string as EvmChain,
         destChain.name as string as EvmChain,
-        srcChain.nativeCurrency.symbol
+        srcChain.nativeCurrency.symbol,
+        250000
       );
-      setGasFee(gasFee);
+      dispatch(setFee(gasFee));
     }
     loadGasFee();
-  }, [destChain.name, srcChain.name, srcChain.nativeCurrency.symbol]);
+  }, [destChain.name, dispatch, srcChain.name, srcChain.nativeCurrency.symbol]);
 
   useEffect(() => {
     async function loadSentAmount() {
-      if (!gasFee) return;
+      if (!fee) return;
       const sendAmount = ethers.utils.parseUnits(amount, srcToken?.decimals);
-      setSentAmount(sendAmount.add(gasFee));
+      setSentAmount(sendAmount.add(fee));
     }
-    if (amount && amount !== "0" && gasFee) {
+    if (amount && amount !== "0" && fee) {
       loadSentAmount();
     }
-  }, [amount, gasFee, srcToken?.decimals]);
+  }, [amount, fee, srcToken?.decimals]);
 
   const swapSrcAndDest = useCallback(async () => {
     if (!writeAsync || !swapArgs || swapArgs.length === 0) return;
@@ -192,7 +197,7 @@ const useSwap = () => {
     const srcTradeData = createSrcTradeData(
       [srcChain.wrappedNativeToken, srcCrosschainToken.address],
       srcChain.name,
-      srcChain.swapExecutorAddress,
+      srcChain.crosschainNativeSwapAddress,
       sendAmount
     );
 

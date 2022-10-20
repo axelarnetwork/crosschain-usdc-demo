@@ -44,7 +44,7 @@ fetchBalanceStartListening({
 
     const tokenInfos = await fetchBalance(
       senderAddress,
-      [srcChain.swapExecutorAddress, srcChain.gatewayAddress],
+      [srcChain.crosschainNativeSwapAddress, srcChain.gatewayAddress],
       tokenAddresses,
       srcChain.id
     ).then((res) => res.data.tokenInfos);

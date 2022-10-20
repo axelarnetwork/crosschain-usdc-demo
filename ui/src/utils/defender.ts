@@ -1,7 +1,7 @@
 import { ChainName } from "types/chain";
 import { Relayer } from "defender-relay-client";
 import { PopulatedTransaction } from "ethers";
-import { CIRCLE_SWAP_EXECUTABLE, MESSAGE_TRANSMITTER } from "config/constants";
+import { CROSSCHAIN_NATIVE_SWAP, MESSAGE_TRANSMITTER } from "config/constants";
 
 export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
   const credentials = getCredential(chain);
@@ -18,7 +18,7 @@ export async function sendTx(chain: ChainName, rawTx: PopulatedTransaction) {
 }
 
 export function isValidTx(chain: ChainName, rawTx: PopulatedTransaction) {
-  return [MESSAGE_TRANSMITTER[chain], CIRCLE_SWAP_EXECUTABLE[chain]].includes(
+  return [MESSAGE_TRANSMITTER[chain], CROSSCHAIN_NATIVE_SWAP[chain]].includes(
     rawTx.to || ""
   );
 }

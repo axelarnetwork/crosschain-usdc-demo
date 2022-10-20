@@ -5,7 +5,6 @@ import {
   GAS_RECEIVER,
   GATEWAY,
   USDC,
-  WRAPPED_NATIVE_ASSET,
 } from "../constants/address";
 import { Chain } from "../constants/chains";
 
@@ -14,13 +13,12 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deployer } = await hre.getNamedAccounts();
   const chainName = hre.network.name as Chain;
   const args = [
-    GATEWAY[chainName],
-    GAS_RECEIVER[chainName],
     USDC[chainName],
+    GAS_RECEIVER[chainName],
+    GATEWAY[chainName],
     CIRCLE_BRIDGE[chainName],
-    WRAPPED_NATIVE_ASSET[chainName],
   ];
-  const result: DeployResult = await deploy("CircleSwapExecutable", {
+  const result: DeployResult = await deploy("CrosschainNativeSwap", {
     from: deployer,
     args,
     log: true,
@@ -34,6 +32,6 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     .catch((e) => console.log(e.message));
 };
 
-deploy.tags = ["CircleSwapExecutable"];
+deploy.tags = ["CrosschainNativeSwap"];
 
 export default deploy;

@@ -1,14 +1,9 @@
 import { task } from "hardhat/config";
-import { CIRCLE_SWAP_EXECUTABLE, USDC } from "../constants/address";
+import { CROSSCHAIN_NATIVE_SWAP, USDC } from "../constants/address";
 import { Chain } from "../constants/chains";
-import circleSwapExecutableAbi from "./abi/circleSwapExecutable.json";
+import crosschainNativeSwapAbi from "./abi/crosschainNativeSwap.json";
 
-const SIBLING_CHAINS = {
-  [Chain.ETHEREUM]: 0,
-  [Chain.AVALANCHE]: 1,
-};
-
-task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
+task("addSibling", "Add sibling contract to the CrosschainNativeSwap contract")
   .addPositionalParam("siblingChain")
   .setAction(async (taskArgs, hre) => {
     const { siblingChain } = taskArgs;
@@ -23,19 +18,17 @@ task("addSibling", "Add sibling contract to the CircleSwapExecutable contract")
       siblingChainName !== Chain.AVALANCHE
     )
       return;
-    if (!CIRCLE_SWAP_EXECUTABLE[siblingChainName]) return;
+    if (!CROSSCHAIN_NATIVE_SWAP[siblingChainName]) return;
 
     const contract = new ethers.Contract(
-      CIRCLE_SWAP_EXECUTABLE[chainName],
-      circleSwapExecutableAbi,
+      CROSSCHAIN_NATIVE_SWAP[chainName],
+      crosschainNativeSwapAbi,
       deployer
     );
     const tx = await contract
       .addSibling(
-        siblingChain,
-        SIBLING_CHAINS[siblingChainName],
-        // "0xa411977dd24F1547065C6630E468a43275cB4d7f"
-        CIRCLE_SWAP_EXECUTABLE[siblingChainName]
+        siblingChain === "ethereum" ? "ethereum-2" : siblingChain,
+        CROSSCHAIN_NATIVE_SWAP[siblingChainName]
       )
       .then((tx: any) => tx.wait());
 

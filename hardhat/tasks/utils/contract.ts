@@ -60,8 +60,8 @@ export function createSrcTradeData(
     recipientAddress
   );
   return ethers.utils.defaultAbiCoder.encode(
-    ["address", "uint256", "address", "bytes"],
-    [ethers.constants.AddressZero, amount, ROUTER[chain as Chain], swapPayload]
+    ["uint256", "address", "bytes"],
+    [amount, ROUTER[chain as Chain], swapPayload]
   );
 }
 

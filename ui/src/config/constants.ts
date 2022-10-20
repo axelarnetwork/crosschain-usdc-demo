@@ -11,9 +11,9 @@ export const WSS = {
     "wss://goerli.infura.io/ws/v3/b0e255b9ef4b442c97f8a7458f8bd6ad",
 };
 
-export const CIRCLE_SWAP_EXECUTABLE = {
-  [ChainName.AVALANCHE]: "0xb7690afD76081A688C0C022FD31393dE657448D3",
-  [ChainName.ETHEREUM]: "0xA360dBb98Cd1af3bEA607dE9b3A0655ECADe2c41",
+export const CROSSCHAIN_NATIVE_SWAP = {
+  [ChainName.AVALANCHE]: "0x7C98A276AaCc6c22f2b25A75763acf7ca94fB58D",
+  [ChainName.ETHEREUM]: "0x1613FE248b28AcC4d61082270Af264d20492F15E",
 };
 
 export const MESSAGE_TRANSMITTER = {
@@ -40,7 +40,7 @@ export const chains: SquidChain[] = [
     },
     multicallAddress: "0x77dCa2C955b15e9dE4dbBCf1246B4B85b651e50e",
     gatewayAddress: "0xe432150cce91c13a887f7D836923d5597adD8E31",
-    swapExecutorAddress: "0xA360dBb98Cd1af3bEA607dE9b3A0655ECADe2c41",
+    crosschainNativeSwapAddress: CROSSCHAIN_NATIVE_SWAP[ChainName.ETHEREUM],
     routerAddress: "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D",
     blockExplorers: {
       default: { name: "Etherscan", url: "https://goerli.etherscan.io/" },
@@ -110,7 +110,7 @@ export const chains: SquidChain[] = [
     },
     multicallAddress: "0x3D015943d2780fE97FE3f69C97edA2CCC094f78c",
     gatewayAddress: "0xC249632c2D40b9001FE907806902f63038B737Ab",
-    swapExecutorAddress: "0xb7690afD76081A688C0C022FD31393dE657448D3",
+    crosschainNativeSwapAddress: CROSSCHAIN_NATIVE_SWAP[ChainName.AVALANCHE],
     routerAddress: "0x2D99ABD9008Dc933ff5c0CD271B88309593aB921",
     wrappedNativeToken: "0xd00ae08403B9bbb9124bB305C09058E32C39A48c",
     blockExplorers: {

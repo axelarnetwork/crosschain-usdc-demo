@@ -2,6 +2,9 @@
 pragma solidity ^0.8.9;
 
 interface ICircleBridge {
+    // this event will be emitted when `depositForBurn` function is called.
+    event MessageSent(bytes message);
+
     /**
     * @param _amount amount of tokens to burn
     * @param _destinationDomain destination domain

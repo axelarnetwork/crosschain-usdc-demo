@@ -19,6 +19,7 @@ import { ChainInputModalKey } from "components/modals";
 import { SwapRoute } from "components/utils";
 import { useNetworkSwitcher } from "hooks";
 import useTokens from "hooks/useTokens";
+import { AxelarFee } from "components/swap/Fee";
 
 const Home: NextPage = () => {
   const dispatch = useAppDispatch();
@@ -79,9 +80,13 @@ const Home: NextPage = () => {
           </div>
         </InputContainer>
       </div>
-      <div className="mt-8">
+
+      <div className="mt-4">
         <InputContainer>
-          <SwapEstimator amount={amount} />
+          <AxelarFee amount={amount} />
+          <div className="mt-4">
+            <SwapEstimator amount={amount} />
+          </div>
         </InputContainer>
         <SwapRoute />
       </div>
