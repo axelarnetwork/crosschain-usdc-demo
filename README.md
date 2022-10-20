@@ -11,4 +11,4 @@ A demo for the cross-chain usdc without fragmentation issue (it is officially mi
 
 ## Running Hardhat Tasks
 
-See [Hardhat Guide](/hardhat/README.md)
+See [Hardhat Guide](/hardhat)
