@@ -152,7 +152,7 @@ const SwapTransactionDetail = () => {
               href={`${AXELAR_SCAN}/gmp/${txHash}`}
               rel="noreferrer"
               target={"_blank"}
-              className="absolute transition-opacity bottom-4 right-4 hover:opacity-70"
+              className="absolute transition-opacity bottom-4 right-4 hover:opacity-70 text-gray-300"
             >
               Track at AxelarScan
             </a>
