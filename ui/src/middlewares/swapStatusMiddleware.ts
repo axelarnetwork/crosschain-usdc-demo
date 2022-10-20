@@ -15,7 +15,7 @@ import {
 } from "slices/swapStatusSlice";
 import { ethers } from "ethers";
 import { getProvider } from "utils/provider";
-import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
+import crosschainNativeSwap from "abi/crosschainNativeSwap.json";
 import { requiredSwapDest } from "utils/swap";
 import { SquidChain } from "types/chain";
 import { getSwapPendingEvent } from "utils/contract";
@@ -49,7 +49,7 @@ swapStatusStartListening({
     const srcTxReceipt = await srcProvider.getTransactionReceipt(txHash);
     const contract = new ethers.Contract(
       srcChain.crosschainNativeSwapAddress,
-      squidSwapExecutableAbi
+      crosschainNativeSwap
     );
     const swapPendingEvent = getSwapPendingEvent(contract, srcTxReceipt);
 
@@ -148,7 +148,7 @@ swapStatusStartListening({
     // Fetch payload hash from source tx receipt
     const contract = new ethers.Contract(
       srcChain.crosschainNativeSwapAddress,
-      squidSwapExecutableAbi,
+      crosschainNativeSwap,
       srcProvider
     );
     const pendingEvent = getSwapPendingEvent(contract, srcTxReceipt);
@@ -193,7 +193,7 @@ swapStatusStartListening({
     const destProvider = getProvider(destChain);
     const swapContract = new ethers.Contract(
       destChain.crosschainNativeSwapAddress,
-      squidSwapExecutableAbi,
+      crosschainNativeSwap,
       destProvider
     );
     const swapSuccessEvent = swapContract.filters.SwapSuccess(traceId);

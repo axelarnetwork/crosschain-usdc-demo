@@ -12,7 +12,7 @@ import {
 } from "slices/swapInputSlice";
 import { useAppSelector } from "./useAppSelector";
 import useCrosschainToken from "./useCrosschainToken";
-import squidSwapExecutableAbi from "abi/squidSwapExecutable.json";
+import crosschainNativeSwap from "abi/crosschainNativeSwap.json";
 import {
   useContract,
   useContractWrite,
@@ -48,7 +48,7 @@ const useSwap = () => {
   const [sentAmount, setSentAmount] = useState<BigNumberish>();
   const { config } = usePrepareContractWrite({
     addressOrName: srcChain?.crosschainNativeSwapAddress,
-    contractInterface: squidSwapExecutableAbi,
+    contractInterface: crosschainNativeSwap,
     functionName: "nativeTradeSendTrade",
     args: swapArgs,
     overrides: {
@@ -62,7 +62,7 @@ const useSwap = () => {
 
   const contract = useContract({
     addressOrName: srcChain?.crosschainNativeSwapAddress,
-    contractInterface: squidSwapExecutableAbi,
+    contractInterface: crosschainNativeSwap,
     signerOrProvider: signer,
   });
 
