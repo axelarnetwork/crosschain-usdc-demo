@@ -35,6 +35,14 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         address refundAddress
     );
 
+    event SwapPending(
+        bytes32 indexed traceId,
+        bytes32 indexed payloadHash,
+        uint256 amount,
+        string destinationChain,
+        bytes payload
+    );
+
     constructor(
         address _usdc,
         address _gasReceiver,
@@ -106,6 +114,14 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
             destinationChain,
             payload,
             msg.value - nativeSwapAmount
+        );
+
+        emit SwapPending(
+            traceId,
+            keccak256(payload),
+            usdcAmount,
+            destinationChain,
+            payload
         );
     }
 
