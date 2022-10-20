@@ -4,16 +4,11 @@ A demo for the cross-chain usdc without fragmentation issue (it is officially mi
 
 ## Running Web UI Demo
 
-1. Install dependencies
+1. cd inside `ui` directory: `cd ui`
+2. Install dependencies: `yarn`
+3. Create `.env` from `.env.sample`, then fill the Openzeppelin Defender Relay API credentials.
+4. Run: yarn dev
 
-```
-yarn
-```
+## Running Hardhat Tasks
 
-2. Create `.env` from `.env.sample`, then fill the Openzeppelin Defender Relay API credentials.
-
-3. Run
-
-```
-yarn dev
-```
+See [Hardhat Guide](/hardhat/README.md)
