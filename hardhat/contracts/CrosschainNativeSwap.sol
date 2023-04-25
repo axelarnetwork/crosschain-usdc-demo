@@ -7,12 +7,12 @@ import {IAxelarGateway} from "@axelar-network/axelar-cgp-solidity/contracts/inte
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {ICircleBridge} from "./ICircleBridge.sol";
+import {ITokenMessenger} from "./ITokenMessenger.sol";
 import "./StringAddressUtils.sol";
 
 contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
     IERC20 public usdc;
-    ICircleBridge public circleBridge;
+    ITokenMessenger public tokenMessenger;
     IAxelarGasService immutable gasReceiver;
 
     // mapping chain name => domain number;
@@ -47,10 +47,10 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         address _usdc,
         address _gasReceiver,
         address _gateway,
-        address _circleBridge
+        address _TokenMessenger
     ) IAxelarForecallable(_gateway) Ownable() {
         usdc = IERC20(_usdc);
-        circleBridge = ICircleBridge(_circleBridge);
+        tokenMessenger = ITokenMessenger(_TokenMessenger);
         gasReceiver = IAxelarGasService(_gasReceiver);
         circleDestinationDomains["ethereum"] = 0;
         circleDestinationDomains["avalanche"] = 1;
@@ -151,9 +151,9 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         string memory destinationChain,
         address recipient
     ) private isValidChain(destinationChain) {
-        IERC20(address(usdc)).approve(address(circleBridge), amount);
+        IERC20(address(usdc)).approve(address(tokenMessenger), amount);
 
-        circleBridge.depositForBurn(
+        tokenMessenger.depositForBurn(
             amount,
             this.circleDestinationDomains(destinationChain),
             bytes32(uint256(uint160(recipient))),

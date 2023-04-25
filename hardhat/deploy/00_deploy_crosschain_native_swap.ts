@@ -1,7 +1,7 @@
 import { DeployFunction, DeployResult } from "hardhat-deploy/dist/types";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import {
-  CIRCLE_BRIDGE,
+  TOKEN_MESSENGER,
   GAS_RECEIVER,
   GATEWAY,
   USDC,
@@ -16,7 +16,7 @@ const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
     USDC[chainName],
     GAS_RECEIVER[chainName],
     GATEWAY[chainName],
-    CIRCLE_BRIDGE[chainName],
+    TOKEN_MESSENGER[chainName],
   ];
   const result: DeployResult = await deploy("CrosschainNativeSwap", {
     from: deployer,
