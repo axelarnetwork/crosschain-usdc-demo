@@ -12,6 +12,8 @@ export type BalanceState = Record<ChainId, Record<string, string>>;
 const initialState: BalanceState = {
   [ChainId.AVALANCHE]: {},
   [ChainId.ETHEREUM]: {},
+  [ChainId.ETHEREUM_MAINNET]: {},
+  [ChainId.AVALANCHE_MAINNET]: {}
 };
 
 export const balanceSlice = createSlice({
@@ -29,6 +31,8 @@ export const balanceSlice = createSlice({
     clear: (state: BalanceState) => {
       state[ChainId.ETHEREUM] = {};
       state[ChainId.AVALANCHE] = {};
+      state[ChainId.ETHEREUM_MAINNET] = {};
+      state[ChainId.AVALANCHE_MAINNET] = {};
     },
   },
 });

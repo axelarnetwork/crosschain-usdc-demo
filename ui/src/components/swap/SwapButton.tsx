@@ -27,7 +27,7 @@ export const SwapButton: FunctionComponent<SwapButtonProps> = ({
   const { push } = useRouter();
   const dispatch = useAppDispatch();
   const [loading, setLoading] = useState(false);
-  const { swapOnlyDest, swapSrcAndDest, swapOnlySrc, sendToken, writeAsync } =
+  const { swapOnlyDest, swapSrcAndDest, swapOnlySrc, writeAsync } =
     useSwap();
 
   const selectSwapFunction = useCallback(() => {
@@ -37,10 +37,8 @@ export const SwapButton: FunctionComponent<SwapButtonProps> = ({
       return () => swapSrcAndDest();
     } else if (swapType === SWAP_TYPE.SWAP_SEND) {
       return () => swapOnlySrc();
-    } else if (swapType === SWAP_TYPE.SEND) {
-      return () => sendToken();
     }
-  }, [sendToken, swapOnlyDest, swapOnlySrc, swapSrcAndDest, swapType]);
+  }, [swapOnlyDest, swapOnlySrc, swapSrcAndDest, swapType]);
 
   const swap = useCallback(async () => {
     setLoading(true);

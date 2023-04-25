@@ -19,6 +19,14 @@ import { ChainInputModalKey, ChainInputModal } from "components/modals";
 import { TokenInputModal, TokenInputModalKey } from "components/modals";
 import { Waves, Header } from "components/layout";
 
+let timerId: any;
+
+function debounce(func: any, delay: number) {
+  clearTimeout(timerId);
+  timerId = setTimeout(func, delay);
+}
+
+
 export const PageLayout: FunctionComponent = ({ children }) => {
   const srcChain = useAppSelector(selectSrcChain);
   const srcToken = useAppSelector(selectSrcToken);
@@ -66,7 +74,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
       } catch (error) {}
     };
 
-    switchWalletNetworkIfNeeded();
+    debounce(switchWalletNetworkIfNeeded, 2000)
   }, [data?.id, srcChain, switchNetworkAsync]);
 
   return (
