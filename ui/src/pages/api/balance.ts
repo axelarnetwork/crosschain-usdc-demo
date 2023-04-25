@@ -1,7 +1,7 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
 import { ethers } from "ethers";
-import { chains } from "config/constants";
+import config from "config/constants";
 import erc20Abi from "abi/erc20.json";
 import { makeCalls } from "utils/multicall";
 import { getProvider } from "utils/provider";
@@ -38,7 +38,7 @@ export default async function handler(
   const walletAddress = req.body.walletAddress;
   const spenderAddresses = req.body.spenderAddresses;
   const chainId = parseInt(req.body.chainId);
-  const chain = chains.find((chain) => chain.id === chainId);
+  const chain = config.chains.find((chain) => chain.id === chainId);
   if (!chain) {
     return res.status(400).json({
       status: false,

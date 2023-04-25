@@ -1,4 +1,4 @@
-import { chains } from "config/constants";
+import config from "config/constants";
 import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import useTokens from "hooks/useTokens";
 import Head from "next/head";
@@ -99,12 +99,12 @@ export const PageLayout: FunctionComponent = ({ children }) => {
       <ChainInputModal
         modalKey={ChainInputModalKey.ModalChainFrom}
         onSelected={updateSrcChain}
-        chains={chains}
+        chains={config.chains}
       />
       <ChainInputModal
         modalKey={ChainInputModalKey.ModalChainTo}
         onSelected={updateDestChain}
-        chains={chains}
+        chains={config.chains}
       />
       <Waves />
     </>

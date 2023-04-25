@@ -1,5 +1,5 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import { ATTESTATION_BASE_API } from "config/constants";
+import config from "config/constants";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { AttestationsResponse } from "types/api";
 
@@ -10,7 +10,7 @@ export default async function handler(
   const messageHash = req.query.messageHash as string;
 
   const _response = await fetch(
-    `${ATTESTATION_BASE_API}/attestations/${messageHash}`
+    `${config.ATTESTATION_BASE_API}/attestations/${messageHash}`
   )
     .then((resp) => resp.json())
     .catch((err: any) => {});

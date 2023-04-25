@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SquidChain } from "types/chain";
-import { chains } from "config/constants";
-import { Token } from "types/token";
+import config from "config/constants";
 import type { RootState } from "store";
 
 interface DropInputState {
@@ -13,7 +12,7 @@ interface DropInputState {
 const initialState: DropInputState = {
   amount: "",
   aliasAddresses: [],
-  destChain: chains[0],
+  destChain: config.chains[0],
 };
 
 export const dropInputSlice = createSlice({

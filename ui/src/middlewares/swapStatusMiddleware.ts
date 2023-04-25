@@ -22,7 +22,7 @@ import { getSwapPendingEvent } from "utils/contract";
 import { selectTokensByChainId } from "slices/tokenSlice";
 import { setDestChain, setSrcChain, setSrcToken } from "slices/swapInputSlice";
 import { Token } from "types/token";
-import { TOKEN_MESSENGER } from "config/constants";
+import config from "config/constants";
 
 export const swapStatusMiddleware = createListenerMiddleware();
 
@@ -158,7 +158,7 @@ swapStatusStartListening({
 
     // wait for usdc mint token
     const destTokenMessenger = new ethers.Contract(
-      TOKEN_MESSENGER[destChain.name],
+      config.TOKEN_MESSENGER[destChain.name],
       [
         "event MintAndWithdraw(address _mintRecipient, uint256 _amount, address _mintToken)",
       ],

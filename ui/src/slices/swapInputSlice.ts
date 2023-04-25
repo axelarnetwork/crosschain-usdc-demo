@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { SquidChain } from "types/chain";
-import { chains } from "config/constants";
+import config from "config/constants";
 import { Token } from "types/token";
 import type { RootState } from "store";
 
@@ -20,8 +20,8 @@ interface SwapInputState {
 }
 
 const initialState: SwapInputState = {
-  srcChain: chains[1],
-  destChain: chains[0],
+  srcChain: config.chains[1],
+  destChain: config.chains[0],
   swappable: true,
   amount: "",
 };

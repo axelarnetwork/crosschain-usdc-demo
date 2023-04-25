@@ -1,6 +1,6 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import type { NextApiRequest, NextApiResponse } from "next";
-import { AXELAR_LCD } from "config/constants";
+import config from "config/constants";
 import { FeeResponse } from "types/api";
 
 export default async function handler(
@@ -22,7 +22,7 @@ export default async function handler(
   }).toString();
 
   const result = await fetch(
-    `${AXELAR_LCD}/axelar/nexus/v1beta1/transfer_fee?${params}`
+    `${config.AXELAR_LCD}/axelar/nexus/v1beta1/transfer_fee?${params}`
   ).then((res) => res.json());
 
   if (result.code) {

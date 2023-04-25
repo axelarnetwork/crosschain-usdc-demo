@@ -1,4 +1,4 @@
-import { AXELAR_SCAN, chains } from "config/constants";
+import config from "config/constants";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import cn from "classnames";
@@ -39,7 +39,7 @@ const SwapTransactionDetail = () => {
 
   useEffect(() => {
     if (isReady && txHash && chainName) {
-      const chain = chains.find(
+      const chain = config.chains.find(
         (chain) => chain.name === chainName?.toLowerCase()
       );
       if (!ethers.utils.isHexString(txHash, 32)) {
@@ -65,7 +65,7 @@ const SwapTransactionDetail = () => {
   useEffect(() => {
     if (txHash && !srcTxHash && !amount) {
       // Recovers chain and source transaction hash.
-      const chain = chains.find(
+      const chain = config.chains.find(
         (chain) => chain.name === chainName?.toLowerCase()
       );
       if (chain) {
@@ -149,7 +149,7 @@ const SwapTransactionDetail = () => {
           </div>
           <div>
             <a
-              href={`${AXELAR_SCAN}/gmp/${txHash}`}
+              href={`${config.AXELAR_SCAN}/gmp/${txHash}`}
               rel="noreferrer"
               target={"_blank"}
               className="absolute transition-opacity bottom-4 right-4 hover:opacity-70 text-gray-300"

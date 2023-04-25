@@ -4,7 +4,7 @@ import {
 } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "store";
 import { ethers } from "ethers";
-import { MESSAGE_TRANSMITTER, WSS } from "config/constants";
+import config from "config/constants";
 import { setStep } from "slices/swapStatusSlice";
 import { getMessageSentEvent } from "utils/contract";
 import { getTxLink } from "utils/explorer";
@@ -30,10 +30,10 @@ usdcMessengerStartListening({
     const srcTxHash = state.swapStatus.srcTx;
     if (!srcChain || !destChain || !srcTxHash) return;
 
-    const srcMessageTransmitterAddress = MESSAGE_TRANSMITTER[srcChain.name];
-    const destMessageTransmitterAddress = MESSAGE_TRANSMITTER[destChain.name];
+    const srcMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[srcChain.name];
+    const destMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[destChain.name];
     const srcProvider = new ethers.providers.WebSocketProvider(
-      WSS[srcChain.name]
+      config.WSS[srcChain.name]
     );
 
     // Step 1: Observe for the MessageSent event

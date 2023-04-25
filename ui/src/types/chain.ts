@@ -3,11 +3,15 @@ import { Chain } from "wagmi";
 export enum ChainName {
   AVALANCHE = "avalanche",
   ETHEREUM = "ethereum-2",
+  AVALANCHE_MAINNET = "avalanche",
+  ETHEREUM_MAINNET = "ethereum",
 }
 
 export enum ChainId {
   AVALANCHE = 43113,
   ETHEREUM = 5,
+  ETHEREUM_MAINNET = 1,
+  AVALANCHE_MAINNET = 43114,
 }
 
 export interface SquidChain extends Chain {
