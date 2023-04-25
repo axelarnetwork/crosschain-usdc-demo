@@ -22,7 +22,7 @@ import { getSwapPendingEvent } from "utils/contract";
 import { selectTokensByChainId } from "slices/tokenSlice";
 import { setDestChain, setSrcChain, setSrcToken } from "slices/swapInputSlice";
 import { Token } from "types/token";
-import { CIRCLE_BRIDGE } from "config/constants";
+import { TOKEN_MESSENGER } from "config/constants";
 
 export const swapStatusMiddleware = createListenerMiddleware();
 
@@ -157,24 +157,24 @@ swapStatusStartListening({
     listenerApi.dispatch(setPayloadHash(payloadHash));
 
     // wait for usdc mint token
-    const destCircleBridge = new ethers.Contract(
-      CIRCLE_BRIDGE[destChain.name],
+    const destTokenMessenger = new ethers.Contract(
+      TOKEN_MESSENGER[destChain.name],
       [
         "event MintAndWithdraw(address _mintRecipient, uint256 _amount, address _mintToken)",
       ],
       destProvider
     );
-    const eventFilter = destCircleBridge.filters.MintAndWithdraw(
+    const eventFilter = destTokenMessenger.filters.MintAndWithdraw(
       null,
       null,
       null
     );
-    destCircleBridge.on(eventFilter, (...args) => {
+    destTokenMessenger.on(eventFilter, (...args) => {
       if (args[0] !== destChain.crosschainNativeSwapAddress) return;
       const txHash = args[args.length - 1].transactionHash;
       listenerApi.dispatch(setStep(2));
       listenerApi.dispatch(setDestApprovalTx(txHash));
-      destCircleBridge.removeAllListeners(eventFilter);
+      destTokenMessenger.removeAllListeners(eventFilter);
     });
   },
 });

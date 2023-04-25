@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.9;
 
-interface ICircleBridge {
+interface ITokenMessenger {
     // this event will be emitted when `depositForBurn` function is called.
     event MessageSent(bytes message);
 

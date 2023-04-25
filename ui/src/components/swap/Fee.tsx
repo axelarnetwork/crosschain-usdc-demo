@@ -32,18 +32,18 @@ export const AxelarFee: FunctionComponent<SwapEstimatorProps> = ({
     if (fee) {
       const textAmount = ethers.utils.formatUnits(fee, 18);
       const floatTextAmount = parseFloat(textAmount).toFixed(6);
-      const isEnoughBalance = balance.data?.value.lt(
+      const isInsufficient = balance.data?.value.lt(
         ethers.BigNumber.from(ethers.utils.parseEther(amount || "0")).add(fee)
       );
       return (
         <span className="flex">
           <span
             className={classNames({
-              "text-red-200": isEnoughBalance,
+              "text-red-200": isInsufficient,
             })}
           >
             {floatTextAmount} {srcToken?.symbol}
-            {isEnoughBalance && " (insufficient)"}
+            {isInsufficient && " (insufficient)"}
           </span>
         </span>
       );
