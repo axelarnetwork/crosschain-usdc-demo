@@ -6,12 +6,16 @@ export enum Chain {
   ETHEREUM = "ethereum",
   FANTOM = "fantom",
   POLYGON = "polygon",
+  AVALANCHE_MAINNET = "avalancheMainnet",
+  ETHEREUM_MAINNET = "ethereumMainnet",
 }
 
 export const GMPChainId = {
   [Chain.MOONBEAM]: "moonbeam",
   [Chain.AVALANCHE]: "avalanche",
   [Chain.ETHEREUM]: "ethereum-2",
+  [Chain.AVALANCHE_MAINNET]: "avalanche",
+  [Chain.ETHEREUM_MAINNET]: "ethereum",
   [Chain.FANTOM]: "fantom",
   [Chain.POLYGON]: "polygon",
 };

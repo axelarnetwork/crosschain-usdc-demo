@@ -12,12 +12,6 @@ task("addSibling", "Add sibling contract to the CrosschainNativeSwap contract")
     const chainName = hre.network.name as Chain;
     const siblingChainName = siblingChain as Chain;
 
-    if (chainName !== Chain.AVALANCHE && chainName !== Chain.ETHEREUM) return;
-    if (
-      siblingChainName !== Chain.ETHEREUM &&
-      siblingChainName !== Chain.AVALANCHE
-    )
-      return;
     if (!CROSSCHAIN_NATIVE_SWAP[siblingChainName]) return;
 
     const contract = new ethers.Contract(
