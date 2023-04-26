@@ -160,20 +160,17 @@ swapStatusStartListening({
     const destTokenMessenger = new ethers.Contract(
       config.TOKEN_MESSENGER[destChain.name],
       [
-        "event MintAndWithdraw(address _mintRecipient, uint256 _amount, address _mintToken)",
+        "event MintAndWithdraw(address indexed mintRecipient, uint256 _amount, address indexed mintToken)",
       ],
       destProvider
     );
-    console.log("listening for mint and withdraw", destTokenMessenger.address)
     const eventFilter = destTokenMessenger.filters.MintAndWithdraw(
       destChain.crosschainNativeSwapAddress,
       null,
       null
     );
     destTokenMessenger.on(eventFilter, (...args) => {
-      // if (args[0] !== destChain.crosschainNativeSwapAddress) return;
       const txHash = args[args.length - 1].transactionHash;
-      console.log('txhash', txHash)
       listenerApi.dispatch(setStep(2));
       listenerApi.dispatch(setDestApprovalTx(txHash));
       destTokenMessenger.removeAllListeners(eventFilter);

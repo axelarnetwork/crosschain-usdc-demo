@@ -65,7 +65,7 @@ export const SwapRoute: FunctionComponent<ComponentStyle> = ({ className }) => {
       <div className="flex items-center text-gray-300" key={token.address}>
         <Image src={chain.icon} width={24} height={24} alt={chain.name} />
         <span className="mx-2">
-          {toFixed(ethers.utils.formatUnits(amount, token.decimals), 2)}
+          {toFixed(ethers.utils.formatUnits(amount, token.decimals), 6)}
         </span>
         <span>{token.symbol}</span>
       </div>
