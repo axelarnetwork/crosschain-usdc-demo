@@ -11,6 +11,7 @@ import { Chain } from "../constants/chains";
 const deploy: DeployFunction = async (hre: HardhatRuntimeEnvironment) => {
   const { deploy } = hre.deployments;
   const { deployer } = await hre.getNamedAccounts();
+  console.log(deployer)
   const chainName = hre.network.name as Chain;
   const args = [
     USDC[chainName],

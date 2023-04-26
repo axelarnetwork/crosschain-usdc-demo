@@ -1,4 +1,4 @@
-import { AXELAR_SCAN_GMP } from "config/constants";
+import config from "config/constants";
 
 export function fetchBalance(
   senderAddress: string,
@@ -27,7 +27,7 @@ export function fetchBalance(
 }
 
 export function fetchSwapStatus(txHash: string) {
-  return fetch(AXELAR_SCAN_GMP + `/?method=searchGMP&txHash=${txHash}`).then(
+  return fetch(config.AXELAR_SCAN_GMP + `/?method=searchGMP&txHash=${txHash}`).then(
     async (res) => {
       if (!res.ok) {
         return null;

@@ -33,6 +33,7 @@ import { useDispatch } from "react-redux";
 
 const AMOUNT_INPUT_POS = 196; // length of tradeData (32) + token in (32) + amount in (32) + router (32) + length of data (32) + 36
 
+
 const useSwap = () => {
   const srcChain = useAppSelector(selectSrcChain) as SquidChain;
   const srcToken = useAppSelector(selectSrcToken) as Token;
@@ -115,12 +116,13 @@ const useSwap = () => {
 
   useEffect(() => {
     async function loadGasFee() {
-      const api = new AxelarQueryAPI({ environment: Environment.TESTNET });
+      const env = process.env.NEXT_PUBLIC_ENVIRONMENT === 'testnet' ? Environment.TESTNET : Environment.MAINNET;
+      const api = new AxelarQueryAPI({ environment: env });
       const gasFee = await api.estimateGasFee(
         srcChain.name as string as EvmChain,
         destChain.name as string as EvmChain,
         srcChain.nativeCurrency.symbol,
-        250000
+        350000
       );
       dispatch(setFee(gasFee));
     }
@@ -219,22 +221,7 @@ const useSwap = () => {
     srcToken,
   ]);
 
-  const sendToken = useCallback(async () => {
-    const sendAmount = ethers.utils
-      .parseUnits(amount, srcToken?.decimals)
-      .toString();
-
-    const tx = await gatewayContract.sendToken(
-      "Osmosis",
-      "osmo19f97n582ss05ccuzgvqnqs0lanv77hf05ft7eu",
-      srcToken.symbol,
-      sendAmount
-    );
-
-    return { tx, traceId: "", payloadHash: "" };
-  }, [amount, gatewayContract, srcToken?.decimals, srcToken?.symbol]);
-
-  return { swapSrcAndDest, swapOnlyDest, swapOnlySrc, sendToken, writeAsync };
+  return { swapSrcAndDest, swapOnlyDest, swapOnlySrc, writeAsync };
 };
 
 export default useSwap;

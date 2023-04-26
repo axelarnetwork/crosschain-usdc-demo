@@ -22,7 +22,7 @@ import { getSwapPendingEvent } from "utils/contract";
 import { selectTokensByChainId } from "slices/tokenSlice";
 import { setDestChain, setSrcChain, setSrcToken } from "slices/swapInputSlice";
 import { Token } from "types/token";
-import { TOKEN_MESSENGER } from "config/constants";
+import config from "config/constants";
 
 export const swapStatusMiddleware = createListenerMiddleware();
 
@@ -138,7 +138,7 @@ swapStatusStartListening({
     const srcTxHash = state.swapStatus.srcTx;
     if (!srcChain || !destChain || !srcTxHash) return;
     const srcProvider = getProvider(srcChain);
-    const destProvider = getProvider(destChain);
+    const destProvider = new ethers.providers.WebSocketProvider(config.WSS[destChain.name])
 
     listenerApi.dispatch(setChain(srcChain.name));
 
@@ -158,19 +158,18 @@ swapStatusStartListening({
 
     // wait for usdc mint token
     const destTokenMessenger = new ethers.Contract(
-      TOKEN_MESSENGER[destChain.name],
+      config.TOKEN_MESSENGER[destChain.name],
       [
-        "event MintAndWithdraw(address _mintRecipient, uint256 _amount, address _mintToken)",
+        "event MintAndWithdraw(address indexed mintRecipient, uint256 _amount, address indexed mintToken)",
       ],
       destProvider
     );
     const eventFilter = destTokenMessenger.filters.MintAndWithdraw(
-      null,
+      destChain.crosschainNativeSwapAddress,
       null,
       null
     );
     destTokenMessenger.on(eventFilter, (...args) => {
-      if (args[0] !== destChain.crosschainNativeSwapAddress) return;
       const txHash = args[args.length - 1].transactionHash;
       listenerApi.dispatch(setStep(2));
       listenerApi.dispatch(setDestApprovalTx(txHash));

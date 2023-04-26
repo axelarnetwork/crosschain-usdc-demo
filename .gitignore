@@ -2,3 +2,6 @@ node_modules
 
 secret.json
 sample/
+.env
+.env.testnet
+.env.mainnet

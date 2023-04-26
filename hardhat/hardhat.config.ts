@@ -36,6 +36,18 @@ const config: HardhatUserConfig = {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       accounts: [privateKey],
     },
+    ethereumMainnet: {
+      chainId: 1,
+      gasMultiplier: 1.5,
+      url: "https://mainnet.infura.io/v3/a3a667b533f34fd48ca350546454ea05",
+      accounts: [privateKey],
+    },
+    avalancheMainnet: {
+      chainId: 43114,
+      gasMultiplier: 1.5,
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      accounts: [privateKey],
+    },
     moonbeam: {
       chainId: 1287,
       url: "https://rpc.api.moonbase.moonbeam.network",

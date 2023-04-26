@@ -40,6 +40,7 @@ swapEstimatorStartListening({
     if (!destToken) return;
     const crosschainTokenAtDestChain = selectCrosschainTokenAtDestChain(state);
     const crosschainTokenAtSrcChain = selectCrosschainTokenAtSrcChain(state);
+
     if (!crosschainTokenAtSrcChain) return;
     if (!crosschainTokenAtDestChain) return;
 

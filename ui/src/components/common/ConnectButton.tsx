@@ -1,4 +1,4 @@
-import { chains } from "config/constants";
+import config from "config/constants";
 import React, { FunctionComponent, useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import {
@@ -29,7 +29,7 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
   // handle supported chains
   useEffect(() => {
     const chainId = chain?.id;
-    const chainIsSupported = chains.find((chain) => chain.id === chainId);
+    const chainIsSupported = config.chains.find((chain) => chain.id === chainId);
     if (chainIsSupported) {
       setChainAllowed(true);
     } else {
@@ -67,7 +67,7 @@ export const ConnectButton: FunctionComponent<ComponentStyle> = ({
     return (
       <div
         className="tooltip tooltip-bottom"
-        data-tip={`Please choose another network. Compatible networks are ${chains
+        data-tip={`Please choose another network. Compatible networks are ${config.chains
           .map((chain) => chain.network)
           .join(" , ")}`}
       >

@@ -4,10 +4,11 @@ import {
 } from "@reduxjs/toolkit";
 import { AppDispatch, RootState } from "store";
 import { ethers } from "ethers";
-import { MESSAGE_TRANSMITTER, WSS } from "config/constants";
+import config from "config/constants";
 import { setStep } from "slices/swapStatusSlice";
 import { getMessageSentEvent } from "utils/contract";
 import { getTxLink } from "utils/explorer";
+import { getProvider } from "utils/provider";
 
 export const usdcMessengerMiddleware = createListenerMiddleware();
 
@@ -30,11 +31,9 @@ usdcMessengerStartListening({
     const srcTxHash = state.swapStatus.srcTx;
     if (!srcChain || !destChain || !srcTxHash) return;
 
-    const srcMessageTransmitterAddress = MESSAGE_TRANSMITTER[srcChain.name];
-    const destMessageTransmitterAddress = MESSAGE_TRANSMITTER[destChain.name];
-    const srcProvider = new ethers.providers.WebSocketProvider(
-      WSS[srcChain.name]
-    );
+    const srcMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[srcChain.name];
+    const destMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[destChain.name];
+    const srcProvider = getProvider(srcChain);
 
     // Step 1: Observe for the MessageSent event
     const srcContract = new ethers.Contract(
@@ -62,7 +61,7 @@ usdcMessengerStartListening({
           .catch((err: any) => {
             console.log(err);
           });
-        sleep(5000);
+        await sleep(5000);
       }
 
       if (response.success) {

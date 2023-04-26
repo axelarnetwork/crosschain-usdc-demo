@@ -3,7 +3,7 @@ import pangolinRouterAbi from "abi/pangolinRouter.json";
 import uniswapRouterAbi from "abi/router.json";
 import { getProvider } from "./provider";
 import { SwapEstimatorPayload } from "slices/swapEstimatorSlice";
-import { chains } from "config/constants";
+import config from "config/constants";
 import { ChainName } from "types/chain";
 
 export function createSwapPayloadForNative(
@@ -61,7 +61,7 @@ export function createSrcTradeData(
     swapPath,
     recipientAddress
   );
-  const _chain = chains.find((c) => c.name === chain);
+  const _chain = config.chains.find((c) => c.name === chain);
   return ethers.utils.defaultAbiCoder.encode(
     ["uint256", "address", "bytes"],
     [amount, _chain?.routerAddress, swapPayload]
@@ -82,7 +82,7 @@ export function createDestTradeData(
     swapPath,
     recipientAddress
   );
-  const _chain = chains.find((c) => c.name === chain);
+  const _chain = config.chains.find((c) => c.name === chain);
   return ethers.utils.defaultAbiCoder.encode(
     ["address", "uint256", "address", "bytes"],
     [usdcAddress, amount, _chain?.routerAddress, swapPayload]
@@ -165,7 +165,7 @@ export const getSwapPendingEvent = (
       const [traceId, payloadHash, amount, destinationChainName, payload] =
         swapPendingEvent.args;
 
-      const destChain = chains.find(
+      const destChain = config.chains.find(
         (chain) =>
           chain.name.toLowerCase() === destinationChainName.toLowerCase()
       );

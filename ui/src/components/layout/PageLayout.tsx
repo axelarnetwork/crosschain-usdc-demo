@@ -1,4 +1,4 @@
-import { chains } from "config/constants";
+import config from "config/constants";
 import { useAppDispatch, useAppSelector } from "hooks/useAppSelector";
 import useTokens from "hooks/useTokens";
 import Head from "next/head";
@@ -18,6 +18,14 @@ import { useSwitchNetwork } from "wagmi";
 import { ChainInputModalKey, ChainInputModal } from "components/modals";
 import { TokenInputModal, TokenInputModalKey } from "components/modals";
 import { Waves, Header } from "components/layout";
+
+let timerId: any;
+
+function debounce(func: any, delay: number) {
+  clearTimeout(timerId);
+  timerId = setTimeout(func, delay);
+}
+
 
 export const PageLayout: FunctionComponent = ({ children }) => {
   const srcChain = useAppSelector(selectSrcChain);
@@ -66,7 +74,7 @@ export const PageLayout: FunctionComponent = ({ children }) => {
       } catch (error) {}
     };
 
-    switchWalletNetworkIfNeeded();
+    debounce(switchWalletNetworkIfNeeded, 2000)
   }, [data?.id, srcChain, switchNetworkAsync]);
 
   return (
@@ -99,12 +107,12 @@ export const PageLayout: FunctionComponent = ({ children }) => {
       <ChainInputModal
         modalKey={ChainInputModalKey.ModalChainFrom}
         onSelected={updateSrcChain}
-        chains={chains}
+        chains={config.chains}
       />
       <ChainInputModal
         modalKey={ChainInputModalKey.ModalChainTo}
         onSelected={updateDestChain}
-        chains={chains}
+        chains={config.chains}
       />
       <Waves />
     </>

@@ -11,7 +11,11 @@ export default async function handler(
 ) {
   const chain = req.body.chain as ChainName;
   const rawTx = req.body.rawTx as PopulatedTransaction;
-  if (chain !== ChainName.AVALANCHE && chain !== ChainName.ETHEREUM) {
+  if (
+    chain !== ChainName.AVALANCHE &&
+    chain !== ChainName.ETHEREUM &&
+    chain !== ChainName.ETHEREUM_MAINNET
+  ) {
     return res
       .status(400)
       .json({ success: false, error: `${chain} is not supported.` });

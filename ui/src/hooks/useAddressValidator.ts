@@ -1,4 +1,4 @@
-import { chains } from "config/constants";
+import config from "config/constants";
 import { useEffect, useState } from "react";
 import { getProvider } from "utils/provider";
 
@@ -16,7 +16,7 @@ const useAddressValidator = (aliasAddress: string | undefined) => {
 
       try {
         const addr = aliasAddress?.trim();
-        if (!(await getProvider(chains[0]).resolveName(addr))) {
+        if (!(await getProvider(config.chains[0]).resolveName(addr))) {
           setValid({
             isValid: false,
             error: `Unresolved alias address: ${addr}`,

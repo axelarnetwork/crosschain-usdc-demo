@@ -9,6 +9,13 @@ import {
 import { SquidChain } from "../types/chain";
 import { useAppDispatch, useAppSelector } from "./useAppSelector";
 
+let timerId: any;
+
+function debounce(func: any, delay: number) {
+  clearTimeout(timerId);
+  timerId = setTimeout(func, delay);
+}
+
 export const useNetworkSwitcher = () => {
   const srcChain = useAppSelector(selectSrcChain);
   const destChain = useAppSelector(selectDestChain);
@@ -23,7 +30,11 @@ export const useNetworkSwitcher = () => {
 
     // update src chain if network supported
     if (currentChain.icon) {
-      dispatch(setSrcChain(currentChain));
+      if (srcChain?.id !== currentChain.id) {
+        debounce(() => {
+          dispatch(setSrcChain(currentChain));
+        }, 500);
+      }
     }
 
     // set dest chain to previously cached chain to avoid conflicts
