@@ -15,7 +15,7 @@ export const WSS = {
 
 export const CROSSCHAIN_NATIVE_SWAP = {
   [ChainName.ETHEREUM]: "0xfc388061d55E00f82d2C280287251010ebBd611D",
-  [ChainName.AVALANCHE_MAINNET]: "0x1B9d93a8068584E57f5735dDF646b887DD5DC2b2",
+  [ChainName.AVALANCHE_MAINNET]: "0xd5BA1f7cAe2A907e687f574f9600840e9BeF7E03",
   [ChainName.ETHEREUM_MAINNET]: "0xa056589453813E5C644Fe020a9Cc4421AF68e929"
 };
 
@@ -31,8 +31,7 @@ export const TOKEN_MESSENGER = {
   [ChainName.ETHEREUM_MAINNET]: "0xBd3fa81B58Ba92a82136038B25aDec7066af3155"
 };
 
-export const ATTESTATION_BASE_API = "https://iris-api-sandbox.circle.com";
-
+export const ATTESTATION_BASE_API = "https://iris-api.circle.com";
 export const chains: SquidChain[] = [
   {
     id: ChainId.ETHEREUM_MAINNET,
@@ -46,7 +45,7 @@ export const chains: SquidChain[] = [
     multicallAddress: "0x5BA1e12693Dc8F9c48aAD8770482f4739bEeD696",
     gatewayAddress: "0x4F4495243837681061C4743b74B3eEdf548D56A5",
     crosschainNativeSwapAddress: CROSSCHAIN_NATIVE_SWAP[ChainName.ETHEREUM_MAINNET],
-    routerAddress: "0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45",
+    routerAddress: "0x7a250d5630b4cf539739df2c5dacb4c659f2488d",
     blockExplorers: {
       default: { name: "Etherscan", url: "https://etherscan.io/" },
     },
