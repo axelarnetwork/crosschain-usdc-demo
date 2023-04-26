@@ -20,7 +20,7 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
     // mapping destination chain name => destination contract address
     mapping(string => address) public siblings;
 
-    bytes32 constant CHAIN_ETHEREUM = keccak256(abi.encodePacked("ethereum-2"));
+    bytes32 constant CHAIN_ETHEREUM = keccak256(abi.encodePacked("ethereum"));
     bytes32 constant CHAIN_AVALANCHE = keccak256(abi.encodePacked("avalanche"));
 
     error InvalidTrade();
