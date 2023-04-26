@@ -138,7 +138,7 @@ swapStatusStartListening({
     const srcTxHash = state.swapStatus.srcTx;
     if (!srcChain || !destChain || !srcTxHash) return;
     const srcProvider = getProvider(srcChain);
-    const destProvider = getProvider(destChain);
+    const destProvider = new ethers.providers.WebSocketProvider(config.WSS[destChain.name])
 
     listenerApi.dispatch(setChain(srcChain.name));
 
@@ -164,14 +164,16 @@ swapStatusStartListening({
       ],
       destProvider
     );
+    console.log("listening for mint and withdraw", destTokenMessenger.address)
     const eventFilter = destTokenMessenger.filters.MintAndWithdraw(
-      null,
+      destChain.crosschainNativeSwapAddress,
       null,
       null
     );
     destTokenMessenger.on(eventFilter, (...args) => {
-      if (args[0] !== destChain.crosschainNativeSwapAddress) return;
+      // if (args[0] !== destChain.crosschainNativeSwapAddress) return;
       const txHash = args[args.length - 1].transactionHash;
+      console.log('txhash', txHash)
       listenerApi.dispatch(setStep(2));
       listenerApi.dispatch(setDestApprovalTx(txHash));
       destTokenMessenger.removeAllListeners(eventFilter);

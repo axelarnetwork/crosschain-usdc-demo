@@ -8,6 +8,7 @@ import config from "config/constants";
 import { setStep } from "slices/swapStatusSlice";
 import { getMessageSentEvent } from "utils/contract";
 import { getTxLink } from "utils/explorer";
+import { getProvider } from "utils/provider";
 
 export const usdcMessengerMiddleware = createListenerMiddleware();
 
@@ -32,9 +33,7 @@ usdcMessengerStartListening({
 
     const srcMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[srcChain.name];
     const destMessageTransmitterAddress = config.MESSAGE_TRANSMITTER[destChain.name];
-    const srcProvider = new ethers.providers.WebSocketProvider(
-      config.WSS[srcChain.name]
-    );
+    const srcProvider = getProvider(srcChain);
 
     // Step 1: Observe for the MessageSent event
     const srcContract = new ethers.Contract(
@@ -62,7 +61,7 @@ usdcMessengerStartListening({
           .catch((err: any) => {
             console.log(err);
           });
-        sleep(5000);
+        await sleep(5000);
       }
 
       if (response.success) {
