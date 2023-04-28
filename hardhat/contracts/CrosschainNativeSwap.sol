@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-import {IAxelarForecallable} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarForecallable.sol";
 import {IAxelarGasService} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarGasService.sol";
 import {IAxelarGateway} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarGateway.sol";
+import {AxelarExecutable} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/executable/AxelarExecutable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ITokenMessenger} from "./ITokenMessenger.sol";
 import "./StringAddressUtils.sol";
 
-contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
+contract CrosschainNativeSwap is AxelarExecutable, Ownable {
     IERC20 public usdc;
     ITokenMessenger public tokenMessenger;
     IAxelarGasService immutable gasReceiver;
@@ -48,7 +48,7 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         address _gasReceiver,
         address _gateway,
         address _TokenMessenger
-    ) IAxelarForecallable(_gateway) Ownable() {
+    ) AxelarExecutable(_gateway) Ownable() {
         usdc = IERC20(_usdc);
         tokenMessenger = ITokenMessenger(_TokenMessenger);
         gasReceiver = IAxelarGasService(_gasReceiver);
