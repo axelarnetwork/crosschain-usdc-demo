@@ -1,16 +1,16 @@
 // SPDX-License-Identifier: MIT
 pragma solidity 0.8.9;
 
-import {IAxelarForecallable} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarForecallable.sol";
 import {IAxelarGasService} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarGasService.sol";
 import {IAxelarGateway} from "@axelar-network/axelar-cgp-solidity/contracts/interfaces/IAxelarGateway.sol";
+import {AxelarExecutable} from "@axelar-network/axelar-gmp-sdk-solidity/contracts/executable/AxelarExecutable.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {IERC20} from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {ITokenMessenger} from "./ITokenMessenger.sol";
 import "./StringAddressUtils.sol";
 
-contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
+contract CrosschainNativeSwap is AxelarExecutable, Ownable {
     IERC20 public usdc;
     ITokenMessenger public tokenMessenger;
     IAxelarGasService immutable gasReceiver;
@@ -19,9 +19,6 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
     mapping(string => uint32) public circleDestinationDomains;
     // mapping destination chain name => destination contract address
     mapping(string => address) public siblings;
-
-    bytes32 constant CHAIN_ETHEREUM = keccak256(abi.encodePacked("ethereum"));
-    bytes32 constant CHAIN_AVALANCHE = keccak256(abi.encodePacked("avalanche"));
 
     error InvalidTrade();
     error InsufficientInput();
@@ -44,33 +41,28 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
     );
 
     constructor(
-        address _usdc,
-        address _gasReceiver,
-        address _gateway,
-        address _TokenMessenger
-    ) IAxelarForecallable(_gateway) Ownable() {
-        usdc = IERC20(_usdc);
-        tokenMessenger = ITokenMessenger(_TokenMessenger);
-        gasReceiver = IAxelarGasService(_gasReceiver);
+        address usdc_,
+        address gasReceiver_,
+        address gateway_,
+        address tokenMessenger_
+    ) AxelarExecutable(gateway_) Ownable() {
+        usdc = IERC20(usdc_);
+        tokenMessenger = ITokenMessenger(tokenMessenger_);
+        gasReceiver = IAxelarGasService(gasReceiver_);
         circleDestinationDomains["ethereum"] = 0;
         circleDestinationDomains["avalanche"] = 1;
     }
 
     modifier isValidChain(string memory destinationChain) {
-        require(
-            keccak256(abi.encodePacked(destinationChain)) == CHAIN_ETHEREUM ||
-                keccak256(abi.encodePacked(destinationChain)) ==
-                CHAIN_AVALANCHE,
-            "Invalid chain"
-        );
+        require(siblings[destinationChain] != address(0), "Invalid chain");
         _;
     }
 
     // Set address for this contract that deployed at another chain
-    function addSibling(string memory chain_, address address_)
-        external
-        onlyOwner
-    {
+    function addSibling(
+        string memory chain_,
+        address address_
+    ) external onlyOwner {
         siblings[chain_] = address_;
     }
 
@@ -92,9 +84,12 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         uint16 inputPos
     ) external payable isValidChain(destinationChain) {
         // Swap native token to USDC
-        (uint256 nativeSwapAmount, uint256 usdcAmount) = _trade(srcTradeData);
+        (uint256 nativeSwapAmount, uint256 usdcAmount) = _swapNativeToUsdc(
+            srcTradeData
+        );
 
-        _depositAndBurnUSDC(
+        // Burns a specified amount of USDC tokens by calling `depositForBurn` function in Circle's TokenMessenger contract
+        _sendViaCCTP(
             usdcAmount,
             destinationChain,
             this.siblings(destinationChain)
@@ -146,7 +141,7 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         );
     }
 
-    function _depositAndBurnUSDC(
+    function _sendViaCCTP(
         uint256 amount,
         string memory destinationChain,
         address recipient
@@ -161,39 +156,29 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         );
     }
 
-    function _tradeSrc(bytes memory tradeData)
-        internal
-        returns (bool success, uint256 amount)
-    {
-        (uint256 amountIn, address router, bytes memory data) = abi.decode(
-            tradeData,
-            (uint256, address, bytes)
-        );
-        (success, ) = router.call{value: amountIn}(data);
-        return (success, amountIn);
-    }
-
-    function _trade(bytes memory tradeData1)
-        private
-        returns (uint256 amount, uint256 burnAmount)
-    {
+    function _swapNativeToUsdc(
+        bytes memory tradeData
+    ) private returns (uint256 amount, uint256 burnAmount) {
         // Calculate remaining usdc token in the contract
         uint256 preTradeBalance = IERC20(address(usdc)).balanceOf(
             address(this)
         );
 
+        (uint256 nativeAmountIn, address router, bytes memory data) = abi
+            .decode(tradeData, (uint256, address, bytes));
+
         // Swap native token to USDC
-        (bool success, uint256 _nativeSwapAmount) = _tradeSrc(tradeData1);
+        (bool success, ) = router.call{value: nativeAmountIn}(data);
 
         // Revert if trade failed
         require(success, "TRADE_FAILED");
 
         // Calculate amount of USDC token swapped. This is the amount to be burned at the source chain.
-        uint256 _usdcAmount = IERC20(address(usdc)).balanceOf(address(this)) -
+        uint256 usdcAmount = IERC20(address(usdc)).balanceOf(address(this)) -
             preTradeBalance;
 
         // Return amount of native token swapped and amount of USDC token to be burned
-        return (_nativeSwapAmount, _usdcAmount);
+        return (nativeAmountIn, usdcAmount);
     }
 
     function _refund(
@@ -207,8 +192,8 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
 
     // This function will be called by Axelar Executor service.
     function _execute(
-        string memory, /*sourceChain*/
-        string memory, /*sourceAddress*/
+        string memory /*sourceChain*/,
+        string memory /*sourceAddress*/,
         bytes calldata payload
     ) internal override {
         // Decode payload
@@ -220,7 +205,7 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
             uint16 inputPos
         ) = abi.decode(payload, (bytes, uint256, bytes32, address, uint16));
 
-        // This hack puts the amount in the correct position.
+        // This code inserts the usdcAmount into the tradeData bytes at a specific location, in order to properly position the data.
         assembly {
             mstore(add(tradeData, inputPos), usdcAmount)
         }
@@ -236,7 +221,7 @@ contract CrosschainNativeSwap is IAxelarForecallable, Ownable {
         // Swap USDC to native token
         (bool swapSuccess, ) = router.call(data);
 
-        // If swap failed, refund USDC to the user.
+        // If swap failed, refund USDC to the user at the destination chain.
         if (!swapSuccess)
             return _refund(traceId, usdcAmount, fallbackRecipient);
 
